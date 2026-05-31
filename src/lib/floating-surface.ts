@@ -13,4 +13,4 @@ export const floatingSurface =
  * to [data-selected], which matches every row.
  */
 export const floatingListItemInteractive =
-  "rounded-md outline-none focus:bg-accent focus:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground aria-selected:*:[svg]:text-accent-foreground"
+  "rounded-md outline-none focus-visible:bg-accent focus-visible:text-accent-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/30 data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground aria-selected:*:[svg]:text-accent-foreground"

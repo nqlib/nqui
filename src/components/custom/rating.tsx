@@ -96,7 +96,7 @@ const ratingStyles = `
   /* Base: Show checked state - highlight up to checked input (selected stars) */
   /* Only show when NOT hovering */
   .rating-wrapper:not(:has(label:hover)) input[type="radio"]:checked ~ label::before {
-    background-color: oklch(0.75 0.20 70) !important;
+    background-color: var(--warning-400) !important;
     filter: none;
   }
 
@@ -105,7 +105,7 @@ const ratingStyles = `
   /* This ALWAYS highlights from 0 to hovered star (goldenrod color) */
   .rating-wrapper label:hover::before,
   .rating-wrapper label:hover ~ label::before {
-    background-color: oklch(0.75 0.20 70) !important;
+    background-color: var(--warning-400) !important;
     filter: none !important;
   }
 
@@ -114,7 +114,7 @@ const ratingStyles = `
   .rating-wrapper input[type="radio"]:checked ~ label:hover::before,
   .rating-wrapper input[type="radio"]:checked ~ label:hover ~ label::before,
   .rating-wrapper label:hover ~ input[type="radio"]:checked ~ label::before {
-    background-color: oklch(0.75 0.20 70) !important;
+    background-color: var(--warning-400) !important;
     filter: none !important;
   }
 
@@ -123,6 +123,11 @@ const ratingStyles = `
   .rating-wrapper:has(input:disabled) label {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  .rating-wrapper input[type="radio"]:focus-visible + label::before {
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent);
+    border-radius: 2px;
   }
 `
 

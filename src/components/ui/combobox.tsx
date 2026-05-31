@@ -5,7 +5,6 @@ import {
   IconChevronsUpDown,
   IconX,
 } from "@/components/icons"
-/* eslint-disable react-refresh/only-export-components -- Combobox primitives + useComboboxAnchor for library consumers */
 
 /**
  * Public API (stable, exported from `components/index.ts`):
@@ -101,7 +100,7 @@ function useComboboxFieldSurfaceStyles() {
           0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
           0 1px 2px 0 oklch(0.15 0 0 / 0.05),
           0 2px 4px -1px oklch(0.15 0 0 / 0.03),
-          0 0 0 2px var(--ring) !important;
+          0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent) !important;
       }
 
       .dark [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input:focus-visible),
@@ -110,7 +109,7 @@ function useComboboxFieldSurfaceStyles() {
           0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
           0 1px 2px 0 oklch(0 0 0 / 0.3),
           0 2px 4px -1px oklch(0 0 0 / 0.2),
-          0 0 0 2px var(--ring) !important;
+          0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent) !important;
       }
 
       [data-slot="input-group-control"].enhanced-combobox-input {
@@ -132,7 +131,6 @@ function useComboboxFieldSurfaceStyles() {
   }, [])
 }
 
-/* eslint-disable no-unused-vars -- parameter names document ComboboxContextValue callback shapes */
 type ComboboxContextValue = {
   open: boolean
   setOpen: (v: boolean) => void
@@ -172,7 +170,6 @@ type ComboboxProps = Omit<React.ComponentProps<typeof PopoverPrimitive.Root>, "c
    */
   debug?: boolean
 }
-/* eslint-enable no-unused-vars */
 
 function getTextFromNode(node: React.ReactNode): string {
   if (node == null || typeof node === "boolean") return ""
@@ -692,7 +689,8 @@ function ComboboxBadgeTrigger({
 }) {
   const { value, setOpen, open, disabled, getLabel, setValue, listboxIdAria } = useComboboxContext()
   const [expanded, setExpanded] = React.useState(false)
-  const id = idProp ?? React.useId()
+  const generatedId = React.useId()
+  const id = idProp ?? generatedId
 
   useComboboxFieldSurfaceStyles()
 
@@ -938,7 +936,7 @@ function ComboboxItem({
         userMouseDown?.(e)
       }}
       className={cn(
-        "transition-colors hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground min-h-8 my-0.5 mx-1 gap-2 rounded-md px-2.5 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-3.5 relative flex w-auto cursor-pointer items-center outline-hidden select-none aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "transition-colors hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground min-h-8 my-0.5 mx-1 gap-2 rounded-md px-2.5 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-3.5 relative flex w-auto cursor-pointer items-center outline-none select-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/30 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className
       )}
       {...props}

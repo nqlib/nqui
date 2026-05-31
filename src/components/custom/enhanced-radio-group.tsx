@@ -495,7 +495,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
         ref={ref}
         data-slot="radio-group-item"
         className={cn(
-          "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary flex size-4 rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-transparent flex size-4 rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         disabled={isDisabled}

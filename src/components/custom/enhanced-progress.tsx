@@ -45,11 +45,11 @@ const progressBlockVariants = cva("", {
 const progressBackgroundVariants = cva("", {
   variants: {
     variant: {
-      default: "bg-blue-200 dark:bg-blue-500/30",
-      success: "bg-emerald-200 dark:bg-emerald-500/30",
-      warning: "bg-yellow-200 dark:bg-yellow-500/30",
-      error: "bg-red-200 dark:bg-red-500/30",
-      neutral: "bg-gray-200 dark:bg-gray-500/40",
+      default: "bg-primary/20 dark:bg-primary/30",
+      success: "bg-success/20 dark:bg-success/30",
+      warning: "bg-warning/20 dark:bg-warning/30",
+      error: "bg-destructive/20 dark:bg-destructive/30",
+      neutral: "bg-muted dark:bg-muted/80",
     },
   },
   defaultVariants: {

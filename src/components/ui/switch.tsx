@@ -30,7 +30,7 @@ const switchVariants = cva(
 )
 
 const switchThumbVariants = cva(
-  "pointer-events-none block shrink-0 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] ring-0 transition-transform duration-200 ease-out dark:bg-white",
+  "pointer-events-none block shrink-0 rounded-full bg-background shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] ring-0 transition-transform duration-200 ease-out dark:bg-card",
   {
     variants: {
       size: {

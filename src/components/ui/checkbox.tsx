@@ -102,15 +102,21 @@ const checkboxStyles = `
     transform: rotate(45deg) scale(1);
   }
 
+  .checkbox-animated-input:focus-visible,
+  .checkbox-round-input:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent);
+  }
+
   @keyframes checkbox-pulse {
     0% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 40%, transparent);
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--ring) 35%, transparent);
     }
     70% {
-      box-shadow: 0 0 0 8px color-mix(in oklch, var(--primary) 0%, transparent);
+      box-shadow: 0 0 0 8px color-mix(in oklch, var(--ring) 0%, transparent);
     }
     100% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent);
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--ring) 0%, transparent);
     }
   }
 
@@ -196,7 +202,7 @@ const Checkbox = React.forwardRef<
       ref={ref}
       id={inputId}
       className={cn(
-        "grid place-content-center peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+        "grid place-content-center peer h-4 w-4 shrink-0 rounded-sm border border-input ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
         className
       )}
       {...props}
@@ -233,14 +239,21 @@ export interface EnhancedCheckboxProps
 const EnhancedCheckbox = React.forwardRef<
   React.ElementRef<typeof RadixCheckbox.Root>,
   EnhancedCheckboxProps
->(({ className, variant = "square", children, disabled, gap = 3, ...props }, ref) => {
-  const controlClass = variant === "round" ? "checkbox-round-input" : "checkbox-animated-input"
+>(({ className, variant = "square", children, disabled, gap = 3, id, ...props }, ref) => {
+  const stableId = useId()
+  const inputId = id ?? stableId
+  const controlClass = cn(
+    "hit-area-2",
+    variant === "round" ? "checkbox-round-input" : "checkbox-animated-input",
+    className,
+  )
 
   const checkboxEl = (
     <RadixCheckbox.Root
       ref={ref}
+      id={inputId}
       data-slot="checkbox"
-      className={cn(controlClass, className)}
+      className={controlClass}
       disabled={disabled}
       {...props}
     >
@@ -261,6 +274,7 @@ const EnhancedCheckbox = React.forwardRef<
     <>
       <style>{checkboxStyles}</style>
       <label
+        htmlFor={inputId}
         className={cn(
           "checkbox-animated-label",
           typeof gap === "number" ? `flex items-center gap-${gap}` : `flex items-center ${gap}`,

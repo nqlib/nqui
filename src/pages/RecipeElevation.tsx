@@ -194,7 +194,7 @@ function RealisticHybridExample() {
           </span>
           <span className="flex items-center gap-1.5 text-muted-foreground">
             <Avatar className="size-4">
-              <AvatarFallback className="text-[8px] bg-violet-500 text-white font-medium">
+              <AvatarFallback className="text-[8px] bg-primary text-primary-foreground font-medium">
                 AT
               </AvatarFallback>
             </Avatar>

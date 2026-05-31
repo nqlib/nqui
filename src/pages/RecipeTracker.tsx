@@ -114,7 +114,7 @@ interface Issue {
 }
 
 const ASSIGNEES: Assignee[] = [
-  { name: "Alina Torres", initials: "AT", hue: "bg-violet-500" },
+  { name: "Alina Torres", initials: "AT", hue: "bg-primary" },
   { name: "Marcus Holt", initials: "MH", hue: "bg-sky-500" },
   { name: "Priya Nair", initials: "PN", hue: "bg-amber-500" },
   { name: "Jordan Kim", initials: "JK", hue: "bg-emerald-500" },
@@ -343,7 +343,7 @@ function IssueListItem({
       </ItemContent>
       <ItemMedia className="items-center">
         <Avatar className="size-5">
-          <AvatarFallback className={`text-[9px] text-white font-medium ${issue.assignee.hue}`}>
+          <AvatarFallback className={`text-[9px] text-primary-foreground font-medium ${issue.assignee.hue}`}>
             {issue.assignee.initials}
           </AvatarFallback>
         </Avatar>
@@ -401,7 +401,7 @@ function IssueDetail({ issue }: { issue: Issue }) {
             </div>
             <div className="flex items-center gap-1.5">
               <Avatar className="size-4">
-                <AvatarFallback className={`text-[8px] text-white font-medium ${issue.assignee.hue}`}>
+                <AvatarFallback className={`text-[8px] text-primary-foreground font-medium ${issue.assignee.hue}`}>
                   {issue.assignee.initials}
                 </AvatarFallback>
               </Avatar>

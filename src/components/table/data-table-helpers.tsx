@@ -92,7 +92,7 @@ export function createEditableCell<TData, TValue>({
         onBlur={onBlur}
         onKeyDown={onKeyDown}
         className={cn(
-          "w-full bg-transparent border-none outline-none focus:ring-2 focus:ring-primary focus:ring-offset-0 rounded px-1 py-0.5",
+          "w-full bg-transparent border-none outline-none focus-visible:ring-[2px] focus-visible:ring-ring/30 focus-visible:ring-offset-0 rounded px-1 py-0.5",
           className
         )}
       />

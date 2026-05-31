@@ -125,7 +125,7 @@ const DropdownMenuTrigger = React.forwardRef<
           /* Third layer: Additional depth */
           0 2px 4px -1px oklch(0.15 0 0 / 0.03),
           /* Focus ring */
-          0 0 0 2px var(--ring) !important;
+          0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent) !important;
       }
 
       .dark .enhanced-dropdown-trigger:focus-visible {
@@ -137,7 +137,7 @@ const DropdownMenuTrigger = React.forwardRef<
           /* Third layer: Additional depth */
           0 2px 4px -1px oklch(0 0 0 / 0.2),
           /* Focus ring */
-          0 0 0 2px var(--ring) !important;
+          0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent) !important;
       }
     `
     document.head.appendChild(style)

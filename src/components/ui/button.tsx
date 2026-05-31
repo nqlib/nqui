@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { actionFocusClasses } from "@/lib/focus-styles"
 import { wrapInlineLabelTextNodes } from "@/lib/wrap-inline-label-text"
 
 const buttonVariants = cva(
@@ -71,7 +72,10 @@ Button.displayName = "Button"
  * so disabled state works on any theme without extra wrapper styles.
  */
 const enhancedButtonVariants = cva(
-  "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium leading-normal text-center cursor-pointer select-none touch-manipulation transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-in-out focus:outline-0 focus-visible:outline-0 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current",
+  cn(
+    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium leading-normal text-center cursor-pointer select-none touch-manipulation transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-in-out focus:outline-0 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current",
+    actionFocusClasses,
+  ),
   {
     variants: {
       variant: {

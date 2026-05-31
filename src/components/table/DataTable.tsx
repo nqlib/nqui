@@ -21,6 +21,7 @@ import {
   type ColumnFiltersState,
   type VisibilityState,
   type RowSelectionState,
+  type Row,
   type RowData,
 } from "@tanstack/react-table"
 import { Keys } from "@/lib/keyboard"
@@ -38,7 +39,7 @@ import {
 
 // Extend TableMeta for inline editing
 declare module "@tanstack/react-table" {
-  interface TableMeta<TData extends RowData> {
+  interface TableMeta<_TData extends RowData> {
     updateData?: (rowIndex: number, columnId: string, value: unknown) => void
   }
 }
@@ -84,7 +85,7 @@ export interface DataTableProps<TData, TValue> {
   /**
    * Custom global filter function
    */
-  globalFilterFn?: (row: any, columnId: string, filterValue: any) => boolean
+  globalFilterFn?: (row: Row<TData>, columnId: string, filterValue: unknown) => boolean
   /**
    * Initial sorting state
    */

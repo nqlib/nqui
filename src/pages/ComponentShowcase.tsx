@@ -268,7 +268,7 @@ const StakeholderCell = React.forwardRef<
   <button
     ref={ref}
     type="button"
-    className={`flex min-h-[36px] min-w-[120px] items-center justify-center gap-1 rounded-md border border-input bg-background px-2 py-1.5 text-left transition-colors hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${className ?? ""}`}
+    className={`flex h-7 min-w-[120px] items-center justify-center gap-1 rounded-md border border-input bg-background px-2 py-1.5 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:border-ring ${className ?? ""}`}
     {...props}
   >
       {selected.length === 0 ? (
@@ -1410,7 +1410,7 @@ export default function ComponentShowcase() {
                       <PopoverTrigger asChild>
                         <button
                           type="button"
-                          className="inline-flex cursor-pointer rounded focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                          className="inline-flex cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
                           aria-label="Manage assignees"
                         >
                           <StackedAvatarShowcase
