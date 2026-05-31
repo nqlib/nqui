@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { wrapInlineLabelTextNodes } from "@/lib/wrap-inline-label-text"
 
 const toggleVariants = cva(
-  "hover:text-foreground gap-1 rounded-md text-xs font-medium data-[state=on]:font-bold transition-[color,background-color,border-color,box-shadow] [&_svg:not([class*='size-'])]:size-3.5 group/toggle inline-flex min-w-0 max-w-full items-center justify-center whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 aria-invalid:border-destructive aria-invalid:focus-visible:ring-destructive dark:aria-invalid:border-destructive/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 active:data-[state=on]:bg-none active:data-[state=on]:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)]",
+  "hit-area-2 hover:text-foreground gap-1 rounded-md text-xs font-medium data-[state=on]:font-bold transition-[color,background-color,border-color,box-shadow] [&_svg:not([class*='size-'])]:size-3.5 group/toggle inline-flex min-w-0 max-w-full items-center justify-center whitespace-nowrap ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 aria-invalid:border-destructive aria-invalid:focus-visible:ring-destructive dark:aria-invalid:border-destructive/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 active:data-[state=on]:bg-none active:data-[state=on]:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)]",
   {
     variants: {
       variant: {

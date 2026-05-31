@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components -- SliderProps + cva variants exported for library consumers */
+ 
 import * as React from "react"
 import { Slider as SliderPrimitive } from "radix-ui"
 import { cva, type VariantProps } from "class-variance-authority"

@@ -1,5 +1,10 @@
 "use client"
 
+import {
+  IconChevronDown,
+  IconChevronsUpDown,
+  IconX,
+} from "@/components/icons"
 /* eslint-disable react-refresh/only-export-components -- Combobox primitives + useComboboxAnchor for library consumers */
 
 /**
@@ -33,8 +38,6 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowDown01Icon, ArrowUpDownIcon, Cancel01Icon } from "@hugeicons/core-free-icons"
 
 const ENHANCED_COMBOBOX_STYLE_ID = "nqui-combobox-styles-v1"
 
@@ -485,7 +488,7 @@ function ComboboxTrigger({
             <span className="min-w-0 max-w-[12rem] truncate">{triggerLabel}</span>
           )
         : wrapInlineLabelTextNodes(children)}
-      <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} className="text-muted-foreground size-3.5 pointer-events-none" />
+      <IconChevronDown strokeWidth={2} className="text-muted-foreground size-3.5 pointer-events-none" />
     </button>
   )
 }
@@ -512,7 +515,7 @@ function ComboboxClear({
       }}
       {...props}
     >
-      <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="pointer-events-none" />
+      <IconX strokeWidth={2} className="pointer-events-none" />
     </InputGroupButton>
   )
 }
@@ -758,7 +761,7 @@ function ComboboxBadgeTrigger({
                         removeOne(val)
                       }}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="size-3 pointer-events-none" />
+                      <IconX strokeWidth={2} className="size-3 pointer-events-none" />
                     </span>
                   </EnhancedBadge>
                 ))}
@@ -782,8 +785,7 @@ function ComboboxBadgeTrigger({
             )}
           </div>
           <InputGroupAddon align="inline-end" className="self-start pt-1">
-            <HugeiconsIcon
-              icon={ArrowUpDownIcon}
+            <IconChevronsUpDown
               strokeWidth={2}
               className="text-muted-foreground/80 size-4 shrink-0"
               aria-hidden
@@ -1040,7 +1042,7 @@ function ComboboxChip({
             remove()
           }}
         >
-          <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="pointer-events-none" />
+          <IconX strokeWidth={2} className="pointer-events-none" />
         </Button>
       )}
     </div>

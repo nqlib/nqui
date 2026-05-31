@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, type DateRange } from "react-day-picker";
 import { startOfDay, isSameDay, isAfter, isBefore } from "date-fns";
 import { Calendar as CoreCalendar } from "@/components/ui/calendar";
 import { useDetectTouch } from "@/hooks/use-detect-touch";
@@ -166,7 +166,7 @@ export function EnhancedCalendar({
               const monthIndex = tempDate.getMonth();
               return new Date(parseInt(year), monthIndex, parseInt(day));
             }
-          } catch (e) {
+          } catch {
             // Ignore parsing errors
           }
         }
@@ -272,8 +272,19 @@ export function EnhancedCalendar({
         const end = startOfDay(endDate);
         const finalRange = start <= end ? { from: start, to: end } : { from: end, to: start };
 
-        if (props.onSelect && typeof props.onSelect === 'function') {
-          (props.onSelect as any)(finalRange, finalRange, {}, undefined);
+        if (props.onSelect && typeof props.onSelect === "function") {
+          const onRangeSelect = props.onSelect as (
+            range: DateRange | undefined,
+            selectedDay: Date,
+            activeModifiers: Record<string, boolean>,
+            e?: React.MouseEvent | React.KeyboardEvent
+          ) => void
+          onRangeSelect(
+            finalRange,
+            finalRange.from ?? endDate,
+            {},
+            undefined
+          )
         }
       }
 

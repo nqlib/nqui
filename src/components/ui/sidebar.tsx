@@ -1,10 +1,11 @@
 "use client"
 
+import {
+  IconPanelLeft,
+} from "@/components/icons"
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { PanelLeftIcon } from "@hugeicons/core-free-icons"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { isMod, SHORTCUT_KEYS } from "@/lib/keyboard"
@@ -284,7 +285,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <HugeiconsIcon icon={PanelLeftIcon} size={16} />
+      <IconPanelLeft size={16} />
     </Button>
   )
 })

@@ -1,5 +1,13 @@
 "use client"
 
+import {
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronUp,
+  IconChevronsLeft,
+  IconChevronsRight,
+} from "@/components/icons"
 import * as React from "react"
 import {
   useReactTable,
@@ -15,15 +23,6 @@ import {
   type RowSelectionState,
   type RowData,
 } from "@tanstack/react-table"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  ArrowLeftDoubleIcon,
-  ArrowRightDoubleIcon,
-} from "@hugeicons/core-free-icons"
 import { Keys } from "@/lib/keyboard"
 import { cn } from "@/lib/utils"
 import { Button, Input } from "@/index"
@@ -271,8 +270,7 @@ export function DataTable<TData, TValue>({
                           : flexRender(header.column.columnDef.header, header.getContext())}
                         {canSort && (
                           <div className="flex flex-col -space-y-2">
-                            <HugeiconsIcon
-                              icon={ArrowUp01Icon}
+                            <IconChevronUp
                               size={12}
                               className={cn(
                                 "h-3 w-3 text-gray-900 dark:text-gray-50",
@@ -280,8 +278,7 @@ export function DataTable<TData, TValue>({
                               )}
                               aria-hidden="true"
                             />
-                            <HugeiconsIcon
-                              icon={ArrowDown01Icon}
+                            <IconChevronDown
                               size={12}
                               className={cn(
                                 "h-3 w-3 text-gray-900 dark:text-gray-50",
@@ -385,7 +382,7 @@ export function DataTable<TData, TValue>({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to first page</span>
-                <HugeiconsIcon icon={ArrowLeftDoubleIcon} size={16} className="h-4 w-4" />
+                <IconChevronsLeft size={16} className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
@@ -394,7 +391,7 @@ export function DataTable<TData, TValue>({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to previous page</span>
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={16} className="h-4 w-4" />
+                <IconChevronLeft size={16} className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
@@ -403,7 +400,7 @@ export function DataTable<TData, TValue>({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to next page</span>
-                <HugeiconsIcon icon={ArrowRight01Icon} size={16} className="h-4 w-4" />
+                <IconChevronRight size={16} className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"
@@ -412,7 +409,7 @@ export function DataTable<TData, TValue>({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to last page</span>
-                <HugeiconsIcon icon={ArrowRightDoubleIcon} size={16} className="h-4 w-4" />
+                <IconChevronsRight size={16} className="h-4 w-4" />
               </Button>
             </div>
           </div>

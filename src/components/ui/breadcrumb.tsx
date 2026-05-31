@@ -1,7 +1,9 @@
+import {
+  IconChevronRight,
+  IconMoreHorizontal,
+} from "@/components/icons"
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, MoreHorizontalIcon } from "@hugeicons/core-free-icons"
 
 import { cn } from "@/lib/utils"
 
@@ -84,7 +86,7 @@ const BreadcrumbSeparator = ({
     className={cn("[&>svg]:w-3.5 [&>svg]:h-3.5", className)}
     {...props}
   >
-    {children ?? <HugeiconsIcon icon={ArrowRight01Icon} size={14} />}
+    {children ?? <IconChevronRight size={14} />}
   </li>
 )
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator"
@@ -99,7 +101,7 @@ const BreadcrumbEllipsis = ({
     className={cn("flex h-9 w-9 items-center justify-center", className)}
     {...props}
   >
-    <HugeiconsIcon icon={MoreHorizontalIcon} size={16} className="h-4 w-4" />
+    <IconMoreHorizontal size={16} className="h-4 w-4" />
     <span className="sr-only">More</span>
   </span>
 )

@@ -73,7 +73,7 @@ export async function copyNextJsExamples(framework, { force, sidebar }) {
 
   if (copied.length > 0) {
     const deps = sidebar
-      ? 'npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons tw-animate-css next-themes react-router-dom'
+      ? 'npm install @nqlib/nqui tw-animate-css next-themes react-router-dom'
       : 'npm install @nqlib/nqui tw-animate-css next-themes';
     console.log(`\n📝 Required dependencies for example files:`);
     console.log(`   ${deps}\n`);
@@ -152,7 +152,7 @@ export async function copyViteExamples(framework, { force, sidebar }) {
   }
 
   if (copied.length > 0) {
-    const deps = 'npm install @nqlib/nqui tw-animate-css next-themes @hugeicons/react @hugeicons/core-free-icons react-router-dom';
+    const deps = 'npm install @nqlib/nqui tw-animate-css next-themes react-router-dom';
     console.log(`\n📝 Required dependencies for example files:`);
     console.log(`   ${deps}`);
     console.log(`   Note: For Vite, wrap your app with ThemeProvider and BrowserRouter in main.tsx\n`);

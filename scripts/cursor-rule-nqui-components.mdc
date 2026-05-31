@@ -13,10 +13,10 @@ When building UI with @nqlib/nqui, follow these rules so the AI builds component
 Run this when setting up a new project or when components fail due to missing peers:
 
 ```bash
-pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels
+pnpm add @nqlib/nqui cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels
 ```
 
-Alternative (npm): `npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels`
+Alternative (npm): `npm install @nqlib/nqui cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels`
 
 Or use `npx @nqlib/nqui install-peers` to auto-detect package manager.
 

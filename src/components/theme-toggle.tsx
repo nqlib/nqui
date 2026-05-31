@@ -1,8 +1,10 @@
 "use client"
 
+import {
+  IconMoon,
+  IconPalette,
+} from "@/components/icons"
 import * as React from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Moon01Icon, PaintBoardIcon } from "@hugeicons/core-free-icons"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/index"
@@ -23,7 +25,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <Button variant="outline" size="icon">
-        <HugeiconsIcon icon={PaintBoardIcon} size={16} className="h-4 w-4" />
+        <IconPalette size={16} className="h-4 w-4" />
         <span className="sr-only">Toggle theme</span>
       </Button>
     )
@@ -38,8 +40,7 @@ export function ThemeToggle() {
       className="relative"
       onClick={toggleTheme}
     >
-      <HugeiconsIcon
-        icon={PaintBoardIcon}
+      <IconPalette
         size={16}
         className={`absolute h-4 w-4 transition-all duration-200 ${
           currentTheme === "light"
@@ -47,8 +48,7 @@ export function ThemeToggle() {
             : "rotate-90 scale-0 opacity-0"
         }`}
       />
-      <HugeiconsIcon
-        icon={Moon01Icon}
+      <IconMoon
         size={16}
         className={`absolute h-4 w-4 transition-all duration-200 ${
           currentTheme === "dark"

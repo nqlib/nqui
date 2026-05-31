@@ -93,7 +93,6 @@ function useHeadingDetection(
 
   useEffect(() => {
     if (!enabled) {
-      setItems([])
       return
     }
 
@@ -171,7 +170,7 @@ function useHeadingDetection(
     setItems(tocItems)
   }, [enabled, selector, container])
 
-  return items
+  return enabled ? items : []
 }
 
 /**
@@ -283,35 +282,39 @@ const TableOfContents = React.forwardRef<HTMLDivElement, TableOfContentsProps>(
       : scrollSpy.visibleIds
 
     // Remember the last active ID even when it's scrolled out of view (shared across all variants)
-    const lastActiveIdRef = React.useRef<string | null>(null)
+    const computedLastActiveId = React.useMemo(() => {
+      if (visibleIds.length === 0 || items.length === 0) {
+        return null
+      }
 
-    // Update lastActiveIdRef when visibleIds changes
-    React.useEffect(() => {
-      if (visibleIds.length > 0 && items.length > 0) {
-        // Find the last active index and update lastActiveIdRef
-        let lastActiveIndex = -1
-        const flatItems: TOCItem[] = []
-        const flatten = (items: TOCItem[]): void => {
-          items.forEach((item) => {
-            flatItems.push(item)
-            if (item.children) {
-              flatten(item.children)
-            }
-          })
-        }
-        flatten(items)
-
-        for (let i = 0; i < flatItems.length; i++) {
-          if (visibleIds.includes(flatItems[i].id)) {
-            lastActiveIndex = i
+      const flatItems: TOCItem[] = []
+      const flatten = (tocItems: TOCItem[]): void => {
+        tocItems.forEach((item) => {
+          flatItems.push(item)
+          if (item.children) {
+            flatten(item.children)
           }
-        }
-        if (lastActiveIndex >= 0) {
-          lastActiveIdRef.current = flatItems[lastActiveIndex].id
+        })
+      }
+      flatten(items)
+
+      let lastActiveIndex = -1
+      for (let i = 0; i < flatItems.length; i++) {
+        if (visibleIds.includes(flatItems[i].id)) {
+          lastActiveIndex = i
         }
       }
-      // Note: We don't clear lastActiveIdRef when visibleIds is empty - we keep it for persistence
+
+      return lastActiveIndex >= 0 ? flatItems[lastActiveIndex].id : null
     }, [visibleIds, items])
+
+    const [lastActiveId, setLastActiveId] = React.useState<string | null>(null)
+
+    if (computedLastActiveId !== null && computedLastActiveId !== lastActiveId) {
+      setLastActiveId(computedLastActiveId)
+    }
+
+    const effectiveLastActiveId = computedLastActiveId ?? lastActiveId
 
 
     // Handle item click
@@ -423,20 +426,20 @@ const TableOfContents = React.forwardRef<HTMLDivElement, TableOfContentsProps>(
                 items={flatItems}
                 activePathIds={activePathIds}
                 visibleIds={visibleIds}
-                lastActiveIdRef={lastActiveIdRef}
+                lastActiveId={effectiveLastActiveId}
               />
             ) : variant === "clerk" ? (
               <ClerkTableOfContentsList
                 items={flatItems}
                 activePathIds={activePathIds}
                 visibleIds={visibleIds}
-                lastActiveIdRef={lastActiveIdRef}
+                lastActiveId={effectiveLastActiveId}
               />
             ) : (
               <NormalTableOfContentsList
                 items={items}
                 visibleIds={visibleIds}
-                lastActiveIdRef={lastActiveIdRef}
+                lastActiveId={effectiveLastActiveId}
               />
             )}
           </nav>
@@ -452,11 +455,11 @@ TableOfContents.displayName = "TableOfContents"
 interface NormalTableOfContentsListProps {
   items: TOCItem[]
   visibleIds?: string[]
-  lastActiveIdRef?: React.MutableRefObject<string | null>
+  lastActiveId?: string | null
 }
 
 const NormalTableOfContentsList = React.memo(
-  ({ items, visibleIds = [], lastActiveIdRef }: NormalTableOfContentsListProps) => {
+  ({ items, visibleIds = [], lastActiveId }: NormalTableOfContentsListProps) => {
     const containerRef = useRef<HTMLDivElement>(null)
 
     // Flatten items for normal variant
@@ -474,23 +477,21 @@ const NormalTableOfContentsList = React.memo(
       return flatten(items)
     }, [items])
 
-    // Calculate which items should be highlighted (use lastActiveIdRef as fallback)
+    // Calculate which items should be highlighted (use lastActiveId as fallback)
     const highlightedIds = React.useMemo(() => {
-      const currentLastActiveId = lastActiveIdRef?.current
-
       if (visibleIds.length > 0) {
         return new Set(visibleIds)
-      } else if (currentLastActiveId) {
+      } else if (lastActiveId) {
         // Fallback to remembered last active ID when nothing is visible
         // Keep highlighting the last active item until a new one becomes active
-        return new Set([currentLastActiveId])
+        return new Set([lastActiveId])
       }
       return new Set<string>()
-    }, [visibleIds, lastActiveIdRef])
+    }, [visibleIds, lastActiveId])
 
     return (
       <>
-        <NormalThumb containerRef={containerRef} activeIds={visibleIds} lastActiveIdRef={lastActiveIdRef} items={flatItems} />
+        <NormalThumb containerRef={containerRef} activeIds={visibleIds} lastActiveId={lastActiveId} items={flatItems} />
         <div ref={containerRef} className={cn("flex flex-col border-s border-foreground/10")}>
           {flatItems.map((item) => (
             <NormalTableOfContentsItem
@@ -509,11 +510,11 @@ NormalTableOfContentsList.displayName = "NormalTableOfContentsList"
 interface NormalThumbProps {
   containerRef: React.RefObject<HTMLElement | null>
   activeIds: string[]
-  lastActiveIdRef?: React.MutableRefObject<string | null>
+  lastActiveId?: string | null
   items?: TOCItem[]
 }
 
-const NormalThumb = React.memo(({ containerRef, activeIds, lastActiveIdRef, items: _items }: NormalThumbProps) => {
+const NormalThumb = React.memo(({ containerRef, activeIds, lastActiveId, items: _items }: NormalThumbProps) => {
   const thumbRef = useRef<HTMLDivElement>(null)
 
   const updateThumb = React.useCallback((top: number, height: number): void => {
@@ -535,11 +536,11 @@ const NormalThumb = React.memo(({ containerRef, activeIds, lastActiveIdRef, item
       return
     }
 
-    // Determine which IDs to use - activeIds if available, otherwise fallback to lastActiveIdRef
+    // Determine which IDs to use - activeIds if available, otherwise fallback to lastActiveId
     let effectiveActiveIds = activeIds
-    if (activeIds.length === 0 && lastActiveIdRef?.current) {
+    if (activeIds.length === 0 && lastActiveId) {
       // Use last active ID as fallback when nothing is visible
-      effectiveActiveIds = [lastActiveIdRef.current]
+      effectiveActiveIds = [lastActiveId]
     }
 
     if (effectiveActiveIds.length === 0) {
@@ -567,7 +568,7 @@ const NormalThumb = React.memo(({ containerRef, activeIds, lastActiveIdRef, item
     } else {
       updateThumb(upper, lower - upper)
     }
-  }, [containerRef, activeIds, updateThumb, lastActiveIdRef])
+  }, [containerRef, activeIds, updateThumb, lastActiveId])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -660,11 +661,11 @@ interface CircuitThumbProps {
   containerRef: React.RefObject<HTMLElement | null>
   activeIds: string[]
   className?: string
-  lastActiveIdRef?: React.MutableRefObject<string | null>
+  lastActiveId?: string | null
   items?: (TOCItem & { parentId?: string })[]
 }
 
-const CircuitThumb = React.memo(({ containerRef, activeIds, className, lastActiveIdRef, items: _items }: CircuitThumbProps) => {
+const CircuitThumb = React.memo(({ containerRef, activeIds, className, lastActiveId, items: _items }: CircuitThumbProps) => {
   const thumbRef = useRef<HTMLDivElement>(null)
   const [thumbPosition, setThumbPosition] = React.useState<{ top: number; height: number }>({
     top: 0,
@@ -687,11 +688,11 @@ const CircuitThumb = React.memo(({ containerRef, activeIds, className, lastActiv
       return
     }
 
-    // Determine which IDs to use - activeIds if available, otherwise fallback to lastActiveIdRef
+    // Determine which IDs to use - activeIds if available, otherwise fallback to lastActiveId
     let effectiveActiveIds = activeIds
-    if (activeIds.length === 0 && lastActiveIdRef?.current) {
+    if (activeIds.length === 0 && lastActiveId) {
       // Use last active ID as fallback when nothing is visible
-      effectiveActiveIds = [lastActiveIdRef.current]
+      effectiveActiveIds = [lastActiveId]
     }
 
     if (effectiveActiveIds.length === 0) {
@@ -721,7 +722,7 @@ const CircuitThumb = React.memo(({ containerRef, activeIds, className, lastActiv
     } else {
       updateThumb(upper, lower - upper)
     }
-  }, [containerRef, activeIds, updateThumb, lastActiveIdRef])
+  }, [containerRef, activeIds, updateThumb, lastActiveId])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -770,11 +771,11 @@ interface CircuitTableOfContentsListProps {
   items: (TOCItem & { parentId?: string })[]
   activePathIds: Set<string>
   visibleIds?: string[]
-  lastActiveIdRef?: React.MutableRefObject<string | null>
+  lastActiveId?: string | null
 }
 
 const CircuitTableOfContentsList = React.memo(
-  ({ items, activePathIds: _activePathIds, visibleIds = [], lastActiveIdRef }: CircuitTableOfContentsListProps) => {
+  ({ items, activePathIds: _activePathIds, visibleIds = [], lastActiveId }: CircuitTableOfContentsListProps) => {
     const containerRef = useRef<HTMLDivElement>(null)
 
     const [svg, setSvg] = useState<{
@@ -877,17 +878,16 @@ const CircuitTableOfContentsList = React.memo(
                 zIndex: 1,
               }}
             >
-              <CircuitThumb containerRef={containerRef} activeIds={visibleIds} lastActiveIdRef={lastActiveIdRef} items={items} />
+              <CircuitThumb containerRef={containerRef} activeIds={visibleIds} lastActiveId={lastActiveId} items={items} />
             </div>
           </>
         )}
         <div ref={containerRef} className="flex flex-col">
           {items.map((item, i) => {
-            // Calculate if item should be highlighted (use lastActiveIdRef as fallback)
-            const currentLastActiveId = lastActiveIdRef?.current
+            // Calculate if item should be highlighted (use lastActiveId as fallback)
             const isHighlighted = visibleIds.length > 0
               ? visibleIds.includes(item.id)
-              : currentLastActiveId === item.id
+              : lastActiveId === item.id
 
             return (
               <CircuitTableOfContentsItem
@@ -1017,7 +1017,7 @@ interface ClerkThumbProps {
   items: (TOCItem & { parentId?: string })[]
   className?: string
   onCircleYChange?: (y: number) => void
-  lastActiveIdRef?: React.MutableRefObject<string | null>
+  lastActiveId?: string | null
 }
 
 interface ClerkThumbCircleProps {
@@ -1026,7 +1026,7 @@ interface ClerkThumbCircleProps {
   opacity: number
 }
 
-const ClerkThumb = React.memo(({ containerRef, activeIds, items, className, onCircleYChange, lastActiveIdRef }: ClerkThumbProps) => {
+const ClerkThumb = React.memo(({ containerRef, activeIds, items, className, onCircleYChange, lastActiveId }: ClerkThumbProps) => {
   const thumbRef = useRef<HTMLDivElement>(null)
   const [thumbPosition, setThumbPosition] = React.useState<{ top: number; height: number; circleY: number }>({
     top: 0,
@@ -1051,11 +1051,11 @@ const ClerkThumb = React.memo(({ containerRef, activeIds, items, className, onCi
       return
     }
 
-    // Determine which IDs to use - activeIds if available, otherwise fallback to lastActiveIdRef
+    // Determine which IDs to use - activeIds if available, otherwise fallback to lastActiveId
     let effectiveActiveIds = activeIds
-    if (activeIds.length === 0 && lastActiveIdRef?.current) {
+    if (activeIds.length === 0 && lastActiveId) {
       // Use last active ID as fallback when nothing is visible
-      effectiveActiveIds = [lastActiveIdRef.current]
+      effectiveActiveIds = [lastActiveId]
     }
 
     if (effectiveActiveIds.length === 0) {
@@ -1107,7 +1107,7 @@ const ClerkThumb = React.memo(({ containerRef, activeIds, items, className, onCi
     // Thumb fills from top (lineStart) to center of last active item
     const height = lastItemCenter - lineStart
     updateThumb(lineStart, Math.max(0, height), lastItemCenter)
-  }, [containerRef, activeIds, items, updateThumb, lastActiveIdRef])
+  }, [containerRef, activeIds, items, updateThumb, lastActiveId])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -1169,11 +1169,11 @@ interface ClerkTableOfContentsListProps {
   items: (TOCItem & { parentId?: string })[]
   activePathIds: Set<string>
   visibleIds?: string[]
-  lastActiveIdRef?: React.MutableRefObject<string | null>
+  lastActiveId?: string | null
 }
 
 const ClerkTableOfContentsList = React.memo(
-  ({ items, activePathIds: _activePathIds, visibleIds = [], lastActiveIdRef }: ClerkTableOfContentsListProps) => {
+  ({ items, activePathIds: _activePathIds, visibleIds = [], lastActiveId }: ClerkTableOfContentsListProps) => {
     const containerRef = useRef<HTMLDivElement>(null)
 
     const [svg, setSvg] = useState<{
@@ -1187,9 +1187,6 @@ const ClerkTableOfContentsList = React.memo(
 
     // Calculate which items should be highlighted (from first item to last active item)
     const highlightedIds = React.useMemo(() => {
-      // Use ref value for immediate access (avoids state update delays)
-      const currentLastActiveId = lastActiveIdRef?.current
-
       // Determine which ID to use for highlighting
       let targetId: string | null = null
 
@@ -1204,9 +1201,9 @@ const ClerkTableOfContentsList = React.memo(
         if (lastActiveIndex >= 0) {
           targetId = items[lastActiveIndex].id
         }
-      } else if (currentLastActiveId) {
+      } else if (lastActiveId) {
         // Fallback to remembered last active ID when nothing is visible
-        targetId = currentLastActiveId
+        targetId = lastActiveId
       }
 
       if (!targetId) {
@@ -1226,7 +1223,7 @@ const ClerkTableOfContentsList = React.memo(
       }
 
       return highlighted
-    }, [items, visibleIds, lastActiveIdRef])
+    }, [items, visibleIds, lastActiveId])
 
     useEffect(() => {
       if (!containerRef.current) return
@@ -1357,7 +1354,7 @@ const ClerkTableOfContentsList = React.memo(
                 containerRef={containerRef}
                 activeIds={visibleIds}
                 items={items}
-                lastActiveIdRef={lastActiveIdRef}
+                lastActiveId={lastActiveId}
                 onCircleYChange={(y) => {
                   setCircleY(y)
                   setCircleOpacity(y > 0 ? 1 : 0)

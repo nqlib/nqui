@@ -1,16 +1,15 @@
 "use client"
 
-import * as React from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  PaintBoardIcon,
-  LayoutIcon,
-  CodeIcon,
-  Add01Icon,
-  Cancel01Icon,
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-} from "@hugeicons/core-free-icons"
+  IconChevronDown,
+  IconChevronUp,
+  IconCode,
+  IconLayout,
+  IconPalette,
+  IconPlus,
+  IconX,
+} from "@/components/icons"
+import * as React from "react"
 import { Keys } from "@/lib/keyboard"
 import { Button, Switch, Label, Slider, Input, Textarea, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, cn, Collapsible, CollapsibleContent, CollapsibleTrigger, ColorPicker } from "./dependencies"
 import { getColorVariables, type ColorVariable, resolveCssVar } from "./utils/css-variable-parser"
@@ -138,7 +137,7 @@ function NumberInput({
             onClick={handleIncrement}
             disabled={num >= max}
           >
-            <HugeiconsIcon icon={ArrowUp01Icon} className="h-2.5 w-2.5" />
+            <IconChevronUp className="h-2.5 w-2.5" />
           </Button>
           <Button
             type="button"
@@ -148,7 +147,7 @@ function NumberInput({
             onClick={handleDecrement}
             disabled={num <= min}
           >
-            <HugeiconsIcon icon={ArrowDown01Icon} className="h-2.5 w-2.5" />
+            <IconChevronDown className="h-2.5 w-2.5" />
           </Button>
         </div>
       </div>
@@ -748,8 +747,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
       {/* Preview Toggle */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <HugeiconsIcon
-            icon={PaintBoardIcon}
+          <IconPalette
             size={16}
             className={cn("h-4 w-4", previewEnabled ? "text-primary" : "text-muted-foreground")}
           />
@@ -781,7 +779,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                   onClick={() => loadCurrentStyles(elementForStyling)}
                   title="Reload current styles from element"
                 >
-                  <HugeiconsIcon icon={LayoutIcon} className="h-3 w-3 mr-0.5" />
+                  <IconLayout className="h-3 w-3 mr-0.5" />
                   Reload
                 </Button>
                 <Button
@@ -817,10 +815,10 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
         <Collapsible open={shadowsOpen} onOpenChange={setShadowsOpen}>
           <CollapsibleTrigger className="w-full flex items-center justify-between p-1.5 rounded hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={LayoutIcon} className="h-3.5 w-3.5 text-muted-foreground" />
+              <IconLayout className="h-3.5 w-3.5 text-muted-foreground" />
               <Label className="text-xs font-medium cursor-pointer">Shadows</Label>
             </div>
-            {shadowsOpen ? <HugeiconsIcon icon={ArrowUp01Icon} className="h-3.5 w-3.5" /> : <HugeiconsIcon icon={ArrowDown01Icon} className="h-3.5 w-3.5" />}
+            {shadowsOpen ? <IconChevronUp className="h-3.5 w-3.5" /> : <IconChevronDown className="h-3.5 w-3.5" />}
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-2 pt-1.5 px-2 pb-2 rounded-md bg-background border border-input shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
             {/* Box Shadow */}
@@ -833,7 +831,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                   className="h-5 px-1.5 text-xs"
                   onClick={addBoxShadow}
                 >
-                  <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                  <IconPlus className="h-3 w-3 mr-0.5" />
                   Add
                 </Button>
               </div>
@@ -847,7 +845,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                       className="h-4 w-4 p-0"
                       onClick={() => removeBoxShadow(shadow.id)}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} className="h-2.5 w-2.5" />
+                      <IconX className="h-2.5 w-2.5" />
                     </Button>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -938,7 +936,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                     }])
                   }}
                 >
-                  <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                  <IconPlus className="h-3 w-3 mr-0.5" />
                   Add
                 </Button>
               </div>
@@ -952,7 +950,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                       className="h-4 w-4 p-0"
                       onClick={() => setTextShadows(textShadows.filter(s => s.id !== ts.id))}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} className="h-2.5 w-2.5" />
+                      <IconX className="h-2.5 w-2.5" />
                     </Button>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -1019,10 +1017,10 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
         <Collapsible open={effectsOpen} onOpenChange={setEffectsOpen}>
           <CollapsibleTrigger className="w-full flex items-center justify-between p-1.5 rounded hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={LayoutIcon} className="h-3.5 w-3.5 text-muted-foreground" />
+              <IconLayout className="h-3.5 w-3.5 text-muted-foreground" />
               <Label className="text-xs font-medium cursor-pointer">Effects</Label>
             </div>
-            {effectsOpen ? <HugeiconsIcon icon={ArrowUp01Icon} className="h-3.5 w-3.5" /> : <HugeiconsIcon icon={ArrowDown01Icon} className="h-3.5 w-3.5" />}
+            {effectsOpen ? <IconChevronUp className="h-3.5 w-3.5" /> : <IconChevronDown className="h-3.5 w-3.5" />}
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1.5 pt-1.5 px-2 pb-2 rounded-md bg-background border border-input shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
             {/* Glow Effect */}
@@ -1042,7 +1040,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                     }])
                   }}
                 >
-                  <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                  <IconPlus className="h-3 w-3 mr-0.5" />
                   Add
                 </Button>
               </div>
@@ -1056,7 +1054,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                       className="h-4 w-4 p-0"
                       onClick={() => setGlows(glows.filter(g => g.id !== glow.id))}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} className="h-2.5 w-2.5" />
+                      <IconX className="h-2.5 w-2.5" />
                     </Button>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
@@ -1111,10 +1109,10 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
         <Collapsible open={colorsOpen} onOpenChange={setColorsOpen}>
           <CollapsibleTrigger className="w-full flex items-center justify-between p-1.5 rounded hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={PaintBoardIcon} className="h-3.5 w-3.5 text-muted-foreground" />
+              <IconPalette className="h-3.5 w-3.5 text-muted-foreground" />
               <Label className="text-xs font-medium cursor-pointer">Colors</Label>
             </div>
-            {colorsOpen ? <HugeiconsIcon icon={ArrowUp01Icon} className="h-3.5 w-3.5" /> : <HugeiconsIcon icon={ArrowDown01Icon} className="h-3.5 w-3.5" />}
+            {colorsOpen ? <IconChevronUp className="h-3.5 w-3.5" /> : <IconChevronDown className="h-3.5 w-3.5" />}
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1.5 pt-1.5 px-2 pb-2 rounded-md bg-background border border-input shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
             {/* Background Layers */}
@@ -1136,7 +1134,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                     }}
                     title="Add color layer"
                   >
-                    <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                    <IconPlus className="h-3 w-3 mr-0.5" />
                     Color
                   </Button>
                   <Button
@@ -1152,7 +1150,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                     }}
                     title="Add gradient layer"
                   >
-                    <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                    <IconPlus className="h-3 w-3 mr-0.5" />
                     Gradient
                   </Button>
                 </div>
@@ -1169,7 +1167,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                       className="h-4 w-4 p-0"
                       onClick={() => setBackgroundLayers(backgroundLayers.filter(b => b.id !== bg.id))}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} className="h-2.5 w-2.5" />
+                      <IconX className="h-2.5 w-2.5" />
                     </Button>
                   </div>
                   {bg.type === "color" ? (
@@ -1249,10 +1247,10 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
         <Collapsible open={borderOpen} onOpenChange={setBorderOpen}>
           <CollapsibleTrigger className="w-full flex items-center justify-between p-1.5 rounded hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={LayoutIcon} className="h-3.5 w-3.5 text-muted-foreground" />
+              <IconLayout className="h-3.5 w-3.5 text-muted-foreground" />
               <Label className="text-xs font-medium cursor-pointer">Border</Label>
             </div>
-            {borderOpen ? <HugeiconsIcon icon={ArrowUp01Icon} className="h-3.5 w-3.5" /> : <HugeiconsIcon icon={ArrowDown01Icon} className="h-3.5 w-3.5" />}
+            {borderOpen ? <IconChevronUp className="h-3.5 w-3.5" /> : <IconChevronDown className="h-3.5 w-3.5" />}
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1.5 pt-1.5 px-2 pb-2 rounded-md bg-background border border-input shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
             <div className="space-y-1.5">
@@ -1274,7 +1272,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                     }}
                     title="Add border layer"
                   >
-                    <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                    <IconPlus className="h-3 w-3 mr-0.5" />
                     Border
                   </Button>
                   <Button
@@ -1292,7 +1290,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                     }}
                     title="Add outline layer"
                   >
-                    <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-0.5" />
+                    <IconPlus className="h-3 w-3 mr-0.5" />
                     Outline
                   </Button>
                 </div>
@@ -1309,7 +1307,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
                       className="h-4 w-4 p-0"
                       onClick={() => setBorderLayers(borderLayers.filter(b => b.id !== border.id))}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} className="h-2.5 w-2.5" />
+                      <IconX className="h-2.5 w-2.5" />
                     </Button>
                   </div>
                   <div className="grid grid-cols-3 gap-1.5 items-start">
@@ -1362,10 +1360,10 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
         <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
           <CollapsibleTrigger className="w-full flex items-center justify-between p-1.5 rounded hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={CodeIcon} className="h-3.5 w-3.5 text-muted-foreground" />
+              <IconCode className="h-3.5 w-3.5 text-muted-foreground" />
               <Label className="text-xs font-medium cursor-pointer">Advanced</Label>
             </div>
-            {advancedOpen ? <HugeiconsIcon icon={ArrowUp01Icon} className="h-3.5 w-3.5" /> : <HugeiconsIcon icon={ArrowDown01Icon} className="h-3.5 w-3.5" />}
+            {advancedOpen ? <IconChevronUp className="h-3.5 w-3.5" /> : <IconChevronDown className="h-3.5 w-3.5" />}
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1.5 pt-1.5 px-2 pb-2 rounded-md bg-background border border-input shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]">
             {/* Custom CSS */}
@@ -1390,7 +1388,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
           className="flex-1 text-xs h-7"
           onClick={resetAll}
         >
-          <HugeiconsIcon icon={LayoutIcon} className="h-3 w-3 mr-1" />
+          <IconLayout className="h-3 w-3 mr-1" />
           Reset
         </Button>
         <Button
@@ -1399,7 +1397,7 @@ export function UITester({ enabled, selectedElement, onElementSelect, onElementH
           className="flex-1 text-xs h-7"
           onClick={exportCss}
         >
-          <HugeiconsIcon icon={CodeIcon} className="h-3 w-3 mr-1" />
+          <IconCode className="h-3 w-3 mr-1" />
           Export CSS
         </Button>
       </div>

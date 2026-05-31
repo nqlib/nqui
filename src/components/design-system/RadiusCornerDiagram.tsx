@@ -31,17 +31,17 @@ export function RadiusCornerDiagram({
   className,
 }: RadiusCornerDiagramProps) {
   const ref = React.useRef<HTMLDivElement>(null)
-  const [resolvedPx, setResolvedPx] = React.useState<number | null>(
-    typeof radius === "number" ? radius : null
-  )
 
-  React.useEffect(() => {
-    if (typeof radius === "number") return
+  const resolvedPx = React.useMemo(() => {
+    if (typeof radius === "number") {
+      return radius
+    }
+    if (typeof window === "undefined") {
+      return null
+    }
     const varName = radius.startsWith("--") ? radius : `--${radius}`
-    const root = document.documentElement
-    const rootStyle = getComputedStyle(root)
-    const resolved = rootStyle.getPropertyValue(varName).trim()
-    if (resolved) setResolvedPx(parseRadiusToPx(resolved))
+    const resolved = getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+    return resolved ? parseRadiusToPx(resolved) : null
   }, [radius])
 
   const r = typeof radius === "number" ? radius : resolvedPx ?? 8

@@ -59,8 +59,8 @@ Then **manually** add the nqui CSS import to your main CSS file (see [Step 2: Se
 ### Option B: Step by step
 
 ```bash
-# 1. Install nqui + minimal deps (or use install-peers for full)
-npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+# 1. Install nqui (or use install-peers for optional feature deps)
+npm install @nqlib/nqui
 # or: npx @nqlib/nqui install-peers
 
 # 2. Cursor rules + nqui-skills
@@ -86,11 +86,13 @@ npx @nqlib/nqui init-css --sidebar
 
 ## Step 1: Install nqui + peers
 
-**Minimal (icons required for most components):**
+**Minimal:**
 
 ```bash
-npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+npm install @nqlib/nqui
 ```
+
+Icons are bundled as inline SVG in nqui components.
 
 **Full (all optional peers for Sortable, Carousel, DataTable, Calendar, etc.):**
 

@@ -15,10 +15,10 @@ A React component library with enhanced UI components and developer tools. Built
 Install the published package from [npm](https://www.npmjs.com/package/@nqlib/nqui):
 
 ```bash
-npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+npm install @nqlib/nqui
 ```
 
-Hugeicons is required for icons in components (Button, Accordion, Select, etc.).
+Icons ship as bundled inline SVG in components — no separate icon package required.
 
 **All optional peers** (Sortable, Carousel, DataTable, Calendar, etc.):
 
@@ -77,7 +77,7 @@ Then add `@import "@nqlib/nqui/styles";` (or your framework’s full CSS snippet
 **Option B — step by step:**
 
 ```bash
-npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+npm install @nqlib/nqui
 # optional: npx @nqlib/nqui install-peers
 
 npx @nqlib/nqui init-cursor

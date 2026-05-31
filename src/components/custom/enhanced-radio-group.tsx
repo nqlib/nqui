@@ -1,11 +1,12 @@
 "use client"
 
+import {
+  IconCircle,
+} from "@/components/icons"
 import * as React from "react"
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
 import { createContext, useContext, useId } from "react"
 import { cn } from "@/lib/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { CircleIcon } from "@hugeicons/core-free-icons"
 
 // Context for variant and state propagation
 interface RadioGroupContextValue {
@@ -414,8 +415,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
             data-slot="radio-group-indicator"
             className="group-aria-invalid/radio-group-item:text-destructive flex size-4 items-center justify-center text-primary-foreground"
           >
-            <HugeiconsIcon
-              icon={CircleIcon}
+            <IconCircle
               strokeWidth={2}
               className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-current"
             />
@@ -505,8 +505,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
           data-slot="radio-group-indicator"
           className="group-aria-invalid/radio-group-item:text-destructive flex size-4 items-center justify-center text-primary-foreground"
         >
-          <HugeiconsIcon
-            icon={CircleIcon}
+          <IconCircle
             strokeWidth={2}
             className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-current"
           />

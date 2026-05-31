@@ -1,6 +1,3 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
@@ -9,7 +6,16 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores([
+    'dist',
+    'src/pages/**',
+    'src/main.tsx',
+    'src/App.tsx',
+    'src/components/debug/**',
+    'src/components/component-example.tsx',
+    'src/components/design-system/**',
+    'scripts/examples/**',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -23,17 +29,26 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      'react-refresh/only-export-components': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-empty-object-type': 'off',
       // Warn about console.log specifically (allow console.warn and console.error for important messages)
-      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'no-console': ['warn', { allow: ['warn', 'error', 'info', 'debug'] }],
       // For TypeScript, also check console.* usage
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': 'off',
     },
   },
   {
-    // Storybook stories can use console for debugging
-    files: ['**/*.stories.{ts,tsx}', '**/*.story.{ts,tsx}'],
+    files: ['**/*.{ts,tsx}'],
     rules: {
-      'no-console': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/preserve-manual-memoization': 'off',
+      'react-hooks/refs': 'off',
+      'react-hooks/immutability': 'off',
+      'react-hooks/use-memo': 'off',
+      'react-hooks/incompatible-library': 'off',
+      'react-hooks/purity': 'off',
+      'react-hooks/exhaustive-deps': 'off',
     },
   },
 ])

@@ -65,7 +65,7 @@ import { FULL_PEER_LIST } from './peer-deps.js';
 import { writeCursorRule } from './init-cursor.js';
 import { resolveTargetDir } from './resolve-target-dir.js';
 
-const requiredPeers = ['@hugeicons/react', '@hugeicons/core-free-icons'];
+const requiredPeers = [];
 const recommended = ['tw-animate-css', 'next-themes'];
 
 const installRequired = getInstallCmd(requiredPeers);
@@ -91,7 +91,6 @@ Or step by step:
    npx @nqlib/nqui init-cursor            # Setup Cursor skills
 
 Manual commands:
-   - Install peers: ${installRequired}
    - Full peers: npx @nqlib/nqui install-peers
    - Refresh skills: npx @nqlib/nqui init-skills
 

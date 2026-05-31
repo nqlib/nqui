@@ -254,7 +254,7 @@ const Rating = React.forwardRef<
     const ratingContent = (
       <fieldset
         ref={fieldsetRef}
-        className={cn("rating-wrapper", disabled && "opacity-50", className)}
+        className={cn("rating-wrapper", starSize, disabled && "opacity-50", className)}
         disabled={disabled}
         role="radiogroup"
         aria-label={`Rating: ${currentValue} out of ${maxRating} stars`}

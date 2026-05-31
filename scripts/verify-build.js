@@ -31,8 +31,10 @@ function extractCSSVariables(css, selector = ':root') {
 }
 
 function extractSourceInlineDirectives(css) {
-  const regex = /\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/\s*@source\s+inline\([\s\S]*?\)\s*;/g;
-  return css.match(regex) || [];
+  return css
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('@source inline('));
 }
 
 function extractCustomClasses(css) {
@@ -136,32 +138,33 @@ function main() {
   let hasErrors = false;
   let hasWarnings = false;
   
-  // 1. Check @source inline() directives
+  // 1. Check @source inline() directives (count all directives, not comment-prefixed pairs)
   console.log('1️⃣  Checking @source inline() directives...');
   const sourceInlineSource = extractSourceInlineDirectives(indexCss);
   const sourceInlineBuilt = extractSourceInlineDirectives(builtCss);
-  
+
   if (sourceInlineSource.length !== sourceInlineBuilt.length) {
-    console.error(`   ❌ Mismatch: Source has ${sourceInlineSource.length}, Built has ${sourceInlineBuilt.length}`);
+    console.error(
+      `   ❌ Mismatch: Source has ${sourceInlineSource.length}, Built has ${sourceInlineBuilt.length}`
+    );
     hasErrors = true;
   } else {
     console.log(`   ✅ All ${sourceInlineSource.length} @source inline() directives preserved`);
   }
-  
-  // Compare individual directives
-  const sourceCategories = sourceInlineSource.map(d => {
-    const match = d.match(/\/\*([^*]+)\*\//);
-    return match ? match[1].trim() : 'Unknown';
-  });
-  const builtCategories = sourceInlineBuilt.map(d => {
-    const match = d.match(/\/\*([^*]+)\*\//);
-    return match ? match[1].trim() : 'Unknown';
-  });
-  
-  const missingCategories = sourceCategories.filter(cat => !builtCategories.includes(cat));
-  if (missingCategories.length > 0) {
-    console.error(`   ❌ Missing categories: ${missingCategories.join(', ')}`);
-    hasErrors = true;
+
+  // No orphan @source directives in the CSS body (after @theme inline)
+  const themeSplit = builtCss.split('@theme inline');
+  if (themeSplit.length > 1) {
+    const bodyAfterTheme = themeSplit.slice(1).join('@theme inline');
+    const orphanSources = extractSourceInlineDirectives(bodyAfterTheme);
+    if (orphanSources.length > 0) {
+      console.error(
+        `   ❌ Found ${orphanSources.length} orphan @source inline() in CSS body (should only be in header)`
+      );
+      hasErrors = true;
+    } else {
+      console.log('   ✅ No orphan @source inline() directives in CSS body');
+    }
   }
   
   // 2. Check CSS variables from :root

@@ -3,10 +3,7 @@
  * Used by install-peers.js and init-cursor.js.
  */
 
-export const REQUIRED_PEERS = [
-  '@hugeicons/react',
-  '@hugeicons/core-free-icons',
-];
+export const REQUIRED_PEERS = [];
 
 export const OPTIONAL_PEERS = [
   'cmdk',

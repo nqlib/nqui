@@ -29,7 +29,7 @@ If both answers are yes, externalize it.
 2. Add to `package.json`:
    - `peerDependencies`: `"package-name": "^x.y.0"`
    - `peerDependenciesMeta`: `"package-name": { "optional": true }`
-3. Keep in `dependencies` if the nqui dev app (showcase, Storybook) needs it.
+3. Keep in `dependencies` if the nqui dev app (showcase) needs it.
 4. Document in `internal-notes/PEER_DEPENDENCIES.md` which component(s) require it.
 
 ## Avoid Bundling

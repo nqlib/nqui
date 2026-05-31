@@ -19,7 +19,8 @@ describe('cn', () => {
   })
 
   it('handles falsy values', () => {
-    const result = cn('base', false && 'false', null, undefined, 0)
+    const includeFalse = false
+    const result = cn('base', includeFalse && 'false', null, undefined, 0)
     expect(result).toBe('base')
   })
 })

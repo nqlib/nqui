@@ -64,7 +64,8 @@
     --primary: var(--primary-500);
     --primary-foreground: oklch(0.98 0 0);
     --primary-hover: var(--primary-400);
-    --ring: var(--primary-500);
+    /* Focus ring — neutral, not brand primary. Matches hover calm; primary stays for actions/selection. */
+    --ring: oklch(0.5576 0.0222 57.81);
 
     --success: var(--success-500);
     --success-foreground: oklch(0.98 0 0);
@@ -145,7 +146,8 @@
     --primary: var(--primary-500);
     --primary-foreground: oklch(0.92 0 0);
     --primary-hover: var(--primary-400);
-    --ring: var(--primary-500);
+    /* Focus ring — neutral gray, visible on dark surfaces without neon primary halo. */
+    --ring: oklch(0.708 0 0);
 
     /* Semantic Colors - Mapped to color scales */
     --success: var(--success-500);

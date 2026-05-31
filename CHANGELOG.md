@@ -7,16 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- **InlineTabsList** — Horizontal overflow uses nqui **ScrollArea** with `hideScrollbar` instead of native `overflow-x-auto`.
-- **ScrollArea** — Scrollbar track width increased from 6px to 8px; thumb gets a minimum grab size for easier dragging.
-
-## [0.6.3] - 2026-05-20
+## [0.6.3] - 2026-05-31
 
 ### Added
 
 - **Inline tabs** — `InlineTabsList`, `InlineTabsTrigger`, `inlineTabsListClass`, `inlineTabsTriggerClass`, `inlineTabsPanelsClass` for pill tabs inside page-level scrollers. Preserves scroll position and tab-bar viewport anchor when switching tabs (Radix focus scroll + short panel collapse). See `docs/components/nqui-tabs.md`.
+- **Bundled SVG icons** — Core UI icons ship as inline SVG in `@nqlib/nqui`; no separate icon peer dependency required.
+
+### Changed
+
+- **InlineTabsList** — Horizontal overflow uses nqui **ScrollArea** with `hideScrollbar` instead of native `overflow-x-auto`.
+- **ScrollArea** — Scrollbar track width increased from 6px to 8px; thumb gets a minimum grab size for easier dragging.
+- **Showcase app** — Single icon-rail sidebar; removed nested TOC panel. Use ⌘K command palette or in-page TOC on long routes.
+- **Dev tooling** — Removed Storybook; Vite showcase (`pnpm dev`) is the component catalog.
+
+### Removed
+
+- **Storybook** — `.storybook/`, `src/stories/`, and related devDependencies/scripts.
+- **Hugeicons peer dependency** — `@hugeicons/react` and `@hugeicons/core-free-icons` are no longer required peers. Library components use bundled SVG. Install Hugeicons (or another icon library) only for app-level icons in your project.
 
 ## [0.6.2] - 2026-05-18
 

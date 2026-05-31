@@ -10,3 +10,4 @@ dist-ssr
 .DS_Store
 test-results
 .cursor/nqui-skills/
+.cursor/nqui-skills.backup/

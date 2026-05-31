@@ -188,7 +188,7 @@ Components: `Dialog`, `Field`, `Input`, `Select`, `Button`.
 | Mode | Question it answers | Where in the dev app |
 |------|---------------------|----------------------|
 | **Recipes** | How do I build a real screen? | `/`, `/patterns`, `/recipes/settings` |
-| **Catalog** | What props/variants exist? | `/catalog` (+ Storybook) |
+| **Catalog** | What props/variants exist? | `/catalog` |
 | **Tokens** | What are the colors, radius, type? | `/design-system` |
 
 **Rule:** Product work starts in **Recipes**. Use **Catalog** to look up a single component. Use **Tokens** when theming.
@@ -291,7 +291,7 @@ Scroll: custom main scroll container — see `README.md` → Layout & Scroll Pat
 
 | Anti-pattern | Fix |
 |--------------|-----|
-| Card grid of every component | Catalog route or Storybook |
+| Card grid of every component | Catalog route |
 | Fake KPI cards (12,345 users) on a reference page | Real metrics only in product demos |
 | Mail-app nav for a component library | Task-based nav (Recipes / Catalog) |
 | Command palette items that don’t navigate | Wire only real routes |

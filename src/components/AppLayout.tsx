@@ -281,7 +281,13 @@ function CommandPaletteContent() {
 
 export function AppLayout() {
   return (
-    <SidebarProvider>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "var(--sidebar-width-icon)",
+        } as React.CSSProperties
+      }
+    >
       <AppLayoutContent />
       <CommandPaletteContent />
       <DebugPanel />

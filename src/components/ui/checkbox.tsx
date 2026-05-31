@@ -1,10 +1,11 @@
 "use client"
 
+import {
+  IconCheck,
+} from "@/components/icons"
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 import { Checkbox as RadixCheckbox } from "radix-ui"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Tick02Icon } from "@hugeicons/core-free-icons"
 import { cva, type VariantProps } from "class-variance-authority"
 import { useId } from "react"
 
@@ -201,7 +202,7 @@ const Checkbox = React.forwardRef<
       {...props}
     >
       <CheckboxPrimitive.Indicator className={cn("grid place-content-center text-current")}>
-        <HugeiconsIcon icon={Tick02Icon} size={16} className="h-4 w-4" />
+        <IconCheck size={16} className="h-4 w-4" />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   )

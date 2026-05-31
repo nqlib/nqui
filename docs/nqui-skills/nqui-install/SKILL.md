@@ -11,13 +11,15 @@ description: Install and setup @nqlib/nqui. Use when the user wants to install n
 
 ## 1. Install nqui + peers
 
-**Minimal (icons only):**
+**Minimal:**
 
 ```bash
-pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+pnpm add @nqlib/nqui
 ```
 
-(npm: `npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons`)
+(npm: `npm install @nqlib/nqui`)
+
+Icons ship bundled in nqui components — no separate icon peer required.
 
 **Full (all optional components):**
 
@@ -28,7 +30,7 @@ npx @nqlib/nqui install-peers
 Or manually:
 
 ```bash
-pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels
+pnpm add @nqlib/nqui cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels
 ```
 
 ## 2. Setup CSS (required)

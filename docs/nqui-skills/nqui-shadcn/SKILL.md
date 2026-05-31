@@ -77,7 +77,7 @@ These rules are **always enforced**. Each links to a file with Incorrect/Correct
 
 - **Icons in `Button` use `data-icon`.** `data-icon="inline-start"` or `data-icon="inline-end"` on the icon.
 - **No sizing classes on icons inside components.** Components handle icon sizing via CSS. No `size-4` or `w-4 h-4`.
-- **Use Hugeicons.** Import from `@hugeicons/react` or `@hugeicons/core-free-icons`.
+- **Icons:** Bundled inline SVG in library components. App-level icons: use any library (see `rules/icons.md`).
 
 ## Key Patterns
 
@@ -161,4 +161,4 @@ import { Button, Card } from "@/components/ui/..."
 - [rules/styling.md](./rules/styling.md) — Semantic colors, variants, className, spacing, size, truncate, dark mode, cn(), z-index
 - [rules/forms.md](./rules/forms.md) — FieldGroup, Field, InputGroup, ToggleGroup, FieldSet, validation states
 - [rules/composition.md](./rules/composition.md) — Groups, overlays, Card, Tabs, Avatar, Alert, Empty, Toast, Separator, Skeleton, Badge, Button loading
-- [rules/icons.md](./rules/icons.md) — data-icon, icon sizing, Hugeicons
+- [rules/icons.md](./rules/icons.md) — data-icon, icon sizing, bundled SVG

@@ -67,9 +67,6 @@ export default defineConfig(({ mode }) => {
             "sonner",
             "vaul",
             "react-resizable-panels",
-            // Icons - externalize to reduce bundle size
-            "@hugeicons/react",
-            "@hugeicons/core-free-icons",
           ],
           output: {
             globals: {

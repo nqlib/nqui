@@ -1,12 +1,11 @@
 "use client"
 
+import {
+  IconChevronDown,
+  IconPalette,
+} from "@/components/icons"
 import * as React from "react"
 import { useTheme } from "next-themes"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  ArrowDown01Icon,
-  PaintBoardIcon,
-} from "@hugeicons/core-free-icons"
 
 import { EnhancedButton as Button } from "./ui/button"
 import {
@@ -50,15 +49,13 @@ export function ThemeAppearanceMenu({
           className="gap-1.5 px-2"
           aria-label="Choose color theme"
         >
-          <HugeiconsIcon
-            icon={PaintBoardIcon}
+          <IconPalette
             strokeWidth={2}
             size={16}
             className="opacity-80"
           />
           <span className="hidden sm:inline">{label}</span>
-          <HugeiconsIcon
-            icon={ArrowDown01Icon}
+          <IconChevronDown
             strokeWidth={2}
             size={14}
             className="opacity-70"

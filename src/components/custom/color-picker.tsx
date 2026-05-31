@@ -1,12 +1,14 @@
 "use client"
 
+import {
+  IconCheck,
+  IconCopy,
+} from "@/components/icons"
 import * as React from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/index"
 import { Button } from "@/index"
 import { ColorSlider } from "./color-slider"
 import { cn } from "@/lib/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Copy01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 
 export interface ColorPickerProps {
   value?: string // OKLCH string (e.g., "oklch(0.75 0.15 240)")
@@ -237,7 +239,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
                 className="h-8 w-8 p-0"
                 onClick={() => copyToClipboard(oklchColor, 'oklch')}
               >
-                {copiedFormat === 'oklch' ? <HugeiconsIcon icon={Tick02Icon} size={12} className="w-3 h-3 text-success-foreground" /> : <HugeiconsIcon icon={Copy01Icon} size={12} className="w-3 h-3" />}
+                {copiedFormat === 'oklch' ? <IconCheck size={12} className="w-3 h-3 text-success-foreground" /> : <IconCopy size={12} className="w-3 h-3" />}
               </Button>
             </div>
           </div>
@@ -258,7 +260,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
                 className="h-8 w-8 p-0"
                 onClick={() => copyToClipboard(hexColor, 'hex')}
               >
-                {copiedFormat === 'hex' ? <HugeiconsIcon icon={Tick02Icon} size={12} className="w-3 h-3 text-success-foreground" /> : <HugeiconsIcon icon={Copy01Icon} size={12} className="w-3 h-3" />}
+                {copiedFormat === 'hex' ? <IconCheck size={12} className="w-3 h-3 text-success-foreground" /> : <IconCopy size={12} className="w-3 h-3" />}
               </Button>
             </div>
           </div>
@@ -279,7 +281,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
                 className="h-8 w-8 p-0"
                 onClick={() => copyToClipboard(hslString, 'hsl')}
               >
-                {copiedFormat === 'hsl' ? <HugeiconsIcon icon={Tick02Icon} size={12} className="w-3 h-3 text-success-foreground" /> : <HugeiconsIcon icon={Copy01Icon} size={12} className="w-3 h-3" />}
+                {copiedFormat === 'hsl' ? <IconCheck size={12} className="w-3 h-3 text-success-foreground" /> : <IconCopy size={12} className="w-3 h-3" />}
               </Button>
             </div>
           </div>

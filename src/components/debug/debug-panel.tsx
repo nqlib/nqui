@@ -1,19 +1,18 @@
 "use client"
 
-import * as React from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  EyeIcon,
-  Cancel01Icon,
-  KeyboardIcon,
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  PaintBoardIcon,
-  LayoutIcon,
-  File01Icon,
-  CodeIcon,
-  SettingsIcon,
-} from "@hugeicons/core-free-icons"
+  IconChevronDown,
+  IconChevronUp,
+  IconCode,
+  IconEye,
+  IconFile,
+  IconKeyboard,
+  IconLayout,
+  IconPalette,
+  IconSettings,
+  IconX,
+} from "@/components/icons"
+import * as React from "react"
 // Import all dependencies from the centralized file
 import { Keys, shouldIgnoreKeyboardShortcut } from "@/lib/keyboard"
 import { Button, Switch, Label, Slider, cn, Tabs, TabsList, TabsTrigger, TabsContent, Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "./dependencies"
@@ -664,7 +663,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
           onClick={handleClick}
           title="Debug Tools"
         >
-          <HugeiconsIcon icon={SettingsIcon} className="h-5 w-5" />
+          <IconSettings className="h-5 w-5" />
         </Button>
       )}
 
@@ -695,11 +694,11 @@ export function DebugPanel({ className }: DebugPanelProps) {
             onMouseDown={handlePanelMouseDown}
           >
             <div className="flex items-center gap-2">
-              <HugeiconsIcon icon={SettingsIcon} className="h-5 w-5 text-primary" />
+              <IconSettings className="h-5 w-5 text-primary" />
               <h3 className="font-semibold text-sm">Debug Tools</h3>
             </div>
             <div className="flex items-center gap-1">
-<HugeiconsIcon icon={LayoutIcon}
+<IconLayout
                 className="h-4 w-4 text-muted-foreground"
                 aria-label="Drag to move panel"
               />
@@ -712,7 +711,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   setIsOpen(false);
                 }}
               >
-                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                <IconX className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -730,7 +729,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-<HugeiconsIcon icon={LayoutIcon}
+<IconLayout
                     className={cn(
                       "h-4 w-4",
                       magnifierEnabled ? "text-primary" : "text-muted-foreground"
@@ -752,7 +751,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
             {/* UI Tester Toggle - Always visible */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-<HugeiconsIcon icon={PaintBoardIcon}
+<IconPalette
                   className={cn(
                     "h-4 w-4",
                     uiTesterEnabled ? "text-primary" : "text-muted-foreground"
@@ -785,9 +784,9 @@ export function DebugPanel({ className }: DebugPanelProps) {
               >
                 <span>Other Tools</span>
                 {showOtherTools ? (
-                  <HugeiconsIcon icon={ArrowUp01Icon} className="h-4 w-4" />
+                  <IconChevronUp className="h-4 w-4" />
                 ) : (
-                  <HugeiconsIcon icon={ArrowDown01Icon} className="h-4 w-4" />
+                  <IconChevronDown className="h-4 w-4" />
                 )}
               </div>
               {showOtherTools && (
@@ -796,10 +795,9 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {showHitAreas ? (
-                        <HugeiconsIcon icon={EyeIcon} className="h-4 w-4 text-primary" />
+                        <IconEye className="h-4 w-4 text-primary" />
                       ) : (
-                        <HugeiconsIcon
-                          icon={Cancel01Icon}
+                        <IconX
                           className="h-4 w-4 text-muted-foreground opacity-50"
                         />
                       )}
@@ -818,9 +816,9 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {showBorders ? (
-                        <HugeiconsIcon icon={EyeIcon} className="h-4 w-4 text-primary" />
+                        <IconEye className="h-4 w-4 text-primary" />
                       ) : (
-                        <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4 text-muted-foreground opacity-50" />
+                        <IconX className="h-4 w-4 text-muted-foreground opacity-50" />
                       )}
                       <Label htmlFor="show-borders" className="text-sm cursor-pointer">
                         Show Borders
@@ -837,9 +835,9 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {showShadows ? (
-                        <HugeiconsIcon icon={EyeIcon} className="h-4 w-4 text-primary" />
+                        <IconEye className="h-4 w-4 text-primary" />
                       ) : (
-                        <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4 text-muted-foreground opacity-50" />
+                        <IconX className="h-4 w-4 text-muted-foreground opacity-50" />
                       )}
                       <Label htmlFor="show-shadows" className="text-sm cursor-pointer">
                         Show Shadows
@@ -855,7 +853,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   {/* Show Grid Toggle */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-<HugeiconsIcon icon={LayoutIcon}
+<IconLayout
                         className={cn(
                           "h-4 w-4",
                           showGrid ? "text-primary" : "text-muted-foreground"
@@ -875,8 +873,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   {/* Crosshair Toggle */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <HugeiconsIcon
-                        icon={CodeIcon}
+                      <IconCode
                         size={16}
                         className={cn(
                           "h-4 w-4",
@@ -897,8 +894,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                   {/* Measure Tool Toggle */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <HugeiconsIcon
-                        icon={File01Icon}
+                      <IconFile
                         size={16}
                         className={cn(
                           "h-4 w-4",
@@ -989,7 +985,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                         }
                       }}
                     >
-                      <HugeiconsIcon icon={CodeIcon} className="h-3 w-3 mr-1" />
+                      <IconCode className="h-3 w-3 mr-1" />
                       Copy
                     </Button>
                   </div>
@@ -1039,7 +1035,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
             {/* Keyboard Shortcuts Display */}
             <div className="pt-2 border-t border-border">
               <div className="flex items-center gap-2 mb-2">
-                <HugeiconsIcon icon={KeyboardIcon} className="h-4 w-4 text-muted-foreground" />
+                <IconKeyboard className="h-4 w-4 text-muted-foreground" />
                 <div className="text-xs font-semibold text-foreground">Shortcuts</div>
               </div>
               <div className="space-y-1 text-xs text-muted-foreground">
@@ -1063,7 +1059,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
               {(magnifierEnabled || uiTesterEnabled) && (
                 <div className="flex items-center justify-between pb-2 border-b border-border">
                   <div className="flex items-center gap-2">
-<HugeiconsIcon icon={LayoutIcon}
+<IconLayout
                       className={cn(
                         "h-4 w-4",
                         showElementHighlight ? "text-primary" : "text-muted-foreground"
@@ -1119,7 +1115,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                     <div className="flex items-center gap-2">
                       {lockedElement && (
                         <div className="flex items-center gap-1 text-xs">
-                          <HugeiconsIcon icon={File01Icon} className="h-3 w-3 text-primary" />
+                          <IconFile className="h-3 w-3 text-primary" />
                           <span className="text-primary font-medium">Locked</span>
                         </div>
                       )}
@@ -1131,7 +1127,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                         disabled={!elementInfo && !lockedElement}
                         title={lockedElement ? "Unlock element (Space)" : "Lock element (Space)"}
                       >
-                        <HugeiconsIcon icon={File01Icon} className="h-3 w-3 mr-1" />
+                        <IconFile className="h-3 w-3 mr-1" />
                         {lockedElement ? "Unlock" : "Lock"}
                       </Button>
                     </div>
@@ -1212,7 +1208,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
                               }
                             }}
                           >
-                            <HugeiconsIcon icon={CodeIcon} className="h-3 w-3 mr-1" />
+                            <IconCode className="h-3 w-3 mr-1" />
                             Copy CSS
                           </Button>
                         </div>

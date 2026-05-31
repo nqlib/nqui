@@ -49,9 +49,9 @@ description: Install and setup nqui. Use when user wants to install nqui, set up
 
 **Minimal (icons only):**
 \`\`\`bash
-pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+pnpm add @nqlib/nqui
 \`\`\`
-(npm: \`npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons\`)
+(npm: \`npm install @nqlib/nqui\`)
 
 **Full (all optional components):**
 \`\`\`bash

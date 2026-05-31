@@ -1,16 +1,15 @@
 "use client"
 
+import {
+  IconAlert,
+  IconCheckCircle,
+  IconInfo,
+  IconLoader,
+  IconXCircle,
+} from "@/components/icons"
 import * as React from "react"
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  CheckmarkCircle02Icon,
-  InformationCircleIcon,
-  Alert02Icon,
-  MultiplicationSignCircleIcon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons"
 
 const TOAST_STYLE_ID = "nqui-toast-styles-v2"
 
@@ -88,36 +87,31 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       icons={{
         success: (
-          <HugeiconsIcon
-            icon={CheckmarkCircle02Icon}
+          <IconCheckCircle
             strokeWidth={2}
             className="size-4 text-success toast-icon-success"
           />
         ),
         info: (
-          <HugeiconsIcon
-            icon={InformationCircleIcon}
+          <IconInfo
             strokeWidth={2}
             className="size-4 text-info toast-icon-info"
           />
         ),
         warning: (
-          <HugeiconsIcon
-            icon={Alert02Icon}
+          <IconAlert
             strokeWidth={2}
             className="size-4 text-warning toast-icon-warning"
           />
         ),
         error: (
-          <HugeiconsIcon
-            icon={MultiplicationSignCircleIcon}
+          <IconXCircle
             strokeWidth={2}
             className="size-4 text-destructive toast-icon-error"
           />
         ),
         loading: (
-          <HugeiconsIcon
-            icon={Loading03Icon}
+          <IconLoader
             strokeWidth={2}
             className="size-4 text-primary toast-icon-loading animate-spin"
           />

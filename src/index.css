@@ -61,7 +61,7 @@
 @source inline("group/badge has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 light:aria-invalid:ring-destructive/40 aria-invalid:border-destructive");
 
 /* Hit-area utilities (referenced from TSX / docs; @utility defines behavior) */
-@source inline("hit-area-4 hit-area-6 hit-area-debug");
+@source inline("hit-area-2 hit-area-4 hit-area-6 hit-area-debug");
 
 /* Radix Switch — track + thumb (not picked up by generic bg-* safelist) */
 @source inline("data-[state=checked]:bg-primary data-[state=unchecked]:bg-input data-[state=checked]:text-primary-foreground");

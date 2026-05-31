@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { ColumnDef, Row, Table as TanStackTable } from "@tanstack/react-table"
+import type { CellContext, ColumnDef, Row, Table as TanStackTable } from "@tanstack/react-table"
 import { Checkbox } from "@/index"
 import { Keys } from "@/lib/keyboard"
 import { cn } from "@/lib/utils"
@@ -142,7 +142,7 @@ export function createColumnHelper<TData>() {
       options?: {
         enableSorting?: boolean
         enableFiltering?: boolean
-        cell?: (props: any) => React.ReactNode
+        cell?: (props: CellContext<TData, TValue>) => React.ReactNode
         headerClassName?: string
         cellClassName?: string
       }

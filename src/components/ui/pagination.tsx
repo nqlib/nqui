@@ -1,3 +1,8 @@
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconMoreHorizontalCircle,
+} from "@/components/icons"
 import * as React from "react"
 
 import { ScrollArea } from "@/components/custom/enhanced-scroll-area"
@@ -6,8 +11,6 @@ import { useComposedRefs } from "@/lib/compose-refs"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import type { VariantProps } from "class-variance-authority"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowLeft01Icon, ArrowRight01Icon, MoreHorizontalCircle01Icon } from "@hugeicons/core-free-icons"
 
 // ─── Context ─────────────────────────────────────────────────────────────────
 
@@ -141,7 +144,7 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span"
       )}
       {...props}
     >
-      <HugeiconsIcon icon={MoreHorizontalCircle01Icon} strokeWidth={2} />
+      <IconMoreHorizontalCircle strokeWidth={2} />
       <span className="sr-only">More pages</span>
     </span>
   )
@@ -195,7 +198,7 @@ function PaginationPrevious({ className, ...props }: React.ComponentProps<"a">) 
       aria-disabled={!canGoPrev}
       {...props}
     >
-      <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} />
+      <IconChevronLeft strokeWidth={2} />
       <span className="sr-only">Previous</span>
     </a>
   )
@@ -219,7 +222,7 @@ function PaginationNext({ className, ...props }: React.ComponentProps<"a">) {
       aria-disabled={!canGoNext}
       {...props}
     >
-      <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} />
+      <IconChevronRight strokeWidth={2} />
       <span className="sr-only">Next</span>
     </a>
   )

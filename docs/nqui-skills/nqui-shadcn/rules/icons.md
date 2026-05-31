@@ -1,8 +1,8 @@
 # Icons
 
-nqui uses Hugeicons as its icon library. This document covers how to use icons correctly in nqui components.
+nqui ships icons as **bundled inline SVG** inside library components (Accordion chevrons, Select triggers, Dialog close, etc.). Consumers do not install a separate icon package for core UI.
 
-**Always use Hugeicons** for icons in nqui components. Import from `@hugeicons/react` or `@hugeicons/core-free-icons`.
+For **app-level icons** in your showcase or product UI, use any icon library you prefer (Hugeicons, Lucide, etc.) or copy patterns from `src/components/icons/` in the nqui repo.
 
 ---
 
@@ -14,7 +14,7 @@ Add `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) to 
 
 ```tsx
 <Button>
-  <SearchIcon className="mr-2 size-4" />
+  <IconSearch className="mr-2 size-4" />
   Search
 </Button>
 ```
@@ -22,16 +22,16 @@ Add `data-icon="inline-start"` (prefix) or `data-icon="inline-end"` (suffix) to 
 **Correct:**
 
 ```tsx
-import { SearchIcon } from "@hugeicons/react"
+import { IconSearch } from "@/components/icons"
 
 <Button>
-  <SearchIcon data-icon="inline-start" />
+  <IconSearch data-icon="inline-start" />
   Search
 </Button>
 
 <Button>
   Next
-  <ArrowRightIcon data-icon="inline-end"/>
+  <IconChevronRight data-icon="inline-end"/>
 </Button>
 ```
 
@@ -39,120 +39,29 @@ import { SearchIcon } from "@hugeicons/react"
 
 ## No sizing classes on icons inside components
 
-Components handle icon sizing via CSS. Don't add `size-4`, `w-4 h-4`, or other sizing classes to icons inside `Button`, `DropdownMenuItem`, `Alert`, `Sidebar*`, or other nqui components. Unless the user explicitly asks for custom icon sizes.
-
-**Incorrect:**
-
-```tsx
-<Button>
-  <SearchIcon className="size-4" data-icon="inline-start" />
-  Search
-</Button>
-
-<DropdownMenuItem>
-  <SettingsIcon className="mr-2 size-4" />
-  Settings
-</DropdownMenuItem>
-```
-
-**Correct:**
-
-```tsx
-<Button>
-  <SearchIcon data-icon="inline-start" />
-  Search
-</Button>
-
-<DropdownMenuItem>
-  <SettingsIcon />
-  Settings
-</DropdownMenuItem>
-```
+Components handle icon sizing via CSS. Don't add `size-4`, `w-4 h-4`, or other sizing classes to icons inside `Button`, `DropdownMenuItem`, `Alert`, `Sidebar*`, or other nqui components unless the user explicitly asks for custom icon sizes.
 
 ---
 
-## Importing Hugeicons
+## Library icon module
 
-### Using @hugeicons/react (recommended for React)
-
-```tsx
-import { SearchIcon, SettingsIcon, ArrowRightIcon } from "@hugeicons/react"
-```
-
-### Using @hugeicons/core-free-icons
-
-For tree-shaking individual icons:
+Internal nqui icons live in `src/components/icons/`:
 
 ```tsx
-import { SearchIcon } from "@hugeicons/core-free-icons"
+import { IconSearch, IconChevronRight } from "@/components/icons"
 ```
+
+Each icon accepts `size`, `strokeWidth`, and `className` props and uses `currentColor` for theming.
 
 ---
 
-## Icon Usage Patterns
+## App-level icons (consumer projects)
 
-### Icon with label
+Install your preferred icon library for navigation, marketing, or custom UI:
 
-```tsx
-<Button>
-  <SettingsIcon data-icon="inline-start" />
-  Settings
-</Button>
+```bash
+pnpm add @hugeicons/react @hugeicons/core-free-icons
+# or: pnpm add lucide-react
 ```
 
-### Icon only button
-
-```tsx
-<Button size="icon">
-  <SearchIcon />
-</Button>
-```
-
-### Icon in menu items
-
-```tsx
-<DropdownMenuItem>
-  <SettingsIcon />
-  Settings
-</DropdownMenuItem>
-
-<DropdownMenuItem>
-  <UserIcon />
-  Profile
-</DropdownMenuItem>
-```
-
-### Icon in form controls
-
-```tsx
-<InputGroup>
-  <InputGroupAddon>
-    <SearchIcon />
-  </InputGroupAddon>
-  <InputGroupInput placeholder="Search..." />
-</InputGroup>
-```
-
----
-
-## Migrating from other icon libraries
-
-If you have existing code using other icon libraries (e.g., lucide-react), replace imports:
-
-```tsx
-// Before (lucide-react)
-import { Search, Settings } from "lucide-react"
-
-// After (Hugeicons)
-import { SearchIcon, SettingsIcon } from "@hugeicons/react"
-```
-
-Then add the `data-icon` attribute to icons used in buttons:
-
-```tsx
-// Before
-<Button><Search /> Search</Button>
-
-// After
-<Button><SearchIcon data-icon="inline-start" /> Search</Button>
-```
+nqui component internals do not depend on these packages.

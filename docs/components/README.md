@@ -30,7 +30,6 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 | **Tailwind CSS** | ^4.x | Required. Vite: `@tailwindcss/vite`. Both Vite and Next.js need `@source` for `node_modules/@nqlib/nqui/dist` (Tailwind does not scan node_modules). |
 | **tw-animate-css** | — | `@import "tw-animate-css"` in your CSS (added by init-css). |
 | **Radix UI** | — | Bundled (Dialog, Select, etc.). |
-| **Hugeicons** | @hugeicons/react, @hugeicons/core-free-icons | Required for icon display in components. |
 
 **Optional peers** (per component): `react-day-picker` (Calendar), `sonner` (Toaster), `react-resizable-panels` (Resizable), `@tanstack/react-table` (DataTable). **Code display** (CodeBlock, Snippet, etc.): use `@nqlib/nqcode` with `shiki`, `@shikijs/transformers`.
 

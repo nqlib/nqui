@@ -75,6 +75,48 @@ function mergeRootSections(...sections) {
   return sections.filter(Boolean).join('\n\n    ');
 }
 
+/** Extract every @source inline() from index.css and return formatted header + stripped body. */
+function extractAndStripSourceInline(indexCss) {
+  const lines = indexCss.split('\n');
+  const extracted = [];
+  let pendingComment = '';
+  const bodyLines = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (/^\/\*[\s\S]*\*\/$/.test(trimmed)) {
+      pendingComment = trimmed;
+      continue;
+    }
+
+    if (trimmed.startsWith('@source inline(')) {
+      extracted.push({
+        comment: pendingComment,
+        line: trimmed,
+      });
+      pendingComment = '';
+      continue;
+    }
+
+    if (pendingComment) {
+      bodyLines.push(pendingComment);
+      pendingComment = '';
+    }
+    bodyLines.push(line);
+  }
+
+  if (pendingComment) {
+    bodyLines.push(pendingComment);
+  }
+
+  const sourceInlineDirectives = extracted
+    .map(({ comment, line }) => (comment ? `${comment}\n${line}` : line))
+    .join('\n\n');
+
+  return { sourceInlineDirectives, indexCss: bodyLines.join('\n') };
+}
+
 function extractStandaloneCSS() {
   if (!existsSync(indexCssPath)) {
     throw new Error(`Source CSS file not found: ${indexCssPath}`);
@@ -108,31 +150,10 @@ function extractStandaloneCSS() {
     .filter(Boolean)
     .join('\n\n');
 
-  // Extract @source inline() directives BEFORE stripping index.css
-  const sourceInlineRegex =
-    /\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/\s*@source\s+inline\("[^"]*"\)\s*;/g;
-  const sourceInlineMatches = indexCss.match(sourceInlineRegex) || [];
-
-  const sourceInlineDirectives = sourceInlineMatches
-    .map((directive) => {
-      const commentMatch = directive.match(/(\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)/);
-      const comment = commentMatch ? commentMatch[1] : '';
-
-      const classRegex = /"([^"]+)"/g;
-      const classes = [];
-      let match;
-      while ((match = classRegex.exec(directive)) !== null) {
-        classes.push(match[1]);
-      }
-
-      if (classes.length > 0) {
-        const formatted = `@source inline("${classes.join(' ')}");`;
-        return comment ? `${comment}\n${formatted}` : formatted;
-      }
-
-      return directive;
-    })
-    .join('\n\n');
+  // Extract all @source inline() directives BEFORE stripping index.css
+  const { sourceInlineDirectives, indexCss: strippedIndexCss } =
+    extractAndStripSourceInline(indexCss);
+  indexCss = strippedIndexCss;
 
   indexCss = indexCss
     .replace(/@import\s+["']tailwindcss["'];?\s*\n/g, '')
@@ -141,7 +162,6 @@ function extractStandaloneCSS() {
     .replace(/@import\s+["']@fontsource-variable\/inter["'];?\s*\n/g, '')
     .replace(/@import\s+["']\.\/styles\/[^"']+["'];?\s*(?:\/\*[^*]*\*\/\s*)?\n/g, '')
     .replace(/\/\*\s*Token system[\s\S]*?\*\/\s*\n/g, '')
-    .replace(/\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/\s*@source\s+inline\("[^"]*"\)\s*;/g, '')
     .replace(/@source\s+(?!inline\()[^;]+;?\s*\n/g, '')
     .replace(/@custom-variant\s+[^\n]+;\s*\n/g, '');
 
