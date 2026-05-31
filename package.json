@@ -1,0 +1,267 @@
+{
+  "name": "@nqlib/nqui",
+  "version": "0.6.3",
+  "description": "A React component library with enhanced UI components and developer tools",
+  "type": "module",
+  "main": "./dist/nqui.cjs.js",
+  "module": "./dist/nqui.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/nqui.es.js",
+      "require": "./dist/nqui.cjs.js"
+    },
+    "./carousel": {
+      "types": "./dist/entries/carousel.d.ts",
+      "import": "./dist/carousel.es.js",
+      "require": "./dist/carousel.cjs.js"
+    },
+    "./command": {
+      "types": "./dist/entries/command.d.ts",
+      "import": "./dist/command.es.js",
+      "require": "./dist/command.cjs.js"
+    },
+    "./sortable": {
+      "types": "./dist/entries/sortable.d.ts",
+      "import": "./dist/sortable.es.js",
+      "require": "./dist/sortable.cjs.js"
+    },
+    "./calendar": {
+      "types": "./dist/entries/calendar.d.ts",
+      "import": "./dist/calendar.es.js",
+      "require": "./dist/calendar.cjs.js"
+    },
+    "./sonner": {
+      "types": "./dist/entries/sonner.d.ts",
+      "import": "./dist/sonner.es.js",
+      "require": "./dist/sonner.cjs.js"
+    },
+    "./drawer": {
+      "types": "./dist/entries/drawer.d.ts",
+      "import": "./dist/drawer.es.js",
+      "require": "./dist/drawer.cjs.js"
+    },
+    "./styles": {
+      "import": "./dist/styles.css",
+      "require": "./dist/styles.css",
+      "default": "./dist/styles.css"
+    },
+    "./debug": {
+      "types": "./dist/entries/debug.d.ts",
+      "import": "./dist/debug.es.js",
+      "require": "./dist/debug.cjs.js"
+    },
+    "./debug.css": "./dist/nqui.css"
+  },
+  "files": [
+    "dist",
+    "scripts",
+    "docs",
+    "README.md",
+    "INSTALLATION.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.com",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nqlib/nqui.git"
+  },
+  "keywords": [
+    "ui",
+    "components",
+    "react",
+    "typescript",
+    "nextjs",
+    "vite",
+    "tailwind",
+    "shadcn",
+    "radix-ui"
+  ],
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "node scripts/post-install.js",
+    "dev": "vite",
+    "build": "npm run build:lib",
+    "build:lib": "vite build --mode library && npm run build:types && npm run build:styles && npm run verify:build && npm run copy:css",
+    "build:types": "tsc -p tsconfig.lib.json",
+    "build:styles": "node scripts/build-styles.js",
+    "verify:build": "node scripts/verify-build.js",
+    "copy:css": "cp src/components/debug/debug.css dist/nqui.css",
+    "build:app": "tsc -b && vite build",
+    "build:all": "npm run build:lib && npm run build:app",
+    "prepublishOnly": "npm run build:lib",
+    "publish:github": "npm publish --registry=https://npm.pkg.github.com",
+    "publish:npm": "node scripts/publish-npmjs.js",
+    "publish:both": "npm run publish:github && npm run publish:npm",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "preview:app": "vite preview --outDir dist-app",
+    "init-debug-css": "node scripts/init-debug-css.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
+    "test-storybook:ci": "test-storybook --ci",
+    "test-storybook:coverage": "test-storybook --coverage",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "nqui:init": "npx @nqlib/nqui install-peers && npx @nqlib/nqui init-cursor && npx @nqlib/nqui init-skills && npx @nqlib/nqui init-css --sidebar --force"
+  },
+  "bin": {
+    "nqui": "scripts/cli.js",
+    "nqui-init-css": "scripts/init-css.js",
+    "nqui-init-cursor": "scripts/init-cursor.js",
+    "nqui-init-skills": "scripts/download-skills.js",
+    "nqui-init-claude-skills": "scripts/install-claude-skills.js",
+    "nqui-install-peers": "scripts/install-peers.js",
+    "nqui-init-debug": "scripts/init-debug-css.js",
+    "nqui-setup": "scripts/post-install.js"
+  },
+  "dependencies": {
+    "@codesandbox/sandpack-react": "^2.20.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@hugeicons/core-free-icons": "^4.1.0",
+    "@hugeicons/react": "^1.1.6",
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-direction": "^1.1.1",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@radix-ui/react-use-controllable-state": "^1.2.2",
+    "@shikijs/transformers": "^3.21.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "@tanstack/react-table": "^8.21.3",
+    "@uidotdev/usehooks": "^2.4.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.4.2",
+    "lodash.throttle": "^4.1.1",
+    "minimist": "^1.2.8",
+    "next-themes": "^0.4.6",
+    "package": "^1.0.1",
+    "postcss": "^8.4.0",
+    "postcss-discard-comments": "^7.0.0",
+    "postcss-import": "^16.0.0",
+    "radix-ui": "^1.4.3",
+    "react": "^19.0.0",
+    "react-day-picker": "^9.13.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.11.0",
+    "shiki": "^3.21.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.4.0",
+    "tailwind-variants": "^3.2.2",
+    "tailwindcss": "^4.1.17",
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2"
+  },
+  "peerDependencies": {
+    "@hugeicons/core-free-icons": "^4.1.0",
+    "@hugeicons/react": "^1.0.0",
+    "@dnd-kit/core": "^6.0.0",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.0.0",
+    "@tanstack/react-table": "^8.0.0",
+    "cmdk": "^1.0.0",
+    "date-fns": "^4.0.0",
+    "embla-carousel-react": "^8.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-day-picker": "^9.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-resizable-panels": "^4.0.0",
+    "sonner": "^2.0.0",
+    "vaul": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "cmdk": {
+      "optional": true
+    },
+    "@dnd-kit/core": {
+      "optional": true
+    },
+    "@dnd-kit/modifiers": {
+      "optional": true
+    },
+    "@dnd-kit/sortable": {
+      "optional": true
+    },
+    "@dnd-kit/utilities": {
+      "optional": true
+    },
+    "embla-carousel-react": {
+      "optional": true
+    },
+    "@tanstack/react-table": {
+      "optional": true
+    },
+    "react-day-picker": {
+      "optional": true
+    },
+    "date-fns": {
+      "optional": true
+    },
+    "sonner": {
+      "optional": true
+    },
+    "vaul": {
+      "optional": true
+    },
+    "react-resizable-panels": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@storybook/addon-docs": "^10.1.11",
+    "@storybook/addon-links": "^10.1.11",
+    "@storybook/addon-themes": "^10.1.11",
+    "@storybook/react": "^10.1.11",
+    "@storybook/react-vite": "^10.1.11",
+    "@storybook/test-runner": "^0.24.2",
+    "@storybook/testing-library": "^0.2.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/lodash.throttle": "^4.1.9",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "eslint-plugin-storybook": "10.1.11",
+    "globals": "^16.5.0",
+    "react-grab": "^0.1.32",
+    "react-resizable-panels": "^4.2.1",
+    "shadcn": "^3.6.2",
+    "storybook": "^10.1.11",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4",
+    "vitest": "^3.1.4",
+    "jsdom": "^26.1.0"
+  }
+}

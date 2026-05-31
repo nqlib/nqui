@@ -1,0 +1,67 @@
+"use client"
+
+import * as React from "react"
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
+import { useId } from "react"
+
+import { cn } from "@/lib/utils"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { CircleIcon } from "@hugeicons/core-free-icons"
+
+function RadioGroup({
+  className,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
+  return (
+    <RadioGroupPrimitive.Root
+      data-slot="radio-group"
+      className={cn("grid gap-3 w-full", className)}
+      {...props}
+    />
+  )
+}
+
+function RadioGroupItem({
+  className,
+  children,
+  id,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item> & { children?: React.ReactNode }) {
+  const stableId = useId()
+  const inputId = id || stableId
+
+  const radioElement = (
+    <RadioGroupPrimitive.Item
+      data-slot="radio-group-item"
+      id={inputId}
+      className={cn(
+        "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-transparent flex size-4 rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] group/radio-group-item peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
+        className
+      )}
+      {...props}
+    >
+      <RadioGroupPrimitive.Indicator
+        data-slot="radio-group-indicator"
+        className="group-aria-invalid/radio-group-item:text-destructive flex size-4 items-center justify-center text-primary-foreground"
+      >
+        <HugeiconsIcon icon={CircleIcon} strokeWidth={2} className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-current" />
+      </RadioGroupPrimitive.Indicator>
+    </RadioGroupPrimitive.Item>
+  )
+
+  if (!children) {
+    return radioElement
+  }
+
+  return (
+    <label
+      htmlFor={inputId}
+      className="flex items-center gap-3 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    >
+      {radioElement}
+      {children}
+    </label>
+  )
+}
+
+export { RadioGroup, RadioGroupItem }

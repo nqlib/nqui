@@ -1,0 +1,148 @@
+/**
+ * Debug Tools - Self-Contained Styles
+ *
+ * This CSS file provides self-contained styling for the debug tools,
+ * ensuring they look consistent across all consuming applications.
+ *
+ * Usage: import 'nqui/debug.css' or 'nqui/components/debug/debug.css'
+ */
+
+/* Scoped CSS variables for debug panel - with fallbacks */
+[data-debug-panel],
+[data-debug-panel] * {
+  /* Colors - use app's CSS variables if available, fallback to defaults */
+  --debug-bg: var(--popover, oklch(0.98 0 0));
+  --debug-bg-dark: var(--popover, oklch(0.15 0 0));
+  --debug-foreground: var(--popover-foreground, oklch(0.15 0 0));
+  --debug-foreground-dark: var(--popover-foreground, oklch(0.98 0 0));
+  --debug-border: var(--border, oklch(0.92 0 0));
+  --debug-border-dark: var(--border, oklch(0.27 0 0));
+  --debug-primary: var(--primary, oklch(0.60 0.25 240));
+  --debug-primary-foreground: var(--primary-foreground, oklch(0.98 0 0));
+  --debug-primary-dark: var(--primary, oklch(0.65 0.20 240));
+  --debug-muted: var(--muted, oklch(0.97 0 0));
+  --debug-muted-dark: var(--muted, oklch(0.27 0 0));
+  --debug-muted-foreground: var(--muted-foreground, oklch(0.56 0 0));
+  --debug-muted-foreground-dark: var(--muted-foreground, oklch(0.71 0 0));
+  --debug-accent: var(--accent, oklch(0.97 0 0));
+  --debug-accent-dark: var(--accent, oklch(0.27 0 0));
+  --debug-accent-foreground: var(--accent-foreground, oklch(0.21 0 0));
+  --debug-accent-foreground-dark: var(--accent-foreground, oklch(0.98 0 0));
+  --debug-ring: var(--ring, oklch(0.87 0 0));
+  --debug-ring-dark: var(--ring, oklch(0.44 0 0));
+}
+
+/* Debug Panel Container */
+[data-debug-panel] {
+  background-color: var(--debug-bg);
+  border-color: var(--debug-border);
+  color: var(--debug-foreground);
+}
+
+.dark [data-debug-panel] {
+  background-color: var(--debug-bg-dark);
+  border-color: var(--debug-border-dark);
+  color: var(--debug-foreground-dark);
+}
+
+/* Debug Panel Buttons - Override to use consistent styling */
+[data-debug-panel] button[data-slot="button"],
+[data-debug-panel] button[data-slot="tabs-trigger"] {
+  font-size: 0.875rem; /* text-sm */
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  border-radius: 0.375rem; /* rounded-md */
+  transition: color 150ms ease-in-out, background-color 150ms ease-in-out, border-color 150ms ease-in-out;
+}
+
+/* Debug Panel Tabs - Consistent styling - Force override */
+[data-debug-panel] [data-slot="tabs-list"] {
+  display: inline-flex !important;
+  height: 2.25rem !important; /* h-9 */
+  width: 100% !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem; /* rounded-lg */
+  background-color: var(--debug-muted) !important;
+  padding: 0.25rem !important; /* p-1 */
+  color: var(--debug-muted-foreground) !important;
+}
+
+.dark [data-debug-panel] [data-slot="tabs-list"] {
+  background-color: var(--debug-muted-dark);
+  color: var(--debug-muted-foreground-dark);
+}
+
+[data-debug-panel] [data-slot="tabs-trigger"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 0.375rem; /* rounded-md */
+  padding: 0.5rem 0.75rem !important; /* px-3 py-1 */
+  font-size: 0.875rem !important; /* text-sm */
+  font-weight: 500; /* font-medium */
+  transition: all 150ms ease-in-out;
+  flex: 1 !important;
+  background-color: transparent !important;
+  color: var(--debug-muted-foreground) !important;
+}
+
+.dark [data-debug-panel] [data-slot="tabs-trigger"] {
+  color: var(--debug-muted-foreground-dark);
+}
+
+[data-debug-panel] [data-slot="tabs-trigger"][data-state="active"],
+[data-debug-panel] [data-slot="tabs-trigger"][data-active="true"] {
+  background-color: var(--debug-bg);
+  color: var(--debug-foreground);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+}
+
+.dark [data-debug-panel] [data-slot="tabs-trigger"][data-state="active"],
+.dark [data-debug-panel] [data-slot="tabs-trigger"][data-active="true"] {
+  background-color: var(--debug-bg-dark);
+  color: var(--debug-foreground-dark);
+}
+
+/* Debug Panel Switches, Labels, etc. - Consistent sizing */
+[data-debug-panel] [data-slot="switch"],
+[data-debug-panel] label {
+  font-size: 0.875rem; /* text-sm */
+}
+
+[data-debug-panel] label {
+  cursor: pointer;
+}
+
+/* Ensure consistent spacing */
+[data-debug-panel] .space-y-3 > * + * {
+  margin-top: 0.75rem;
+}
+
+[data-debug-panel] .space-y-4 > * + * {
+  margin-top: 1rem;
+}
+
+/* Consistent focus styles */
+[data-debug-panel] button:focus-visible,
+[data-debug-panel] [data-slot="tabs-trigger"]:focus-visible {
+  outline: 2px solid var(--debug-ring);
+  outline-offset: 2px;
+}
+
+.dark [data-debug-panel] button:focus-visible,
+.dark [data-debug-panel] [data-slot="tabs-trigger"]:focus-visible {
+  outline-color: var(--debug-ring-dark);
+}
+
+/* Draggable header styles */
+[data-debug-panel] .cursor-move {
+  cursor: move !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+[data-debug-panel] .cursor-move button {
+  pointer-events: auto; /* Allow buttons inside draggable header to be clickable */
+}
+

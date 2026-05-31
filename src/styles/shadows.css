@@ -1,0 +1,45 @@
+/* Shadow tokens — for ELEVATED surfaces only (modals, sheets, popovers,
+ * dropdowns). Per ELEVATION.md (the 2+1 rule), inline cards do NOT get
+ * shadows — depth comes from background contrast, not lift.
+ *
+ * Usage:
+ *   .my-popover { box-shadow: var(--shadow-elevated); }
+ *   .my-modal   { box-shadow: var(--shadow-modal); }
+ *
+ * If you find yourself reaching for a shadow on an inline surface, stop —
+ * use surface-b instead (the 2+1 rule).
+ */
+
+@layer base {
+  :root {
+    /* Elevated surfaces — popovers, dropdowns, hover cards.
+     * Subtle two-layer lift: 1px hairline + soft drop. */
+    --shadow-elevated:
+      0 1px 2px -1px oklch(0.28 0.02 95 / 0.08),
+      0 8px 24px -8px oklch(0.28 0.02 95 / 0.12);
+
+    /* Modal surfaces — dialogs, sheets, drawers.
+     * Stronger drop because they sit further "above" the page. */
+    --shadow-modal:
+      0 4px 8px -2px oklch(0.28 0.02 95 / 0.10),
+      0 16px 48px -12px oklch(0.28 0.02 95 / 0.18);
+
+    /* Focus ring shadow — for inputs and interactive elements that
+     * need a soft ring on focus (used alongside the ring-* utilities). */
+    --shadow-focus: 0 0 0 3px oklch(var(--ring) / 0.18);
+  }
+
+  .dark {
+    /* Dark mode — drop shadows are darker (true black at low opacity).
+     * The hairline becomes a subtle border-color highlight. */
+    --shadow-elevated:
+      0 1px 0 0 color-mix(in oklch, var(--border) 40%, transparent),
+      0 8px 24px -4px oklch(0 0 0 / 0.5);
+
+    --shadow-modal:
+      0 4px 0 0 color-mix(in oklch, var(--border) 30%, transparent),
+      0 16px 48px -8px oklch(0 0 0 / 0.6);
+
+    --shadow-focus: 0 0 0 3px oklch(var(--ring) / 0.30);
+  }
+}

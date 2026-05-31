@@ -1,0 +1,77 @@
+/* Motion tokens — durations + easing curves.
+ *
+ * Centralized timing and easing vocabulary per MOTION.md. Use these tokens
+ * instead of arbitrary milliseconds or `ease-in-out` everywhere.
+ *
+ * Usage in Tailwind v4:
+ *   duration: `duration-[var(--duration-quick)]`
+ *   easing:   `ease-[var(--ease-out)]`
+ * Usage in CSS:
+ *   transition: opacity var(--duration-quick) var(--ease-out);
+ *
+ * Default if unsure: --duration-quick (150ms) + --ease-out.
+ * Most UI motion should be this fast.
+ */
+
+@layer base {
+  :root {
+    /* ─── Duration scale ──────────────────────────────────────────────────
+     * Named tokens cover 95% of UI motion. Don't use arbitrary numbers.
+     */
+
+    /* Instant — no animation. State toggles where motion would be a delay. */
+    --duration-instant: 0ms;
+
+    /* Micro (100ms) — hover, focus rings, button-press feedback. */
+    --duration-micro: 100ms;
+
+    /* Quick (150ms) — DEFAULT. Most state changes: dropdowns, toggles, small reveals. */
+    --duration-quick: 150ms;
+
+    /* Standard (200ms) — modal/sheet/drawer entries, page transitions, accordions. */
+    --duration-standard: 200ms;
+
+    /* Slow (250ms) — larger overlays, sheet from off-screen edge. */
+    --duration-slow: 250ms;
+
+    /* Dramatic (350ms) — rare one-off attention moments. Empty state appearing,
+     * onboarding cues. NEVER for routine state changes. */
+    --duration-dramatic: 350ms;
+
+    /* ─── Easing curves ───────────────────────────────────────────────────
+     * Easing communicates physicality. Use ease-out for entrances,
+     * ease-in for exits. Never elastic/bounce/overshoot — they look dated.
+     */
+
+    /* Default ease-out — DECELERATION, for things arriving. Most common. */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Ease-in — ACCELERATION, for things leaving. */
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+    /* Ease-in-out — symmetric back-and-forth (toggles, sliders). Use sparingly. */
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Linear — ONLY for continuous motion (spinners, loading bars, marquees).
+     * Never for state changes. */
+    --ease-linear: linear;
+
+    /* Spring-like (no actual physics) — gentle settle for drag/drawer release.
+     * Subtle, NOT bouncy. */
+    --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
+  }
+
+  /* Respect reduced-motion preferences — mandatory per MOTION.md.
+   * Keeps opacity transitions (no vestibular issues), disables transforms.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

@@ -1,0 +1,802 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
+
+/* Token system — split for clarity. Each file owns one concern.
+ * Loaded order matters: base tokens before utilities that may reference them. */
+@import "./styles/colors.css";    /* palette + semantic color tokens */
+@import "./styles/motion.css";    /* duration + easing tokens (MOTION.md) */
+@import "./styles/shadows.css";   /* elevated-surface shadow tokens */
+@import "./styles/z-index.css";   /* stacking only — not surface depth */
+@import "./styles/hit-area.css";  /* expanded pointer targets */
+
+/* Custom dark mode variant - matches when .dark class is on element or ancestor */
+@custom-variant dark (&:where(.dark, .dark *));
+/* Non-dark theme — .light (warm paper) uses light: utilities */
+@custom-variant light (&:where(.light, .light *));
+/* Layout & Flexbox utilities */
+@source inline("inline-flex flex items-center justify-center gap-2 shrink-0 w-fit w-10 h-5 h-9 h-10 h-11");
+
+/* Spacing utilities */
+@source inline("px-2 px-3 px-4 px-8 py-0.5 py-1.5 py-2");
+
+/* Typography utilities */
+@source inline("text-sm text-xs text-[0.625rem] font-medium leading-normal text-center whitespace-nowrap underline-offset-4");
+
+/* Border & Radius utilities */
+@source inline("border border-primary border-secondary border-destructive border-success border-warning border-info border-border border-input border-ring rounded-md rounded-lg rounded-full");
+
+/* Background color utilities */
+@source inline("bg-primary bg-secondary bg-destructive bg-success bg-warning bg-info bg-background bg-accent bg-transparent bg-none bg-muted bg-input bg-input/20 dark:bg-input/30 light:bg-input/30");
+
+/* Text color utilities */
+@source inline("text-primary-foreground text-secondary-foreground text-destructive-foreground text-success-foreground text-warning-foreground text-info-foreground text-accent-foreground text-muted-foreground text-foreground");
+
+/* Hover state utilities */
+@source inline("hover:opacity-100 hover:bg-primary/90 hover:bg-secondary/90 hover:bg-destructive/90 hover:bg-success/90 hover:bg-warning/90 hover:bg-info/90 hover:bg-accent hover:bg-muted hover:border-primary/90 hover:border-secondary/90 hover:border-destructive/90 hover:border-success/90 hover:border-warning/90 hover:border-info/90 hover:border-border hover:text-accent-foreground hover:text-muted-foreground hover:underline dark:hover:bg-muted/50 light:hover:bg-muted/50");
+
+/* Focus state utilities */
+@source inline("focus:bg-primary/80 focus:bg-secondary/80 focus:bg-destructive/80 focus:bg-success/80 focus:bg-warning/80 focus:bg-info/80 focus:border-primary/80 focus:border-secondary/80 focus:border-destructive/80 focus:border-success/80 focus:border-warning/80 focus:border-info/80 focus:border-border focus:outline-0 focus-visible:outline-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-destructive");
+
+/* Active state utilities */
+@source inline("active:bg-primary/75 active:bg-secondary/75 active:bg-destructive/75 active:bg-success/75 active:bg-warning/75 active:bg-info/75 active:border-primary/75 active:border-secondary/75 active:border-destructive/75 active:border-success/75 active:border-warning/75 active:border-info/75 active:border-border active:bg-none active:shadow-[inset_0_3px_5px_rgb(0_0_0/0.125)] active:scale-95");
+
+/* Disabled state utilities */
+@source inline("disabled:bg-transparent disabled:shadow-none disabled:opacity-65 disabled:pointer-events-none");
+
+/* Interaction & Cursor utilities */
+@source inline("cursor-pointer select-none touch-manipulation opacity-90 overflow-hidden");
+
+/* cmdk row selection (React 19 — aria-selected, not data-selected) */
+@source inline("aria-selected:bg-accent aria-selected:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground");
+
+/* Transition utilities */
+@source inline("transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-in-out");
+
+/* SVG & Icon utilities */
+@source inline("[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&>svg]:size-2.5");
+
+/* Group & State utilities */
+@source inline("group/badge has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 light:aria-invalid:ring-destructive/40 aria-invalid:border-destructive");
+
+/* Hit-area utilities (referenced from TSX / docs; @utility defines behavior) */
+@source inline("hit-area-4 hit-area-6 hit-area-debug");
+
+/* Radix Switch — track + thumb (not picked up by generic bg-* safelist) */
+@source inline("data-[state=checked]:bg-primary data-[state=unchecked]:bg-input data-[state=checked]:text-primary-foreground");
+@source inline("h-6 w-11 h-7 w-[52px] h-3 min-w-4 h-4 min-w-5 h-5 min-w-6");
+@source inline("data-[state=unchecked]:translate-x-0.5 data-[state=checked]:translate-x-[14px] data-[state=checked]:translate-x-[18px] data-[state=checked]:translate-x-[22px]");
+@source inline("transition-colors transition-transform duration-200 ease-out shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] dark:bg-white bg-white");
+
+/* Radix Accordion (settings panels, filters) */
+@source inline("data-open:bg-muted/50 data-open:animate-accordion-down data-closed:animate-accordion-up");
+
+/* Radix Checkbox (row selection in tables / gantt sidebar) */
+@source inline("data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary");
+
+/* Slider — track, range, thumb (data-orientation utilities) */
+@source inline("relative flex w-full touch-none select-none items-center grow overflow-hidden rounded-full bg-muted bg-primary");
+@source inline("data-[orientation=horizontal]:h-2 data-[orientation=horizontal]:h-[10px] data-[orientation=horizontal]:h-3 data-[orientation=horizontal]:h-4 data-[orientation=horizontal]:h-5 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:h-full");
+@source inline("data-[orientation=horizontal]:w-4 data-[orientation=horizontal]:w-5 data-[orientation=horizontal]:w-6 data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-3");
+@source inline("border-primary ring-ring/30 rounded-full border bg-white shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] hover:ring-4 focus-visible:ring-4");
+
+@theme inline {
+    --font-sans: 'Inter Variable', sans-serif;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-info: var(--info);
+    --color-info-foreground: var(--info-foreground);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    /* ─── Radius scale ──────────────────────────────────────────────────
+     * Lives in @theme (not a separate file) because Tailwind v4 requires
+     * --radius-* tokens here to generate the `rounded-*` utilities.
+     * Base: --radius = 0.45rem (see merged theme variables).
+     *
+     * Usage convention:
+     *   rounded-sm   — kbd, small inline pills, dense controls
+     *   rounded-md   — inputs, buttons (default)
+     *   rounded-lg   — Cards, panels (default Card radius)
+     *   rounded-xl   — modals, sheets (heavier focus surfaces)
+     *   rounded-2xl+ — marketing/decorative only; avoid in product UI
+     */
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-2xl: calc(var(--radius) + 8px);
+    --radius-3xl: calc(var(--radius) + 12px);
+    --radius-4xl: calc(var(--radius) + 16px);
+
+    /* Spacing scale - matches Tailwind default spacing */
+    --spacing-0: 0;
+    --spacing-px: 1px;
+    --spacing-0\.5: 0.125rem;
+    --spacing-1: 0.25rem;
+    --spacing-1\.5: 0.375rem;
+    --spacing-2: 0.5rem;
+    --spacing-2\.5: 0.625rem;
+    --spacing-3: 0.75rem;
+    --spacing-3\.5: 0.875rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-7: 1.75rem;
+    --spacing-8: 2rem;
+    --spacing-9: 2.25rem;
+    --spacing-10: 2.5rem;
+    --spacing-11: 2.75rem;
+    --spacing-12: 3rem;
+    --spacing-14: 3.5rem;
+    --spacing-16: 4rem;
+    --spacing-20: 5rem;
+    --spacing-24: 6rem;
+    --spacing-28: 7rem;
+    --spacing-32: 8rem;
+    --spacing-36: 9rem;
+    --spacing-40: 10rem;
+    --spacing-44: 11rem;
+    --spacing-48: 12rem;
+    --spacing-52: 13rem;
+    --spacing-56: 14rem;
+    --spacing-60: 15rem;
+    --spacing-64: 16rem;
+    --spacing-72: 18rem;
+    --spacing-80: 20rem;
+    --spacing-96: 24rem;
+
+    /* Button enhanced styling */
+    --button-gradient: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+    --button-shadow: 0 1px 0 0 rgba(255,255,255,0.15) inset, 0 1px 1px 0 rgba(0,0,0,0.075);
+
+    /* Z-index elevation scale */
+    --z-base: var(--z-base);
+    --z-background: var(--z-background);
+    --z-content: var(--z-content);
+    --z-sticky-content: var(--z-sticky-content);
+    --z-sticky-page: var(--z-sticky-page);
+    --z-floating: var(--z-floating);
+    --z-modal-backdrop: var(--z-modal-backdrop);
+    --z-modal: var(--z-modal);
+    --z-popover: var(--z-popover);
+    --z-tooltip: var(--z-tooltip);
+    --z-debug: var(--z-debug);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+
+  body {
+    @apply font-sans bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+
+@layer utilities {
+  @keyframes radio-pulse {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 40%, transparent);
+    }
+    70% {
+      box-shadow: 0 0 0 8px color-mix(in oklch, var(--primary) 0%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent);
+    }
+  }
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  /* Separator Decorative Variants */
+  /* Base transparent gradient line for decorative variants */
+  .separator-transparent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    width: 90%;
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  /* Arrow/Diamond Down - decorative arrow shape in center */
+  .separator-arrow-down::after {
+    content: "";
+    position: absolute;
+    z-index: var(--z-content);
+    top: -7px;
+    left: calc(50% - 7px);
+    width: 14px;
+    height: 14px;
+    transform: rotate(45deg);
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  /* Tab Down - rounded tab shape in center */
+  .separator-tab-down::after {
+    content: "";
+    position: absolute;
+    z-index: var(--z-content);
+    top: 0;
+    left: calc(50% - 10px);
+    width: 20px;
+    height: 14px;
+    background-color: var(--background);
+    border-bottom: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  /* Stopper - rectangular stopper in center */
+  .separator-stopper::after {
+    content: "";
+    position: absolute;
+    z-index: var(--z-content);
+    top: -6px;
+    left: calc(50% - 7px);
+    width: 14px;
+    height: 12px;
+    background-color: var(--background);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  /* Dot - circular dot in center with shadow */
+  .separator-dot::after {
+    content: "";
+    position: absolute;
+    z-index: var(--z-content);
+    top: -9px;
+    left: calc(50% - 9px);
+    width: 18px;
+    height: 18px;
+    background-color: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--background), 0 0 0 4px var(--background);
+  }
+
+  /* Text Decoration - text/character decoration in center */
+  .separator-text-decoration {
+    border-top: 1px solid var(--border);
+    background-color: transparent;
+  }
+
+  .separator-text-decoration::before {
+    content: var(--separator-text-content, "j");
+    position: absolute;
+    z-index: var(--z-content);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -65%);
+    background-color: var(--background);
+    color: var(--foreground);
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1rem;
+    padding: 0 0.5rem;
+    text-rendering: geometricPrecision;
+  }
+
+  /* Shiny Corner - lighting effect on 2 edges (left/right for horizontal, top/bottom for vertical) */
+  .separator-shiny-corner {
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--foreground) 60%, transparent) 0%,
+      transparent 8%,
+      var(--border) 20%,
+      var(--border) 80%,
+      transparent 92%,
+      color-mix(in oklch, var(--foreground) 60%, transparent) 100%
+    );
+    position: relative;
+  }
+
+  .separator-shiny-corner::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--foreground) 80%, transparent) 0%,
+      transparent 5%,
+      transparent 95%,
+      color-mix(in oklch, var(--foreground) 80%, transparent) 100%
+    );
+    filter: blur(1px);
+    opacity: 0.7;
+    z-index: var(--z-background);
+  }
+
+  /* Vertical orientation support for shiny corner */
+  [aria-orientation="vertical"].separator-shiny-corner {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--foreground) 60%, transparent) 0%,
+      transparent 8%,
+      var(--border) 20%,
+      var(--border) 80%,
+      transparent 92%,
+      color-mix(in oklch, var(--foreground) 60%, transparent) 100%
+    );
+  }
+
+  [aria-orientation="vertical"].separator-shiny-corner::before {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--foreground) 80%, transparent) 0%,
+      transparent 5%,
+      transparent 95%,
+      color-mix(in oklch, var(--foreground) 80%, transparent) 100%
+    );
+  }
+
+  /* Shiny Edge - softer gradient highlight on edges */
+  .separator-shiny-edge {
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--foreground) 40%, transparent) 0%,
+      transparent 10%,
+      var(--border) 30%,
+      var(--border) 70%,
+      transparent 90%,
+      color-mix(in oklch, var(--foreground) 40%, transparent) 100%
+    );
+    position: relative;
+  }
+
+  .separator-shiny-edge::before {
+    content: "";
+    position: absolute;
+    inset: -0.5px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--primary) 50%, transparent) 0%,
+      transparent 8%,
+      transparent 92%,
+      color-mix(in oklch, var(--primary) 50%, transparent) 100%
+    );
+    filter: blur(0.5px);
+    opacity: 0.5;
+    z-index: var(--z-background);
+  }
+
+  /* Vertical orientation support for shiny edge */
+  [aria-orientation="vertical"].separator-shiny-edge {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--foreground) 40%, transparent) 0%,
+      transparent 10%,
+      var(--border) 30%,
+      var(--border) 70%,
+      transparent 90%,
+      color-mix(in oklch, var(--foreground) 40%, transparent) 100%
+    );
+  }
+
+  [aria-orientation="vertical"].separator-shiny-edge::before {
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--primary) 50%, transparent) 0%,
+      transparent 8%,
+      transparent 92%,
+      color-mix(in oklch, var(--primary) 50%, transparent) 100%
+    );
+  }
+
+  /* Toast Animations */
+  @keyframes toast-checkmark {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes toast-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  @keyframes toast-shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(2px);
+    }
+  }
+
+  /* Spinner — dual arc (Uiverse-style), primary gradient */
+  @keyframes nqui-spinner-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes nqui-spinner-dash-first {
+    0%,
+    100% {
+      stroke-dashoffset: 50;
+    }
+    50% {
+      stroke-dashoffset: 625;
+    }
+  }
+
+  @keyframes nqui-spinner-dash-second {
+    0%,
+    100% {
+      stroke-dashoffset: -625;
+    }
+    50% {
+      stroke-dashoffset: -50;
+    }
+  }
+
+  .nqui-spinner-rotate {
+    animation: nqui-spinner-rotate 2s linear infinite;
+  }
+
+  .nqui-spinner-arc-first circle {
+    animation: nqui-spinner-dash-first 3s ease-in-out infinite;
+  }
+
+  .nqui-spinner-arc-second circle {
+    animation: nqui-spinner-dash-second 3s ease-in-out infinite;
+  }
+
+  /* Toast Icon Animations */
+  .toast-icon-success {
+    animation: toast-checkmark 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--success) 60%, transparent));
+  }
+
+  .toast-icon-loading {
+    animation: spin 1s linear infinite;
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--primary) 60%, transparent));
+  }
+
+  .toast-icon-warning {
+    animation: toast-pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--warning) 60%, transparent));
+  }
+
+  .toast-icon-error {
+    animation: toast-shake 0.5s ease-in-out;
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--destructive) 60%, transparent));
+  }
+
+  .toast-icon-info {
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--info) 60%, transparent));
+  }
+
+  /* Toast Base Styles */
+  .cn-toast {
+    @apply border shadow-lg;
+    background-color: var(--normal-bg);
+    color: var(--normal-text);
+    border-color: var(--normal-border);
+    border-radius: var(--border-radius);
+    position: relative;
+  }
+
+  .cn-toast > * {
+    position: relative;
+    z-index: var(--z-content);
+  }
+
+  /* Toast Icon Colors Only - All variants use same base styling */
+  .toast-success .toast-icon-success {
+    color: var(--success);
+  }
+
+  .toast-error .toast-icon-error {
+    color: var(--destructive);
+  }
+
+  .toast-warning .toast-icon-warning {
+    color: var(--warning);
+  }
+
+  .toast-info .toast-icon-info {
+    color: var(--info);
+  }
+
+  .toast-loading .toast-icon-loading {
+    color: var(--primary);
+  }
+
+  /* Button enhanced styling classes - replaces arbitrary property values */
+  /* Buttons/badges: always apply. Toggles: only when [data-state=on]. */
+  .nqui-button-gradient {
+    background-origin: border-box;
+    background-clip: border-box;
+  }
+  .nqui-button-gradient:not([data-state=off]) {
+    background-image: var(--button-gradient);
+  }
+  .nqui-button-gradient[data-state=off] {
+    background-image: none;
+  }
+
+  .nqui-button-shadow:not([data-state=off]) {
+    box-shadow: var(--button-shadow);
+  }
+  .nqui-button-shadow[data-state=off] {
+    box-shadow: none;
+  }
+
+  /* Sliding indicator styles for enhanced tabs */
+  .sliding-indicator {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    overflow: visible;
+    /* Match TabsList sliding pill motion */
+    transition:
+      left 200ms ease-out,
+      top 200ms ease-out,
+      width 200ms ease-out,
+      height 200ms ease-out,
+      opacity 200ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sliding-indicator {
+      transition: none;
+    }
+  }
+
+  .sliding-indicator-container {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .sliding-indicator-target {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Ensure indicator is visible - use Tailwind arbitrary z-index with CSS variable */
+  .sliding-indicator-container .sliding-indicator {
+    z-index: 0;
+  }
+
+  .sliding-indicator-container .sliding-indicator-target {
+    z-index: 1;
+  }
+
+  /* Debug panel styling classes - replaces arbitrary property values */
+  .nqui-debug-panel {
+    background-color: var(--debug-bg);
+    border: 1px solid var(--debug-border);
+    color: var(--debug-foreground);
+  }
+
+  .dark .nqui-debug-panel {
+    background-color: var(--debug-bg-dark);
+    border-color: var(--debug-border-dark);
+    color: var(--debug-foreground-dark);
+  }
+
+  /* Shiki code block styling classes - replaces arbitrary property values */
+  /* These classes should be applied to the container, and will target nested .shiki elements */
+  .dark .nqui-shiki-container .shiki {
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+
+  .dark .nqui-shiki-container .shiki_span {
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
+
+/* ============================================
+   nqui Additional System Variables
+   ============================================ */
+
+/* Default light theme variables (.dark block follows) */
+:root {
+    /* ============================================
+       Light / system UI — Claude-adjacent warm paper
+       (#FAF9F5 ≈ oklch(0.982 0.0054 95))
+
+       Surface model (per ELEVATION.md — the 2+1 rule):
+         --surface-a  = --background  (page, the "outer" surface)
+         --surface-b  = --muted       (card/panel, the "inner" surface)
+         --surface-elevated = --popover (modals, sheets, popovers, dropdowns)
+       Cap inline nesting at 2 surfaces (A then B). Past that, use spacing
+       and uppercase labels, NOT a third shade.
+       ============================================ */
+
+    --background: oklch(0.982 0.0054 95);
+    --foreground: oklch(0.2416 0.0219 57);
+
+    /* Card === popover by value. Aliased so the relationship is honest.
+       Visual elevation for popover comes from .nqui-elevated (shadow), not color. */
+    --card: oklch(0.993 0.003 95);
+    --card-foreground: oklch(0.2416 0.0219 57);
+    --popover: var(--card);
+    --popover-foreground: var(--card-foreground);
+
+    /* Secondary — softer interactive surface (secondary button, badge bg).
+       Lighter than muted so the two read as distinct roles. */
+    --secondary: oklch(0.950 0.006 95);
+    --secondary-foreground: oklch(0.3067 0.0309 56.81);
+
+    /* Muted — surface B in the 2+1 rule. Used as the inner panel color. */
+    --muted: oklch(0.914 0.007 95);
+    --muted-foreground: oklch(0.5576 0.0222 57.81);
+
+    /* Accent — hover/selection state. Must be distinct from BOTH muted (0.914)
+       AND border (0.892). Bumped from 0.895 to 0.880 for clear edge separation. */
+    --accent: oklch(0.880 0.008 95);
+    --accent-foreground: oklch(0.2416 0.0219 57);
+
+    --border: oklch(0.892 0.006 95);
+    --input: oklch(0.892 0.006 95);
+
+    /* ─── Semantic surface aliases (the 2+1 model) ──────────────────────── */
+    --surface-a: var(--background);
+    --surface-b: var(--muted);
+    --surface-elevated: var(--popover);
+
+    /* Chart colors — CATEGORICAL palette. Distinct hues at matched lightness
+       so multi-series charts are actually readable. For SEQUENTIAL (ordinal)
+       data use shades of --primary instead. */
+    --chart-1: oklch(0.605 0.215 240);  /* blue (primary) */
+    --chart-2: oklch(0.680 0.180 35);   /* orange */
+    --chart-3: oklch(0.620 0.165 150);  /* green */
+    --chart-4: oklch(0.580 0.220 295);  /* purple */
+    --chart-5: oklch(0.760 0.155 80);   /* amber */
+
+    /* Layout */
+    --radius: 0.45rem;
+
+    /* Sidebar — slightly LIGHTER than page (lifts forward, matches dark mode
+       direction). Was 0.953 (darker than page) which inverted the convention
+       used by macOS / Linear / Vercel. */
+    --sidebar: oklch(0.988 0.004 95);
+    --sidebar-foreground: oklch(0.2416 0.0219 57);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    /* Sidebar-accent (hover) — needs to be visible against the now-lighter sidebar */
+    --sidebar-accent: oklch(0.940 0.007 95);
+    --sidebar-accent-foreground: oklch(0.205 0.015 55);
+    --sidebar-border: oklch(0.920 0.006 95);
+    --sidebar-ring: var(--ring);
+}
+
+.dark {
+    /* System UI colors for dark mode (unique to index.css)
+       Softened foreground (oklch 0.92 ≈ #e6e6e6) for reduced eye strain vs near-pure white.
+       Surface model — see ELEVATION.md (the 2+1 rule). */
+    --background: oklch(0.16 0 0);
+    --foreground: oklch(0.92 0 0);
+
+    /* Card === popover by value (aliased — visual lift via .nqui-elevated shadow) */
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.92 0 0);
+    --popover: var(--card);
+    --popover-foreground: var(--card-foreground);
+
+    /* Secondary — softer interactive surface. Lighter than muted so the two
+       read as distinct roles (was 0.274, too close to muted 0.24). */
+    --secondary: oklch(0.30 0.003 0);
+    --secondary-foreground: oklch(0.92 0 0);
+
+    /* Muted — surface B in the 2+1 rule */
+    --muted: oklch(0.24 0.002 0);
+    --muted-foreground: oklch(0.708 0 0);
+
+    /* Accent — hover/selection. More prominent than muted AND distinct from border. */
+    --accent: oklch(0.32 0.003 0);
+    --accent-foreground: oklch(0.92 0 0);
+
+    /* Border — softened from 0.34 to 0.27 so edges read as a "fold" rather than
+       a drawn line. Closer to Linear / Vercel dark-mode convention. */
+    --border: oklch(0.27 0.004 0);
+    --input: oklch(0.30 0.003 0);
+
+    /* ─── Semantic surface aliases (the 2+1 model) ──────────────────────── */
+    --surface-a: var(--background);
+    --surface-b: var(--muted);
+    --surface-elevated: var(--popover);
+
+    /* Chart colors — CATEGORICAL palette (matches light mode hues, brighter L
+       for dark-mode legibility). For SEQUENTIAL data use shades of --primary. */
+    --chart-1: oklch(0.700 0.180 240);  /* blue */
+    --chart-2: oklch(0.740 0.160 35);   /* orange */
+    --chart-3: oklch(0.700 0.150 150);  /* green */
+    --chart-4: oklch(0.680 0.190 295);  /* purple */
+    --chart-5: oklch(0.820 0.140 80);   /* amber */
+
+    /* Sidebar — slightly lighter than page (lifts forward). Matches existing
+       direction; light mode now matches this convention too. */
+    --sidebar: oklch(0.205 0.001 0);
+    --sidebar-foreground: oklch(0.92 0 0);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: oklch(0.269 0.003 0);
+    --sidebar-accent-foreground: oklch(0.92 0 0);
+    --sidebar-border: oklch(0.27 0.004 0);
+    --sidebar-ring: oklch(0.556 0 0);
+}

@@ -1,0 +1,216 @@
+/* Z-Index Stacking Scale
+ *
+ * Centralized z-index tokens for nqui — stacking only, not surface depth.
+ * For SURFACE elevation (which background to use at which nesting level),
+ * see ELEVATION.md + the surface-a/b/elevated tokens in index.css.
+ *
+ * This file establishes semantic z-index layers to prevent stacking
+ * conflicts and enable maintainable z-index management across the library.
+ *
+ * Design Principles:
+ * - Semantic naming: z-index values have meaningful names (not just numbers)
+ * - Clear hierarchy: Each layer has a specific purpose and stacking order
+ * - Maintainable: Changes to z-index values happen in one place
+ * - Universal: Available throughout the entire application via CSS variables
+ *
+ * Usage in components:
+ *   Use Tailwind arbitrary values: z-[var(--z-sticky-content)]
+ *   Or direct CSS: z-index: var(--z-sticky-content);
+ */
+
+@layer base {
+  :root {
+    /* ============================================
+       Z-Index Elevation Scale
+       ============================================
+
+       Z-Index Scale Reference Table:
+       ┌─────────────────────┬──────┬─────────────────────────────────────────────┐
+       │ Variable            │ Value│ Use Case                                    │
+       ├─────────────────────┼──────┼─────────────────────────────────────────────┤
+       │ --z-base            │  0   │ Base layer, default stacking                │
+       │ --z-background      │  0   │ Background decorative elements             │
+       │ --z-content         │ 10   │ Standard content layer                     │
+       │ --z-sticky-content  │ 15   │ Sticky content within containers            │
+       │                     │      │ (card headers, table headers)               │
+       │ --z-sticky-page     │ 20   │ Page-level sticky elements                  │
+       │                     │      │ (page headers, navigation bars)             │
+       │ --z-floating        │ 30   │ Floating panels, sidebars                   │
+       │ --z-modal-backdrop  │ 40   │ Modal backdrops/overlays                    │
+       │ --z-modal           │ 50   │ Modal content (dialogs, sheets)            │
+       │ --z-popover         │ 60   │ Dropdowns, select menus, popovers          │
+       │ --z-tooltip         │ 70   │ Tooltips (highest interactive layer)        │
+       │ --z-debug           │ 9999 │ Debug tools (development only)              │
+       └─────────────────────┴──────┴─────────────────────────────────────────────┘
+
+       Stacking Context Hierarchy (bottom to top):
+       ┌─────────────────────────────────────────────────────────────────────────┐
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-debug (9999) - Debug tools                                   │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-tooltip (70) - Tooltips                                      │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-popover (60) - Dropdowns, selects, popovers                │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-modal (50) - Modal content                                  │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-modal-backdrop (40) - Modal backdrops                       │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-floating (30) - Sidebars, floating panels                   │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-sticky-page (20) - Page headers, navigation                 │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-sticky-content (15) - Card headers, table headers            │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-content (10) - Standard content                             │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       │  ┌───────────────────────────────────────────────────────────────┐    │
+       │  │ z-base / z-background (0) - Base layer, backgrounds          │    │
+       │  └───────────────────────────────────────────────────────────────┘    │
+       │                                                                         │
+       └─────────────────────────────────────────────────────────────────────────┘
+
+       Component Mapping Table (Before Refactoring):
+       ┌─────────────────────────────────────┬──────────┬──────────────────────────┐
+       │ Component                           │ Old Value│ New Variable             │
+       ├─────────────────────────────────────┼──────────┼──────────────────────────┤
+       │ Card sticky header                  │ z-20     │ --z-sticky-content (15)  │
+       │ Page header (AppLayout)             │ z-10     │ --z-sticky-page (20)     │
+       │ Sidebar                             │ z-10     │ --z-floating (30)        │
+       │ Sidebar handle                      │ z-20     │ --z-sticky-page (20)     │
+       │ Dialog overlay                      │ z-50     │ --z-modal-backdrop (40)  │
+       │ Dialog content                      │ z-50     │ --z-modal (50)            │
+       │ Sheet content                       │ z-50     │ --z-modal (50)            │
+       │ Dropdown menu                       │ z-50     │ --z-popover (60)          │
+       │ Select dropdown                     │ z-50     │ --z-popover (60)          │
+       │ Popover                             │ z-50     │ --z-popover (60)          │
+       │ Tooltip                             │ z-50     │ --z-tooltip (70)          │
+       │ Combobox                            │ z-50     │ --z-popover (60)          │
+       │ Enhanced select                     │ z-50     │ --z-popover (60)          │
+       │ Separator decorations               │ z-index:1│ --z-content (10)         │
+       │ Frosted glass backgrounds           │ z-0      │ --z-background (0)        │
+       │ Card content layer                  │ z-10     │ --z-content (10)         │
+       │ Debug panel                         │ z-[9997] │ --z-debug (9999)          │
+       │ Color picker                        │ z-[9999] │ --z-popover (60)         │
+       └─────────────────────────────────────┴──────────┴──────────────────────────┘
+
+       Key Relationships:
+       - Card sticky headers (15) < Page headers (20) - Prevents scroll conflicts
+       - Sticky content (15) < Sticky page (20) - Ensures page nav stays on top
+       - Floating panels (30) > Page headers (20) - Sidebars overlay content
+       - Modals (50) > Floating (30) - Modals overlay everything
+       - Popovers (60) > Modals (50) - Dropdowns can appear in modals
+       - Tooltips (70) > Popovers (60) - Tooltips are highest interactive layer
+    */
+
+    /* Base layer - default stacking context */
+    --z-base: 0;
+
+    /* Background layer - decorative elements behind content */
+    --z-background: 0;
+
+    /* Content layer - standard content elements */
+    --z-content: 10;
+
+    /* Sticky content layer - sticky elements within containers
+     * Used for: card headers, table headers, section headers
+     * Must be below page-level sticky elements to prevent conflicts
+     */
+    --z-sticky-content: 15;
+
+    /* Sticky page layer - page-level sticky elements
+     * Used for: page headers, navigation bars, top bars
+     * Must be above sticky-content to ensure page navigation works
+     */
+    --z-sticky-page: 20;
+
+    /* Floating layer - floating panels and sidebars
+     * Used for: sidebars, floating panels, slide-out menus
+     * Positioned above page content but below modals
+     */
+    --z-floating: 30;
+
+    /* Modal backdrop layer - modal overlays and backdrops
+     * Used for: dialog overlays, sheet backdrops
+     * Positioned below modal content but above floating panels
+     */
+    --z-modal-backdrop: 40;
+
+    /* Modal layer - modal content
+     * Used for: dialog content, sheet content, alert dialogs
+     * Positioned above backdrops but below popovers
+     */
+    --z-modal: 50;
+
+    /* Popover layer - dropdowns and popovers
+     * Used for: dropdown menus, select dropdowns, popovers, comboboxes
+     * Positioned above modals to allow dropdowns in modal contexts
+     */
+    --z-popover: 60;
+
+    /* Tooltip layer - tooltips (highest interactive layer)
+     * Used for: tooltips, hover cards
+     * Highest interactive layer to ensure tooltips appear above all UI
+     */
+    --z-tooltip: 70;
+
+    /* Debug layer - debug tools (development only)
+     * Used for: debug panels, debug overlays, development tools
+     * Extremely high value to ensure debug tools are always visible
+     */
+    --z-debug: 9999;
+  }
+}
+
+/*
+ * Surface classes
+ *
+ * Per ELEVATION.md (the 2+1 rule), inline Cards do NOT get a default shadow.
+ * Shadows are reserved for ELEVATED surfaces only (Dialog, Sheet, Popover,
+ * DropdownMenu) — those use `.nqui-elevated` directly or via the overlay
+ * components.
+ *
+ * `.nqui-card` keeps the border treatment only. If a consumer needs an
+ * elevated inline card (rare — should be a Sheet or Popover instead), they
+ * can opt in with `.nqui-elevated`.
+ */
+@layer components {
+  .nqui-card {
+    border: 1px solid var(--border);
+  }
+
+  .dark .nqui-card {
+    border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+
+  /* Elevated surfaces — modals, sheets, popovers, dropdowns.
+   * The ONE legitimate place a shadow belongs (depth metaphor is real).
+   * Shadow values come from shadows.css. */
+  .nqui-elevated {
+    background: var(--popover);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .dark .nqui-elevated {
+    border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+}

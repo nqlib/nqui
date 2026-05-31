@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Elevation Philosophy: Continuous vs Alternating vs Hybrid</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --cont-0: oklch(0.99 0.005 250);
+    --cont-1: oklch(0.97 0.005 250);
+    --cont-2: oklch(0.95 0.005 250);
+    --cont-3: oklch(0.92 0.005 250);
+    --cont-4: oklch(0.89 0.005 250);
+    --cont-border: oklch(0.88 0.01 250);
+
+    --alt-a: oklch(0.99 0.005 250);
+    --alt-b: oklch(0.94 0.008 250);
+    --alt-border: oklch(0.88 0.01 250);
+
+    --hyb-a: oklch(0.99 0.005 250);
+    --hyb-b: oklch(0.94 0.008 250);
+    --hyb-border: oklch(0.88 0.01 250);
+    --hyb-divider: oklch(0.86 0.01 250);
+
+    --fg: oklch(0.18 0.01 250);
+    --fg-muted: oklch(0.5 0.008 250);
+    --fg-soft: oklch(0.62 0.008 250);
+    --accent: oklch(0.55 0.18 260);
+  }
+  .dark {
+    --cont-0: oklch(0.13 0.005 250);
+    --cont-1: oklch(0.17 0.006 250);
+    --cont-2: oklch(0.21 0.007 250);
+    --cont-3: oklch(0.25 0.008 250);
+    --cont-4: oklch(0.29 0.009 250);
+    --cont-border: oklch(0.32 0.01 250);
+
+    --alt-a: oklch(0.13 0.005 250);
+    --alt-b: oklch(0.22 0.008 250);
+    --alt-border: oklch(0.32 0.01 250);
+
+    --hyb-a: oklch(0.13 0.005 250);
+    --hyb-b: oklch(0.22 0.008 250);
+    --hyb-border: oklch(0.32 0.01 250);
+    --hyb-divider: oklch(0.3 0.01 250);
+
+    --fg: oklch(0.95 0.005 250);
+    --fg-muted: oklch(0.65 0.008 250);
+    --fg-soft: oklch(0.55 0.008 250);
+    --accent: oklch(0.72 0.18 260);
+  }
+  body { background: var(--cont-0); color: var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Text", "Segoe UI", sans-serif; }
+  .panel { border-radius: 12px; padding: 16px; }
+  .panel-tight { border-radius: 8px; padding: 12px; }
+  .panel-tighter { border-radius: 6px; padding: 10px; }
+  .label-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+  .label-section { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; color: var(--fg-soft); }
+  .h-text { font-weight: 600; font-size: 14px; }
+  .h-big { font-weight: 600; font-size: 16px; }
+  .body-text { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+  .swatch { width: 24px; height: 24px; border-radius: 4px; display: inline-block; vertical-align: middle; border: 1px solid var(--cont-border); }
+  .winner-badge { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: white; margin-left: 8px; vertical-align: middle; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div class="max-w-7xl mx-auto p-6">
+
+<header class="flex items-center justify-between mb-8 pb-4 border-b" style="border-color: var(--cont-border);">
+  <div>
+    <h1 class="text-2xl font-semibold">Elevation Philosophy</h1>
+    <p class="text-sm" style="color: var(--fg-muted);">Continuous (5 tokens) vs Alternating (2 tokens) vs <strong>Hybrid (2 surfaces + spacing)</strong> — the recommended nqui model.</p>
+  </div>
+  <button id="themeToggle" class="text-sm px-3 py-1.5 rounded-md border" style="border-color: var(--cont-border);">Toggle theme</button>
+</header>
+
+<section class="grid grid-cols-3 gap-6 mb-8">
+  <div>
+    <p class="label-tag mb-2">Continuous — 5 tokens</p>
+    <div class="flex gap-1 items-center">
+      <span class="swatch" style="background:var(--cont-0)"></span>
+      <span class="swatch" style="background:var(--cont-1)"></span>
+      <span class="swatch" style="background:var(--cont-2)"></span>
+      <span class="swatch" style="background:var(--cont-3)"></span>
+      <span class="swatch" style="background:var(--cont-4)"></span>
+    </div>
+  </div>
+  <div>
+    <p class="label-tag mb-2">Alternating — 2 tokens (×N levels)</p>
+    <div class="flex gap-1 items-center">
+      <span class="swatch" style="background:var(--alt-a)"></span>
+      <span class="swatch" style="background:var(--alt-b)"></span>
+    </div>
+  </div>
+  <div>
+    <p class="label-tag mb-2">Hybrid — 2 surfaces + spacing<span class="winner-badge">recommended</span></p>
+    <div class="flex gap-1 items-center">
+      <span class="swatch" style="background:var(--hyb-a)"></span>
+      <span class="swatch" style="background:var(--hyb-b)"></span>
+      <span class="text-xs ml-2" style="color: var(--fg-muted);">+ spacing &amp; type weight for depth ≥3</span>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-3 gap-6 mb-12">
+  <!-- CONTINUOUS -->
+  <div>
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-base font-semibold">Continuous</h2>
+      <span class="label-tag">5 surfaces</span>
+    </div>
+    <div class="panel" style="background: var(--cont-0); border: 1px solid var(--cont-border);">
+      <p class="label-tag mb-2">Level 0 — page</p>
+      <div class="panel" style="background: var(--cont-1);">
+        <p class="label-tag mb-2">Level 1 — card</p>
+        <p class="h-text mb-1">Sprint 24</p>
+        <p class="body-text mb-3">In progress.</p>
+        <div class="panel-tight" style="background: var(--cont-2);">
+          <p class="label-tag mb-2">Level 2 — section</p>
+          <div class="panel-tight" style="background: var(--cont-3);">
+            <p class="label-tag mb-2">Level 3 — selected</p>
+            <div class="panel-tighter" style="background: var(--cont-4);">
+              <p class="label-tag mb-1">Level 4 — meta</p>
+              <p class="body-text">Build status.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3 text-xs" style="color: var(--fg-muted);">Levels 2-4 collapse visually. Five tokens to maintain.</div>
+  </div>
+
+  <!-- ALTERNATING -->
+  <div>
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-base font-semibold">Alternating</h2>
+      <span class="label-tag">2 surfaces ×N</span>
+    </div>
+    <div class="panel" style="background: var(--alt-a); border: 1px solid var(--alt-border);">
+      <p class="label-tag mb-2">Level 0 (A)</p>
+      <div class="panel" style="background: var(--alt-b);">
+        <p class="label-tag mb-2">Level 1 (B)</p>
+        <p class="h-text mb-1">Sprint 24</p>
+        <p class="body-text mb-3">In progress.</p>
+        <div class="panel-tight" style="background: var(--alt-a);">
+          <p class="label-tag mb-2">Level 2 (A)</p>
+          <div class="panel-tight" style="background: var(--alt-b);">
+            <p class="label-tag mb-2">Level 3 (B)</p>
+            <div class="panel-tighter" style="background: var(--alt-a);">
+              <p class="label-tag mb-1">Level 4 (A)</p>
+              <p class="body-text">Build status.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3 text-xs" style="color: var(--fg-muted);">Every adjacent pair stays distinct. But past level 2, alternation reads as a pattern, not depth.</div>
+  </div>
+
+  <!-- HYBRID -->
+  <div>
+    <div class="flex items-baseline justify-between mb-3">
+      <h2 class="text-base font-semibold">Hybrid<span class="winner-badge">nqui rule</span></h2>
+      <span class="label-tag">2 surfaces · cap</span>
+    </div>
+    <div class="panel" style="background: var(--hyb-a); border: 1px solid var(--hyb-border);">
+      <p class="label-tag mb-3">Level 0 (A) — page</p>
+      <div class="panel" style="background: var(--hyb-b);">
+        <p class="label-tag mb-3">Level 1 (B) — card</p>
+        <p class="h-big mb-1">Sprint 24</p>
+        <p class="body-text">In progress.</p>
+        <div style="margin-top: 24px;">
+          <p class="label-section mb-2">Section</p>
+          <p class="body-text">Selected issue lives here.</p>
+          <div style="margin-top: 16px; padding-left: 16px; border-left: 2px solid var(--hyb-divider);">
+            <p class="h-text" style="font-size: 13px;">Selected</p>
+            <p class="body-text">Expanded inline.</p>
+            <div style="margin-top: 12px;">
+              <p class="label-tag mb-1">Build status</p>
+              <p class="body-text">12 of 14 passing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-3 text-xs" style="color: var(--fg-muted);"><strong style="color: var(--fg);">Calmest.</strong> 2 surfaces total. Depth ≥3 carried by spacing rhythm, uppercase labels, type weight, and one optional indent rule. No surface inflation.</div>
+  </div>
+</section>
+
+<!-- Realistic UI demonstration -->
+<section class="mb-12">
+  <h2 class="text-base font-semibold mb-1">A realistic issue detail — hybrid applied</h2>
+  <p class="text-sm mb-4" style="color: var(--fg-muted);"><strong>One card on one page.</strong> Internal hierarchy via spacing rhythm + uppercase labels + one Separator + type weight. No third surface anywhere.</p>
+
+  <div class="panel" style="background: var(--hyb-a); border: 1px solid var(--hyb-border); padding: 24px;">
+    <div class="panel" style="background: var(--hyb-b); padding: 24px;">
+      <div>
+        <p class="label-tag" style="color: var(--fg-muted);">NQ-412</p>
+        <p class="h-big mt-1" style="font-size: 18px;">Implement OAuth 2.0 login flow</p>
+      </div>
+      <div class="flex flex-wrap items-center mt-3" style="gap: 16px; font-size: 12px; color: var(--fg-muted);">
+        <span>In progress</span>
+        <span>High priority</span>
+        <span>Alina Torres</span>
+        <span>Due Friday</span>
+      </div>
+      <hr style="border-color: var(--hyb-divider); margin: 24px 0;">
+      <div>
+        <p class="label-section mb-2">Description</p>
+        <p class="body-text" style="color: var(--fg);">Add Google and GitHub OAuth providers. Token refresh should happen transparently without user intervention.</p>
+      </div>
+      <div style="margin-top: 32px;">
+        <p class="label-section mb-2">Completion</p>
+        <div class="flex items-center" style="gap: 12px;">
+          <div style="flex: 1; height: 6px; border-radius: 3px; background: var(--hyb-divider); overflow: hidden;">
+            <div style="height: 100%; width: 68%; background: var(--accent);"></div>
+          </div>
+          <span style="font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums;">68%</span>
+        </div>
+      </div>
+      <div style="margin-top: 32px;">
+        <p class="label-section mb-2">Build health · last 14 days</p>
+        <div class="flex" style="gap: 2px; height: 24px;">
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: oklch(0.6 0.2 25); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--hyb-divider); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+          <div style="flex:1; background: var(--accent); border-radius: 2px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-3 text-xs" style="color: var(--fg-muted);">
+    <strong style="color: var(--fg);">What's doing the work:</strong>
+    surface A (page) → surface B (card) — the only flip ·
+    section gaps of 24/32 px ·
+    uppercase `label-section` per block ·
+    one horizontal Separator between header and body ·
+    type weight contrast (`label-tag` muted vs `h-big` bold).
+    Five visible "sections." <strong>Zero</strong> nested surfaces.
+  </p>
+</section>
+
+<!-- Decision rule -->
+<section class="mb-12">
+  <h2 class="text-base font-semibold mb-3">When to use which</h2>
+  <div class="panel" style="background: var(--hyb-b); border: 1px solid var(--hyb-border); padding: 16px 20px;">
+    <table class="w-full text-sm" style="border-collapse: separate; border-spacing: 0 12px;">
+      <thead>
+        <tr style="color: var(--fg-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;">
+          <th class="text-left pb-2">Situation</th>
+          <th class="text-left pb-2">Model</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Product UI, general case</td><td><strong>Hybrid (2 surfaces + spacing)</strong> — the nqui default</td></tr>
+        <tr><td>Stacked modals (modal opening from a modal)</td><td>Continuous — each layer must feel physically above the previous</td></tr>
+        <tr><td>Bloomberg/observability dashboards with genuine semantic depth</td><td>Continuous, capped at 3-4 levels — density is dominant</td></tr>
+        <tr><td>Focus-mode editors, single-concept screens</td><td>Single surface + spacing only — the most refined option</td></tr>
+        <tr><td>You want to add a third nested inline surface</td><td><strong>Stop.</strong> Use spacing + label, or move to a sheet/route. A third surface is almost always a symptom.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div>
+
+<script>
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    document.body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--cont-0');
+  });
+</script>
+
+</body>
+</html>

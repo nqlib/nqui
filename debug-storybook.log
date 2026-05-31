@@ -1,0 +1,20 @@
+[22:37:12.836] [INFO] storybook v10.1.11
+[22:37:13.293] [DEBUG] Getting package.json info for /Users/bnguyen/Desktop/Github/nqui/packages/nqui/package.json...
+[22:37:13.638] [INFO] Starting...
+[22:37:13.673] [WARN] unable to find package.json for radix-ui
+[22:37:14.102] [DEBUG] Starting preview..
+[22:37:14.302] [DEBUG] Using tsconfig paths for react-docgen
+[22:37:14.319] [ERROR] Failed to build the preview
+[22:37:14.321] [ERROR] [38;2;241;97;97mReferenceError: __dirname is not defined[39m
+    at Object.viteFinal (file://./.storybook/main.js:12:25)
+    at file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/_node-chunks/chunk-Q4DOC7HF.js:10134:36
+    at async createViteServer (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/@storybook+builder-vite@10.1.11_esbuild@0.27.2_msw@2.12.7_@types+node@24.10.4_typescript@5.9._kwgd6b7oaap2hjytgvbbp3mw5m/node_modules/@storybook/builder-vite/dist/index.js:6410:21)
+    at async Module.start (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/@storybook+builder-vite@10.1.11_esbuild@0.27.2_msw@2.12.7_@types+node@24.10.4_typescript@5.9._kwgd6b7oaap2hjytgvbbp3mw5m/node_modules/@storybook/builder-vite/dist/index.js:6435:17)
+    at async storybookDevServer (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/core-server/index.js:6806:82)
+    at async buildOrThrow (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/core-server/index.js:5555:12)
+    at async buildDevStandalone (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/core-server/index.js:7208:66)
+    at async withTelemetry (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/_node-chunks/chunk-2372JZ52.js:209:12)
+    at async dev (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/bin/core.js:2734:3)
+    at async _Command.<anonymous> (file:///Users/bnguyen/Desktop/Github/nqui/node_modules/.pnpm/storybook@10.1.11_@testing-library+dom@9.3.4_prettier@2.8.8_react-dom@18.3.1_react@18.3.1__react@18.3.1/node_modules/storybook/dist/bin/core.js:2801:92)
+[22:37:14.322] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.

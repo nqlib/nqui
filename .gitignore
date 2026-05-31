@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-app
+dist-ssr
+.pnpm-store
+*.local
+.npmrc
+.env
+.env.local
+.DS_Store
+test-results
+.cursor/nqui-skills/
