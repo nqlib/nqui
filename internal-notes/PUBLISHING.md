@@ -43,8 +43,8 @@ This guide covers publishing to both **npmjs.com** (public, no auth needed) and 
     - Copy the token (you'll only see it once!)
 3. **Login to npmjs.com** (one-time setup or when credentials expire)
   ```bash
-   cd packages/nqui
-   npm login --registry=https://registry.npmjs.com
+   make login
+   # or: npm login --auth-type=web --registry=https://registry.npmjs.com
   ```
   - Username: Your npmjs.com username
   - Password: Your npmjs.com password (or use the granular token as password if using token)
@@ -59,8 +59,11 @@ This guide covers publishing to both **npmjs.com** (public, no auth needed) and 
   ```
 5. **Publish**
   ```bash
+   make publish
+   # or with 2FA:
+   make publish OTP=123456
+   # or directly:
    npm run publish:npm
-   # or
    npm publish --registry=https://registry.npmjs.com --access=public
   ```
 
@@ -365,19 +368,26 @@ npm version patch
 npm run publish:both
 ```
 
-**Quick reference - Login commands:**
+**Quick reference — Makefile shortcuts (repo root):**
 
 ```bash
-# Login to npmjs.com
-cd packages/nqui
-npm login --registry=https://registry.npmjs.com
+make help
+make login
+make whoami
+make version
+make verify
+make publish
+make publish OTP=123456
+make publish-github
+make publish-both
+```
 
-# Login to GitHub Packages (alternative to .npmrc)
-cd packages/nqui
-npm login --registry=https://npm.pkg.github.com
+**Quick reference — Login commands:**
 
-# Verify authentication
+```bash
+make login
 npm whoami --registry=https://registry.npmjs.com
+npm login --registry=https://npm.pkg.github.com   # GitHub Packages
 npm whoami --registry=https://npm.pkg.github.com
 ```
 
