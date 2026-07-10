@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-07-10
+
+### Fixed
+
+- **Combobox multi-select** — mouse clicks on list items no longer require a double-click to
+  toggle selection. `onMouseDown` handled the first toggle, but cmdk's delayed `onSelect` fired
+  again and undid it because the duplicate-selection guard was cleared too early (`setTimeout(0)`).
+  The guard now stays active until cmdk's `onSelect` is skipped.
+
 ## [0.7.0] - 2026-07-08
 
 Dependency-hygiene release. The published package now installs **26 direct

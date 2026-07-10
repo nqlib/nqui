@@ -919,7 +919,10 @@ function ComboboxItem({
       keywords={[itemValue, searchLabel, ...(keywordsProp ?? [])]}
       data-checked={ctx.isSelected(itemValue) ? true : undefined}
       onSelect={(cmdkValue) => {
-        if (skipSelectFromPointerRef.current) return
+        if (skipSelectFromPointerRef.current) {
+          skipSelectFromPointerRef.current = false
+          return
+        }
         ctx.onItemSelect(itemValue, label || itemValue)
         userOnSelect?.(cmdkValue)
       }}
@@ -931,9 +934,6 @@ function ComboboxItem({
         e.preventDefault()
         skipSelectFromPointerRef.current = true
         ctx.onItemSelect(itemValue, label || itemValue)
-        window.setTimeout(() => {
-          skipSelectFromPointerRef.current = false
-        }, 0)
         userMouseDown?.(e)
       }}
       className={cn(
