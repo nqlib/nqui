@@ -299,7 +299,7 @@ const EnhancedProgress = React.forwardRef<HTMLDivElement, EnhancedProgressProps>
               className={cn(
                 "h-full rounded-full",
                 barColorClass,
-                showAnimation && "transform-gpu transition-all duration-200 ease-in-out"
+                showAnimation && "transform-gpu transition-[width] duration-200 ease-in-out"
               )}
               style={{
                 width: `${percentage}%`,

@@ -25,10 +25,10 @@
 @source inline("text-sm text-xs text-[0.625rem] font-medium leading-normal text-center whitespace-nowrap underline-offset-4");
 
 /* Border & Radius utilities */
-@source inline("border border-primary border-secondary border-destructive border-success border-warning border-info border-border border-input border-ring rounded-md rounded-lg rounded-full");
+@source inline("border border-primary border-secondary border-destructive border-success border-warning border-info border-border border-input border-ring rounded-md rounded-lg rounded-full rounded-(--tabs-pill-radius) rounded-(--radio-pill-radius)");
 
 /* Background color utilities */
-@source inline("bg-primary bg-secondary bg-destructive bg-success bg-warning bg-info bg-background bg-accent bg-transparent bg-none bg-muted bg-input bg-input/20 dark:bg-input/30 light:bg-input/30");
+@source inline("bg-primary bg-secondary bg-destructive bg-success bg-warning bg-info bg-background bg-accent bg-transparent bg-none bg-muted bg-input bg-input/20 dark:bg-input/30 light:bg-input/30 bg-overlay bg-popover");
 
 /* Text color utilities */
 @source inline("text-primary-foreground text-secondary-foreground text-destructive-foreground text-success-foreground text-warning-foreground text-info-foreground text-accent-foreground text-muted-foreground text-foreground");
@@ -117,6 +117,7 @@
     --color-primary: var(--primary);
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
+    --color-overlay: var(--overlay);
     --color-card-foreground: var(--card-foreground);
     --color-card: var(--card);
     --color-foreground: var(--foreground);
@@ -606,13 +607,16 @@
     z-index: 0;
     pointer-events: none;
     overflow: visible;
-    /* Match TabsList sliding pill motion */
+    /* Sliding pill = a toggle selection, so use the quick (150ms) duration and
+     * the symmetric ease-in-out curve (per motion.css: "toggles, sliders").
+     * The old 200ms + ease-out deceleration curve has a slow tail that reads as
+     * lag on click. */
     transition:
-      left 200ms ease-out,
-      top 200ms ease-out,
-      width 200ms ease-out,
-      height 200ms ease-out,
-      opacity 200ms ease-out;
+      left var(--duration-quick) var(--ease-in-out),
+      top var(--duration-quick) var(--ease-in-out),
+      width var(--duration-quick) var(--ease-in-out),
+      height var(--duration-quick) var(--ease-in-out),
+      opacity var(--duration-quick) var(--ease-in-out);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -697,6 +701,11 @@
     --popover: var(--card);
     --popover-foreground: var(--card-foreground);
 
+    /* Modal scrim — the dim layer behind dialogs, sheets, drawers. Tokenized so
+       consumers can retarget it (tinted / higher-contrast overlays) instead of
+       a hard-coded black. */
+    --overlay: oklch(0 0 0 / 0.8);
+
     /* Secondary — softer interactive surface (secondary button, badge bg).
        Lighter than muted so the two read as distinct roles. */
     --secondary: oklch(0.950 0.006 95);
@@ -722,7 +731,7 @@
     /* Chart colors — CATEGORICAL palette. Distinct hues at matched lightness
        so multi-series charts are actually readable. For SEQUENTIAL (ordinal)
        data use shades of --primary instead. */
-    --chart-1: oklch(0.605 0.215 240);  /* blue (primary) */
+    --chart-1: oklch(0.605 0.215 240);  /* blue — kept at matched lightness with chart-2..5 for series balance (intentionally lighter than --primary, which is deepened for white-text contrast) */
     --chart-2: oklch(0.680 0.180 35);   /* orange */
     --chart-3: oklch(0.620 0.165 150);  /* green */
     --chart-4: oklch(0.580 0.220 295);  /* purple */
@@ -757,6 +766,9 @@
     --card-foreground: oklch(0.92 0 0);
     --popover: var(--card);
     --popover-foreground: var(--card-foreground);
+
+    /* Modal scrim — deeper in dark mode so modals separate from the dark page. */
+    --overlay: oklch(0 0 0 / 0.7);
 
     /* Secondary — softer interactive surface. Lighter than muted so the two
        read as distinct roles (was 0.274, too close to muted 0.24). */

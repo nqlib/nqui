@@ -1,0 +1,41 @@
+# @nqlib/nqui
+
+> React component library with Tailwind v4, Radix primitives, and LLM-native docs.
+
+## Agent skill
+
+- [Consumer skill](/.well-known/agent-skills/nqui/SKILL.md) — install, CSS, component selection, composition
+- [Skill index](/.well-known/agent-skills/index.json)
+
+## Install
+
+- [README](https://github.com/nqlib/nqui/blob/main/README.md)
+- [INSTALLATION.md](https://github.com/nqlib/nqui/blob/main/INSTALLATION.md)
+
+## Component API
+
+Read from npm package after install:
+
+```
+node_modules/@nqlib/nqui/docs/components/README.md
+node_modules/@nqlib/nqui/docs/components/nqui-<name>.md
+```
+
+Or copy skills locally:
+
+```bash
+npx @nqlib/nqui init-skills
+```
+
+## Skills bundle
+
+```
+node_modules/@nqlib/nqui/docs/nqui-skills/SKILL.md
+```
+
+Sub-skills: nqui-components, nqui-design-system, nqui-install, nqui-composition, impeccable, /audit, /polish, …
+
+## Contributing (maintainers only)
+
+- [CONTRIBUTING.md](https://github.com/nqlib/nqui/blob/main/CONTRIBUTING.md)
+- [docs/index.md](https://github.com/nqlib/nqui/blob/main/docs/index.md)

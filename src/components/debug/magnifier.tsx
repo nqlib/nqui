@@ -1,7 +1,51 @@
 "use client"
 
 import * as React from "react"
-import { useLocation } from "react-router-dom"
+
+/**
+ * Router-agnostic pathname tracker.
+ *
+ * The magnifier recreates its DOM clone on navigation so the zoomed view stays
+ * in sync with the current page. It previously depended on react-router's
+ * `useLocation`, which forced the whole router into consumers' bundles just to
+ * use a debug tool. Instead we listen to History API mutations directly, so the
+ * magnifier works under any router (or none).
+ */
+function usePathname(): string {
+  const getPathname = () =>
+    typeof window === "undefined" ? "" : window.location.pathname
+
+  const [pathname, setPathname] = React.useState(getPathname)
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const update = () => setPathname(getPathname())
+
+    // popstate covers back/forward; patch pushState/replaceState for SPA nav.
+    const origPush = window.history.pushState
+    const origReplace = window.history.replaceState
+    window.history.pushState = function (...args) {
+      const result = origPush.apply(this, args)
+      update()
+      return result
+    }
+    window.history.replaceState = function (...args) {
+      const result = origReplace.apply(this, args)
+      update()
+      return result
+    }
+    window.addEventListener("popstate", update)
+
+    return () => {
+      window.history.pushState = origPush
+      window.history.replaceState = origReplace
+      window.removeEventListener("popstate", update)
+    }
+  }, [])
+
+  return pathname
+}
 
 export interface MagnifierProps {
   enabled: boolean
@@ -18,7 +62,7 @@ export function Magnifier({
   lockedElement,
   onElementChange
 }: MagnifierProps) {
-  const location = useLocation()
+  const pathname = usePathname()
   const [position, setPosition] = React.useState({ x: 0, y: 0 })
   const [isVisible, setIsVisible] = React.useState(false)
   const [sidebarState, setSidebarState] = React.useState<string | null>(null)
@@ -115,7 +159,7 @@ export function Magnifier({
         cloneRef.current = null
       }
     }
-  }, [enabled, isVisible, sidebarState, debugPanelOpen, location.pathname])
+  }, [enabled, isVisible, sidebarState, debugPanelOpen, pathname])
 
   React.useEffect(() => {
     if (!enabled) {

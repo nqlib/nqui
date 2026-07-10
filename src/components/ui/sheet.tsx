@@ -60,7 +60,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-[var(--z-modal-backdrop)] bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "fixed inset-0 z-[var(--z-modal-backdrop)] bg-overlay data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
       )}
       {...props}
@@ -69,7 +69,7 @@ function SheetOverlay({
 }
 
 const sheetVariants = cva(
-  "group/sheet-content fixed z-[var(--z-modal)] gap-4 bg-transparent p-6 text-card-foreground shadow-lg transition ease-in-out before:absolute before:inset-2 before:-z-10 before:rounded-xl before:bg-card data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-250",
+  "group/sheet-content fixed z-[var(--z-modal)] gap-4 bg-transparent p-6 text-card-foreground transition ease-in-out before:absolute before:inset-2 before:-z-10 before:rounded-xl before:bg-card before:shadow-(--shadow-modal) data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-250",
   {
     variants: {
       side: {

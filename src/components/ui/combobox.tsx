@@ -747,9 +747,10 @@ function ComboboxBadgeTrigger({
                     className="max-w-full !rounded-md py-0 pl-1.5 pr-0.5"
                   >
                     <span className="min-w-0 max-w-[10rem] truncate">{getLabel(val) ?? val}</span>
-                    <span
-                      role="presentation"
-                      className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-70 hover:bg-accent hover:text-accent-foreground hover:opacity-100"
+                    <button
+                      type="button"
+                      aria-label={`Remove ${getLabel(val) ?? val}`}
+                      className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-70 outline-none hover:bg-accent hover:text-accent-foreground hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
                       onPointerDown={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -760,7 +761,7 @@ function ComboboxBadgeTrigger({
                       }}
                     >
                       <IconX strokeWidth={2} className="size-3 pointer-events-none" />
-                    </span>
+                    </button>
                   </EnhancedBadge>
                 ))}
                 {(hiddenCount > 0 || expanded) && (

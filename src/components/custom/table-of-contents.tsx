@@ -757,9 +757,9 @@ const CircuitThumb = React.memo(({ containerRef, activeIds, className, lastActiv
     <div
       ref={thumbRef}
       role="none"
-      className={cn("absolute w-full bg-primary transition-[top,height] ease-linear", className)}
+      className={cn("absolute top-0 w-full bg-primary transition-[translate,height] ease-linear", className)}
       style={{
-        top: `${thumbPosition.top}px`,
+        transform: `translateY(${thumbPosition.top}px)`,
         height: `${thumbPosition.height}px`,
       }}
     />
@@ -1139,9 +1139,9 @@ const ClerkThumb = React.memo(({ containerRef, activeIds, items, className, onCi
     <div
       ref={thumbRef}
       role="none"
-      className={cn("absolute w-full bg-primary transition-[top,height] duration-150 ease-out", className)}
+      className={cn("absolute top-0 w-full bg-primary transition-[translate,height] duration-150 ease-out", className)}
       style={{
-        top: `${thumbPosition.top}px`,
+        transform: `translateY(${thumbPosition.top}px)`,
         height: `${thumbPosition.height}px`,
       }}
     />

@@ -101,7 +101,7 @@ const EnhancedTabsContent = React.forwardRef<HTMLDivElement, EnhancedTabsContent
     return (
       <CoreTabsContent
         ref={ref}
-        className={cn("transition-all duration-200 ease-in-out", className)}
+        className={cn("transition-opacity duration-200 ease-in-out", className)}
         {...props}
       />
     )

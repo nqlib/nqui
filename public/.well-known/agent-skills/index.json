@@ -1,0 +1,9 @@
+{
+  "skills": [
+    {
+      "name": "nqui",
+      "description": "Integrate @nqlib/nqui in external React apps — install, CSS, component selection, design system, composition patterns. NOT for contributing to the nqui repository.",
+      "path": "nqui/SKILL.md"
+    }
+  ]
+}

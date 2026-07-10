@@ -27,16 +27,20 @@ const checkboxStyles = `
     width: 100%;
     height: 45px;
     z-index: -1;
-    /* Was cubic-bezier(0.68, -0.55, 0.265, 1.55) — elastic/overshoot curve,
-     * banned per MOTION.md. Replaced with standard ease-out. */
-    transition: all var(--duration-standard) var(--ease-out);
+    /* Click feedback should feel immediate: quick (150ms) + symmetric curve,
+     * not the 200ms ease-out deceleration (slow tail reads as lag). Scoped to
+     * the properties that actually change instead of "all". */
+    transition:
+      background-color var(--duration-quick) var(--ease-in-out),
+      border-color var(--duration-quick) var(--ease-in-out),
+      height var(--duration-quick) var(--ease-in-out),
+      opacity var(--duration-quick) var(--ease-in-out);
     border-radius: 10px;
     border: 1px solid transparent;
     background-color: transparent;
   }
 
   .checkbox-animated-label:hover::before {
-    transition: all 0.2s ease;
     background-color: var(--muted);
   }
 
@@ -65,7 +69,9 @@ const checkboxStyles = `
     flex-shrink: 0;
     margin: 0;
     padding: 0;
-    transition: all 0.2s ease;
+    transition:
+      background-color var(--duration-quick) var(--ease-in-out),
+      border-color var(--duration-quick) var(--ease-in-out);
   }
 
   .checkbox-animated-input:hover:not([data-state="checked"]):not([data-disabled]) {
@@ -75,7 +81,7 @@ const checkboxStyles = `
   .checkbox-animated-input[data-state="checked"] {
     background-color: var(--primary);
     border-color: var(--primary);
-    animation: checkbox-pulse 0.7s forwards;
+    animation: checkbox-pulse 0.5s forwards;
   }
 
   .checkbox-animated-input[data-disabled] {
@@ -92,7 +98,7 @@ const checkboxStyles = `
     border-top: none;
     border-left: none;
     transform: rotate(45deg) scale(0);
-    transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: transform var(--duration-quick) var(--ease-in-out);
     position: absolute;
     margin-top: -2px;
     z-index: var(--z-content);
@@ -140,7 +146,9 @@ const checkboxStyles = `
     flex-shrink: 0;
     margin: 0;
     padding: 0;
-    transition: all 0.2s ease;
+    transition:
+      background-color var(--duration-quick) var(--ease-in-out),
+      border-color var(--duration-quick) var(--ease-in-out);
   }
 
   .checkbox-round-input:hover:not([data-state="checked"]):not([data-disabled]) {
@@ -150,7 +158,7 @@ const checkboxStyles = `
   .checkbox-round-input[data-state="checked"] {
     background-color: var(--primary);
     border-color: var(--primary);
-    animation: checkbox-pulse 0.7s forwards;
+    animation: checkbox-pulse 0.5s forwards;
   }
 
   .checkbox-round-input[data-disabled] {
@@ -166,7 +174,7 @@ const checkboxStyles = `
     border-top: none;
     border-left: none;
     transform: rotate(45deg) scale(0);
-    transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transition: transform var(--duration-quick) var(--ease-in-out);
     position: absolute;
     margin-top: -2px;
     z-index: var(--z-content);

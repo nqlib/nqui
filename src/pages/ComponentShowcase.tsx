@@ -107,12 +107,6 @@ import {
   NavigationMenuContent,
   NavigationMenuLink,
   PaginationAdaptive,
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
   // Overlays & Dialogs
   Dialog,
   DialogTrigger,
@@ -130,13 +124,6 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-  Drawer,
-  DrawerTrigger,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
   Sheet,
   SheetTrigger,
   SheetContent,
@@ -172,16 +159,10 @@ import {
   CollapsibleContent,
   ScrollArea,
   AspectRatio,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
   // Advanced
-  Calendar,
   Item,
   ItemMedia,
   ItemContent,
@@ -195,9 +176,8 @@ import {
   ColorPicker,
   ColorSlider,
   NquiLogo,
-  // Special
-  Toaster,
 } from "@/index"
+// Moved out of the main barrel (0.7.0) — import from subpath source modules.
 import {
   Sortable,
   SortableContent,
@@ -205,6 +185,32 @@ import {
   SortableItemHandle,
   SortableOverlay,
 } from "@/components/ui/sortable"
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Drawer,
+  DrawerTrigger,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from "@/components/ui/drawer"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel"
+import { EnhancedCalendar as Calendar } from "@/components/custom/enhanced-calendar"
+import { Toaster } from "@/components/ui/sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   HomeIcon,

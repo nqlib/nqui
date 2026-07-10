@@ -4,20 +4,6 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
-// Tracker Component Styles - CSS-only approach for block spacing and rounded corners
-const trackerStyles = `
-  .tracker-block {
-    width: 100%;
-    height: 100%;
-    border-radius: 1px;
-    transition: opacity 0.2s ease;
-  }
-
-  .tracker-block-hover:hover {
-    opacity: 0.5;
-  }
-`
-
 export interface TrackerBlockProps {
   /**
    * Unique key for the block (optional, falls back to index)
@@ -57,9 +43,9 @@ const TrackerBlock = ({
     >
       <div
         className={cn(
-          "tracker-block size-full",
+          "size-full rounded-[1px] transition-opacity duration-200 ease-in-out",
           color || defaultBackgroundColor || "bg-muted",
-          hoverEffect && "tracker-block-hover"
+          hoverEffect && "hover:opacity-50"
         )}
       />
     </div>
@@ -142,16 +128,13 @@ const Tracker = React.forwardRef<HTMLDivElement, TrackerProps>(
     ))
 
     return (
-      <>
-        <style>{trackerStyles}</style>
-        <div
-          ref={ref}
-          className={cn("group flex h-8 w-full items-center", className)}
-          {...props}
-        >
-          {blocks}
-        </div>
-      </>
+      <div
+        ref={ref}
+        className={cn("group flex h-8 w-full items-center", className)}
+        {...props}
+      >
+        {blocks}
+      </div>
     )
   }
 )

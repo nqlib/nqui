@@ -137,11 +137,14 @@ If extracted as a completely independent package, users would need to provide CS
 
 ### Complete Setup Example
 
+The debug tools are router-agnostic — no `BrowserRouter` or any router is
+required. The Magnifier tracks navigation via the History API directly, so it
+works under any router or none.
+
 ```tsx
 // src/main.tsx or src/App.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'  // Your design system CSS
 
@@ -149,10 +152,10 @@ import { DebugPanel } from "@nqlib/nqui"
 
 function Root() {
   return (
-    <BrowserRouter>
+    <>
       <App />
       <DebugPanel />
-    </BrowserRouter>
+    </>
   )
 }
 

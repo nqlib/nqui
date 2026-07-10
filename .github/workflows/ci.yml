@@ -26,8 +26,17 @@ jobs:
       - name: Lint source and scripts
         run: pnpm exec eslint src scripts --max-warnings 0
 
+      - name: Typecheck library
+        run: pnpm exec tsc -p tsconfig.lib.json --noEmit
+
+      # Build BEFORE test so the dist-artifact guards (peer isolation, no
+      # inlined react-router/shiki/sandpack) run against real output instead
+      # of skipping on a fresh checkout.
+      - name: Build library
+        run: pnpm run build:lib
+
       - name: Test
         run: pnpm test
 
-      - name: Build library
-        run: pnpm run build:lib
+      - name: Bundle-size budget
+        run: pnpm run size

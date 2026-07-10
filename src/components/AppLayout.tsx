@@ -13,17 +13,20 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
+  FrostedGlass,
+  Separator,
+} from "@/index"
+// Command* moved out of the main barrel (0.7.0) — import from the subpath source.
+import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandPalette,
   CommandSeparator,
   CommandShortcut,
-  FrostedGlass,
-  Separator,
-} from "@/index"
+} from "@/components/ui/command"
+import { CommandPalette } from "@/components/custom/command-palette"
 import { DebugPanel } from "@/components/debug"
 import {
   showcaseCatalogSections,

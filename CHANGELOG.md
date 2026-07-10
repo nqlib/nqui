@@ -7,6 +7,129 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-07-08
+
+Dependency-hygiene release. The published package now installs **26 direct
+dependencies instead of 47**, and the main entry no longer drags heavy optional
+libraries into your bundle. One-line import changes are required if you import
+Command, Toaster, Drawer, Carousel, Calendar, or Sortable from the package root.
+
+### Changed (BREAKING)
+
+- **Heavy components moved to subpath entries.** To keep the main entry free of
+  optional peers, six components are no longer re-exported from the package root.
+  Import them from their existing subpath entries instead:
+
+  | Before | After |
+  | --- | --- |
+  | `import { Command, CommandPalette } from "@nqlib/nqui"` | `from "@nqlib/nqui/command"` |
+  | `import { Toaster } from "@nqlib/nqui"` | `from "@nqlib/nqui/sonner"` |
+  | `import { Drawer } from "@nqlib/nqui"` | `from "@nqlib/nqui/drawer"` |
+  | `import { Carousel } from "@nqlib/nqui"` | `from "@nqlib/nqui/carousel"` |
+  | `import { Calendar } from "@nqlib/nqui"` | `from "@nqlib/nqui/calendar"` |
+  | `import { Sortable } from "@nqlib/nqui"` | `from "@nqlib/nqui/sortable"` |
+
+  All other imports (Button, Card, Input, Combobox, Tabs, Dialog, Select, …) are
+  unchanged. If you don't use the six components above, no code changes are needed.
+
+- **Peer dependencies are now correctly declared.** The packages below moved out
+  of `dependencies` (they were installed for every consumer regardless of use)
+  and into `peerDependencies`:
+  - **Required** (main entry needs it via `Combobox`): `cmdk`.
+  - **Optional** (only when you import the matching subpath): `sonner`, `vaul`,
+    `embla-carousel-react`, `date-fns`, `react-day-picker`, `@dnd-kit/*`,
+    `@tanstack/react-table`, `react-resizable-panels`, `shiki`,
+    `@shikijs/transformers`, `@codesandbox/sandpack-react`.
+
+  Run `npx @nqlib/nqui install-peers` to install `cmdk` plus any optional peers,
+  or add just the ones for the subpath entries you use. Your bundler resolves the
+  rest to nothing.
+
+### Accessibility
+
+- **Pagination Previous/Next** are now reachable by keyboard (visible focus ring)
+  and on touch devices (they were hover-only reveal, so invisible/untappable
+  without a mouse).
+- **Sliding-variant RadioGroup** now shows a focus ring on the visible label (the
+  focusable control was `sr-only`, so keyboard focus was invisible).
+- **Combobox multi-select** chip remove is a real `<button>` with an `aria-label`
+  (was a non-focusable `<span role="presentation">` — keyboard/SR users could not
+  remove chips).
+- **Breadcrumb links** now have a visible focus ring.
+- **ColorPicker** text inputs, copy buttons, sliders, and swatches now have
+  accessible names (`aria-label`), and swatches gained a focus ring.
+
+### Fixed
+
+- **`Button`/`EnhancedButton` with `asChild`** now render the slotted child
+  correctly. Text-node wrapping previously turned children into an array, which
+  broke Radix `Slot` (the child rendered empty). `asChild` now passes children
+  through untouched.
+- **Magnifier debug tool no longer requires a router.** It tracked navigation via
+  `react-router`'s `useLocation`, which forced the whole router into the shipped
+  `debug` entry. It now listens to the History API directly and works under any
+  router or none — `react-router-dom` is no longer a dependency of the library.
+
+### Design system
+
+- **Elevation tokens are now wired up.** `--shadow-elevated` / `--shadow-modal`
+  shipped but were unused; every elevated surface hardcoded a different shadow.
+  Popover, dropdown, select, context-menu, menubar, hover-card, command, and
+  combobox now share `--shadow-elevated` (via `floatingSurface`); dialog, sheet,
+  and drawer use `--shadow-modal`. Removed a redundant stacked shadow on
+  `DropdownMenuContent`. Elevation now reads as one system.
+- **Core and Enhanced `Button`** no longer drift: Core now uses the shared
+  `actionFocusClasses` focus helper, and both share one size-scale constant.
+- **Menu-row density unified** — `DropdownMenu` items adopt the shared compact
+  command-menu row spec used by `ContextMenu`/`Menubar`. (Form option lists —
+  `Select`, `Combobox` — keep a taller row for larger tap targets, by design.)
+- **`--overlay` token** added for modal scrims (dialog/sheet/drawer/alert-dialog),
+  replacing hard-coded `bg-black/80` so overlays are themeable.
+- **Motion**: replaced over-broad `transition-all` with scoped transitions across
+  8 components; the table-of-contents scroll indicator now animates `translateY`
+  instead of `top` (no per-frame reflow); the `Tracker` no longer injects a
+  per-instance `<style>` element.
+- **Contrast**: destructive `Alert` description text is now full-strength
+  (`text-destructive`, was `/90`).
+- **Light-mode primary blue deepened** from `oklch(0.605 0.215 240)` to
+  `oklch(0.52 0.20 240)` (`#006FCE`). White text on primary-filled surfaces
+  (Button, Badge, etc.) now meets **WCAG AA 4.5:1** (~4.76:1, was ~3.55:1 — a
+  failure), and the deeper blue reads as more enterprise/corporate. Hover/active
+  states derive via opacity on `--primary`, so they scale automatically; the
+  categorical `--chart-1` is intentionally left lighter for series balance. Dark
+  mode primary was already compliant and is unchanged.
+- **Toast radius**: `Toaster` now uses the modal/card corner radius
+  (`--radius-xl`) instead of a full pill. A tall toast (title + description +
+  icon + action button) no longer bows out awkwardly around multi-line content;
+  short toasts still look clean.
+- **Click feedback timing**: the sliding `RadioGroup` pill and `Checkbox`
+  transitions dropped from 200ms `ease-out` (slow tail) to 150ms
+  `ease-in-out`, so selection feels immediate instead of laggy. Replaced
+  `transition: all` with scoped property transitions.
+
+### Removed
+
+- **Dead dependencies** `@uidotdev/usehooks`, `lodash.throttle`, and
+  `@types/lodash.throttle` — not imported anywhere in the library.
+- **`react-router-dom`** as a runtime dependency (see Magnifier fix above).
+- **Build-time tooling** (`tailwindcss`, `postcss`\* used by the library build,
+  `@tailwindcss/vite`) moved from `dependencies` to `devDependencies`. The
+  `init-css` CLI still ships `postcss` + plugins it runs at setup time.
+
+### Added
+
+- **Overridable tab / sliding-radio pill shape.** The sliding pill's corner
+  radius is now driven by a CSS var — `--tabs-pill-radius` on `TabsList`,
+  `--radio-pill-radius` on the sliding `RadioGroup` (both default to a full
+  pill). Setting the var reshapes shell, triggers, and pill together, e.g.
+  `<TabsList className="[--tabs-pill-radius:var(--radius-lg)]">`. Added
+  `data-slot="tabs-pill"` / `data-slot="radio-group-pill"` for direct targeting.
+  See `docs/components/nqui-tabs.md` → "Customizing the tab UI".
+- **Test suite** — smoke/interaction coverage for core primitives (Button,
+  Badge, Card, Input, Checkbox, Switch, Label, Separator) and the enhanced tabs,
+  plus a **build-artifact guard** that fails CI if the bundle ever re-inlines
+  `react-router`/`shiki`/`sandpack` or if the main entry regains an optional peer.
+
 ## [0.6.3] - 2026-05-31
 
 ### Added

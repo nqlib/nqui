@@ -6,8 +6,22 @@ import { cn } from "@/lib/utils"
 import { actionFocusClasses } from "@/lib/focus-styles"
 import { wrapInlineLabelTextNodes } from "@/lib/wrap-inline-label-text"
 
+/**
+ * Shared button size scale — single source of truth for both the Core and
+ * Enhanced buttons so the h-6/h-7/h-8 (sm/default/lg) scale can't drift.
+ */
+const buttonSizeVariants = {
+  default: "h-7 min-w-7 px-3",
+  sm: "h-6 min-w-6 px-2 text-xs",
+  lg: "h-8 min-w-8 px-4",
+  icon: "h-7 w-7 p-0",
+} as const
+
 const buttonVariants = cva(
-  "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  cn(
+    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+    actionFocusClasses,
+  ),
   {
     variants: {
       variant: {
@@ -21,12 +35,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
-      size: {
-        default: "h-7 min-w-7 px-3",
-        sm: "h-6 min-w-6 px-2 text-xs",
-        lg: "h-8 min-w-8 px-4",
-        icon: "h-7 w-7 p-0",
-      },
+      size: buttonSizeVariants,
     },
     defaultVariants: {
       variant: "default",
@@ -44,6 +53,9 @@ export interface CoreButtonProps
 const Button = React.forwardRef<HTMLButtonElement, CoreButtonProps>(
   ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    // Slot requires a single element child to merge onto; wrapping text nodes
+    // would turn children into an array and break it. Only wrap when rendering
+    // a real <button>.
     return (
       <Comp
         data-variant={variant}
@@ -51,7 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, CoreButtonProps>(
         ref={ref}
         {...props}
       >
-        {wrapInlineLabelTextNodes(children)}
+        {asChild ? children : wrapInlineLabelTextNodes(children)}
       </Comp>
     )
   }
@@ -138,12 +150,7 @@ const enhancedButtonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
-      size: {
-        default: "h-7 min-w-7 px-3",
-        sm: "h-6 min-w-6 px-2 text-xs",
-        lg: "h-8 min-w-8 px-4",
-        icon: "h-7 w-7 p-0",
-      },
+      size: buttonSizeVariants,
     },
     defaultVariants: {
       variant: "default",
@@ -208,7 +215,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
         ref={ref}
         {...props}
       >
-        {wrapInlineLabelTextNodes(children)}
+        {asChild ? children : wrapInlineLabelTextNodes(children)}
       </Comp>
     )
   }

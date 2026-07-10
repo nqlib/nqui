@@ -9,7 +9,19 @@ import { ScrollArea } from "@/components/custom/enhanced-scroll-area"
 import type { EnhancedScrollAreaProps } from "@/components/custom/enhanced-scroll-area"
 import { useComposedRefs } from "@/lib/compose-refs"
 import { cn } from "@/lib/utils"
+import { actionFocusClasses } from "@/lib/focus-styles"
 import { buttonVariants } from "@/components/ui/button"
+
+// Prev/Next arrows are hover-revealed on pointer devices, but must also appear
+// on keyboard focus and on touch (no hover) so they stay reachable everywhere.
+const paginationArrowClasses = cn(
+  "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full",
+  "opacity-0 pointer-events-none transition-[opacity,color] duration-150",
+  "group-hover/pagination:pointer-events-auto group-hover/pagination:opacity-70",
+  "focus-visible:pointer-events-auto focus-visible:opacity-100",
+  "[@media(hover:none)]:pointer-events-auto [@media(hover:none)]:opacity-70",
+  actionFocusClasses
+)
 import type { VariantProps } from "class-variance-authority"
 
 // ─── Context ─────────────────────────────────────────────────────────────────
@@ -187,9 +199,7 @@ function PaginationPrevious({ className, ...props }: React.ComponentProps<"a">) 
       data-slot="pagination-previous"
       aria-label="Go to previous page"
       className={cn(
-        "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full",
-        "opacity-0 pointer-events-none group-hover/pagination:pointer-events-auto group-hover/pagination:opacity-70",
-        "transition-all duration-150",
+        paginationArrowClasses,
         canGoPrev
           ? "text-foreground hover:opacity-100"
           : "text-muted-foreground/30 cursor-not-allowed",
@@ -211,9 +221,7 @@ function PaginationNext({ className, ...props }: React.ComponentProps<"a">) {
       data-slot="pagination-next"
       aria-label="Go to next page"
       className={cn(
-        "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full",
-        "opacity-0 pointer-events-none group-hover/pagination:pointer-events-auto group-hover/pagination:opacity-70",
-        "transition-all duration-150",
+        paginationArrowClasses,
         canGoNext
           ? "text-foreground hover:opacity-100"
           : "text-muted-foreground/30 cursor-not-allowed",

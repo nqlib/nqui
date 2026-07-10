@@ -229,6 +229,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             <div className="flex items-center gap-1">
               <input
                 type="text"
+                aria-label="OKLCH color value"
                 value={oklchColor}
                 readOnly
                 className="text-[10px] font-mono w-full px-2 py-1 border border-border rounded bg-muted"
@@ -236,6 +237,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
               <Button
                 variant="ghost"
                 size="sm"
+                aria-label="Copy OKLCH value"
                 className="h-8 w-8 p-0"
                 onClick={() => copyToClipboard(oklchColor, 'oklch')}
               >
@@ -250,6 +252,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             <div className="flex items-center gap-1">
               <input
                 type="text"
+                aria-label="HEX color value"
                 value={hexColor}
                 onChange={(e) => handleHexChange(e.target.value)}
                 className="text-[10px] font-mono w-full px-2 py-1 border border-border rounded bg-background"
@@ -257,6 +260,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
               <Button
                 variant="ghost"
                 size="sm"
+                aria-label="Copy HEX value"
                 className="h-8 w-8 p-0"
                 onClick={() => copyToClipboard(hexColor, 'hex')}
               >
@@ -271,6 +275,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             <div className="flex items-center gap-1">
               <input
                 type="text"
+                aria-label="HSL color value"
                 value={hslString}
                 readOnly
                 className="text-[10px] font-mono w-full px-2 py-1 border border-border rounded bg-muted"
@@ -278,6 +283,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
               <Button
                 variant="ghost"
                 size="sm"
+                aria-label="Copy HSL value"
                 className="h-8 w-8 p-0"
                 onClick={() => copyToClipboard(hslString, 'hsl')}
               >
@@ -296,6 +302,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             <span className="text-xs text-muted-foreground">{Math.round(oklch.H)}°</span>
           </div>
           <ColorSlider
+            aria-label="Hue"
             value={[oklch.H]}
             onValueChange={(vals) => handleChange("H", vals[0] ?? 0)}
             min={0}
@@ -312,6 +319,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             <span className="text-xs text-muted-foreground">{(oklch.C * 100).toFixed(0)}%</span>
           </div>
           <ColorSlider
+            aria-label="Chroma"
             value={[oklch.C * 100]}
             onValueChange={(vals) => handleChange("C", (vals[0] ?? 0) / 100)}
             min={0}
@@ -329,6 +337,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             <span className="text-xs text-muted-foreground">{(oklch.L * 100).toFixed(0)}%</span>
           </div>
           <ColorSlider
+            aria-label="Lightness"
             value={[oklch.L * 100]}
             onValueChange={(vals) => handleChange("L", (vals[0] ?? 0) / 100)}
             min={0}
@@ -359,11 +368,12 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             return (
               <button
                 key={color.name}
+                aria-label={color.name}
                 onClick={() => {
                   setOklch(parsed)
                   onChange?.(color.oklch)
                 }}
-                className="h-8 w-full rounded border border-border transition-all hover:scale-110"
+                className="h-8 w-full rounded border border-border transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 style={{ backgroundColor: color.oklch }}
                 title={color.name}
               />

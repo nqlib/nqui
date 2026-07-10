@@ -20,10 +20,13 @@ function injectToastStylesOnce() {
   const style = document.createElement("style")
   style.id = TOAST_STYLE_ID
   style.textContent = `
-      /* Pill toast — inverted surface: dark-on-light app, light-on-dark app */
+      /* Inverted-surface toast: dark-on-light app, light-on-dark app.
+       * Uses the modal/card corner radius (not a full pill) so tall toasts with
+       * a title + description + icon + action button keep clean, square-ish
+       * corners instead of the pill bowing out around multi-line content. */
       [data-sonner-toast] .cn-toast {
         border: 1px solid color-mix(in oklch, var(--normal-text) 18%, transparent) !important;
-        border-radius: 9999px !important;
+        border-radius: var(--radius-xl) !important;
         box-shadow:
           0 1px 0 0 color-mix(in oklch, var(--normal-text) 12%, transparent),
           0 1px 2px 0 oklch(0.15 0 0 / 0.08);
@@ -71,7 +74,8 @@ function injectToastStylesOnce() {
 }
 
 /**
- * Nqui Toaster — card-style shadows, semantic left accent, pill shape (full round both sides).
+ * Nqui Toaster — card-style shadows, semantic left accent, modal/card corner radius
+ * (holds multi-line title + description + icon + action cleanly).
  */
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "light" } = useTheme()
@@ -123,7 +127,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           "--normal-bg": "var(--foreground)",
           "--normal-text": "var(--background)",
           "--normal-border": "color-mix(in oklch, var(--background) 25%, transparent)",
-          "--border-radius": "9999px",
+          "--border-radius": "var(--radius-xl)",
           "--success-bg": "var(--success)",
           "--success-text": "var(--success-foreground)",
           "--success-border": "var(--success-400)",

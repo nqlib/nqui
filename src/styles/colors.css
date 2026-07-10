@@ -15,8 +15,12 @@
     --primary-200: oklch(0.655 0.135 240);
     --primary-300: oklch(0.655 0.155 240);
     --primary-400: oklch(0.655 0.172 240);
-    --primary-500: oklch(0.605 0.215 240);
-    --primary-600: oklch(0.575 0.238 240);
+    /* --primary-500 = semantic --primary. Deepened from L0.605 to L0.52 so white
+     * text on primary-filled surfaces (Button, Badge) meets WCAG AA 4.5:1
+     * (~5.0:1, was ~3.55:1) and reads as a more enterprise/corporate blue.
+     * Hover/active derive via opacity on --primary, so they scale automatically. */
+    --primary-500: oklch(0.52 0.20 240);
+    --primary-600: oklch(0.47 0.185 240);
 
     /* ============================================
        Semantic Color Scales — classic light (success / warning / danger / info)

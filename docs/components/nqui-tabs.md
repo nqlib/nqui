@@ -71,6 +71,35 @@ When tabs live inside a **page-level** scroller (`h-full overflow-y-auto`, expan
 
 Do not reimplement scroll preservation in app code — use these exports from `@nqlib/nqui`.
 
+## Customizing the tab UI
+
+Override in increasing order of effort:
+
+1. **Built-in variant** — `<TabsList variant="line">` swaps the pill capsule for
+   underline tabs (no code).
+
+2. **`className` on any part** — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`
+   all accept `className`, merged last via `tailwind-merge`, so your class wins.
+
+3. **Reshape the pill** — the sliding pill's corner radius is driven by the
+   `--tabs-pill-radius` CSS var (default: full pill). Override it on `TabsList`
+   and the shell, triggers, and pill all reshape together:
+
+   ```tsx
+   {/* softer, rounded tabs instead of full pill */}
+   <TabsList className="[--tabs-pill-radius:var(--radius-lg)]">…</TabsList>
+   ```
+
+   Or target the pill directly anywhere via `[data-slot="tabs-pill"]`
+   (`[data-slot="tabs-list"]`, `[data-slot="tabs-trigger"]`, and
+   `[data-slot="tabs-content"]` are also exposed for app-wide theming).
+
+4. **Own it** — nqui is MIT; copy `tabs.tsx` into your project. `tabsListVariants`
+   is exported so you can extend the variant set.
+
+> The sliding `RadioGroup` (`variant="sliding"`) mirrors this: override
+> `--radio-pill-radius` on the group, or target `[data-slot="radio-group-pill"]`.
+
 ## Notes
 
 - **Sliding indicator:** Handled on `TabsList` (position relative).

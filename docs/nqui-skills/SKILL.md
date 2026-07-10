@@ -1,11 +1,18 @@
 ---
 name: nqui
-description: Hub for nqui component library skills and impeccable design skills. Use /nqui-components, /nqui-design-system, /impeccable, /audit, or specific skill names to invoke them.
+description: >-
+  Integrate @nqlib/nqui in external React apps — install, CSS, component selection,
+  design system, composition patterns. NOT for contributing to the nqui repository.
+license: MIT
+compatibility: React 18+, Tailwind CSS v4, Node 20+
+metadata:
+  author: nqlib
+  version: "1.0.0"
 ---
 
 # nqui Skills (Hub)
 
-SSOT: `packages/nqui/docs/nqui-skills/`
+SSOT: `skills/consumer/nqui/SKILL.md` (repo) · full bundle: `docs/nqui-skills/`
 
 Installed into `.cursor/nqui-skills/` via `npx @nqlib/nqui init-skills`.
 

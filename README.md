@@ -26,6 +26,31 @@ Icons ship as bundled inline SVG in components — no separate icon package requ
 npx @nqlib/nqui install-peers
 ```
 
+### Bundle size & entry points
+
+The main entry (`@nqlib/nqui`) is lean — it eagerly pulls **only `cmdk`** (a
+required peer, used by `Combobox`). Heavier components live behind subpath
+entries so you install a peer **only if you use that component**:
+
+| Entry | gzip | Required peer to install |
+| --- | --- | --- |
+| `@nqlib/nqui` (main) | ~79 KB | `cmdk` |
+| `@nqlib/nqui/command` | ~0.6 KB | `cmdk` |
+| `@nqlib/nqui/sonner` | ~1.3 KB | `sonner` |
+| `@nqlib/nqui/drawer` | ~1.0 KB | `vaul` |
+| `@nqlib/nqui/carousel` | ~1.5 KB | `embla-carousel-react` |
+| `@nqlib/nqui/calendar` | ~4.3 KB | `react-day-picker`, `date-fns` |
+| `@nqlib/nqui/sortable` | ~3.0 KB | `@dnd-kit/*` |
+| `@nqlib/nqui/debug` | ~0.1 KB | — |
+
+```tsx
+import { Button, Card, Combobox } from "@nqlib/nqui"   // main — needs cmdk
+import { Drawer } from "@nqlib/nqui/drawer"            // needs vaul
+import { Sortable } from "@nqlib/nqui/sortable"        // needs @dnd-kit/*
+```
+
+Sizes are enforced in CI (`npm run size`), so this table stays honest.
+
 **After `npm install`:** the post-install script may add a `nqui:init` script and write initial Cursor rules under `.cursor/`. It does **not** copy full **nqui-skills** or set up CSS — run the commands below. Run `npx nqui-setup` (same as `npx @nqlib/nqui setup`) anytime to see next steps again. Post-install is skipped when `CI=true` or `CI=1`.
 
 ### IDE skills (Cursor and compatible agents)

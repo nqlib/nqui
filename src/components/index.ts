@@ -24,11 +24,9 @@ export type { EnhancedButtonProps as ButtonProps } from "./ui/button"
 // Core Button (base shadcn version)
 export { Button as CoreButton } from "./ui/button"
 
-// Calendar - Enhanced with touch drag and hover preview
-export { EnhancedCalendar as Calendar } from "./custom/enhanced-calendar"
-export type { EnhancedCalendarProps as CalendarProps } from "./custom/enhanced-calendar"
-// Core Calendar (base shadcn version)
-export { Calendar as CoreCalendar, CalendarDayButton } from "./ui/calendar"
+// Calendar — moved to the "@nqlib/nqui/calendar" subpath so the main entry
+// does not pull the react-day-picker / date-fns peers. See MIGRATION note.
+//   import { Calendar } from "@nqlib/nqui/calendar"
 
 // Checkbox - Enhanced with animation variants
 export { EnhancedCheckbox as Checkbox, checkboxVariants } from "./ui/checkbox"
@@ -36,9 +34,9 @@ export type { EnhancedCheckboxProps as CheckboxProps } from "./ui/checkbox"
 // Core Checkbox (base Radix version)
 export { Checkbox as CoreCheckbox } from "./ui/checkbox"
 
-// Command Palette
-export { CommandPalette } from "./custom/command-palette"
-export type { CommandPaletteProps } from "./custom/command-palette"
+// Command / CommandPalette — moved to the "@nqlib/nqui/command" subpath so the
+// main entry does not pull the cmdk peer. See MIGRATION note.
+//   import { Command, CommandPalette } from "@nqlib/nqui/command"
 
 // Dropdown Menu - Enhanced with button-like 3D effects
 export {
@@ -185,10 +183,9 @@ export type { TOCItem, TableOfContentsProps } from "./custom/table-of-contents"
 export { NquiLogo } from "./custom/nqui-logo"
 export type { NquiLogoProps } from "./custom/nqui-logo"
 
-// Sonner (Toaster) — pill card-style, implementation in ui/sonner.tsx
-export { Toaster, EnhancedSonner } from "./ui/sonner"
-// Same component (API compatibility)
-export { CoreToaster } from "./ui/sonner"
+// Sonner (Toaster) — moved to the "@nqlib/nqui/sonner" subpath so the main
+// entry does not pull the sonner peer. See MIGRATION note.
+//   import { Toaster } from "@nqlib/nqui/sonner"
 
 // Tabs - Enhanced with sliding indicator animation
 export {
@@ -277,30 +274,15 @@ export {
   CardContent,
 } from "./ui/card"
 
-// Carousel
-export {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "./ui/carousel"
+// Carousel — moved to the "@nqlib/nqui/carousel" subpath so the main entry
+// does not pull the embla-carousel-react peer. See MIGRATION note.
+//   import { Carousel } from "@nqlib/nqui/carousel"
 
 // Collapsible
 export { Collapsible, CollapsibleTrigger, CollapsibleContent } from "./ui/collapsible"
 
-// Command
-export {
-  Command,
-  CommandDialog,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandShortcut,
-  CommandSeparator,
-} from "./ui/command"
+// Command — see the "@nqlib/nqui/command" subpath (removed from main entry to
+// drop the cmdk peer). Grouped with CommandPalette above.
 
 // Context Menu
 export {
@@ -335,19 +317,9 @@ export {
   DialogPortal,
 } from "./ui/dialog"
 
-// Drawer
-export {
-  Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
-  DrawerDescription,
-} from "./ui/drawer"
+// Drawer — moved to the "@nqlib/nqui/drawer" subpath so the main entry does not
+// pull the vaul peer. See MIGRATION note.
+//   import { Drawer } from "@nqlib/nqui/drawer"
 
 // Empty
 export { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent, EmptyMedia } from "./ui/empty"
@@ -505,14 +477,9 @@ export {
 // Skeleton
 export { Skeleton } from "./ui/skeleton"
 
-// Sortable
-export {
-  Sortable,
-  SortableContent,
-  SortableItem,
-  SortableItemHandle,
-  SortableOverlay,
-} from "./ui/sortable"
+// Sortable — moved to the "@nqlib/nqui/sortable" subpath so the main entry does
+// not pull the @dnd-kit/* peers. See MIGRATION note.
+//   import { Sortable } from "@nqlib/nqui/sortable"
 
 // Slider
 export { Slider, sliderTrackVariants, sliderThumbVariants } from "./ui/slider"
