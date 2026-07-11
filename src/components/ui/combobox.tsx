@@ -57,7 +57,7 @@ function useComboboxFieldSurfaceStyles() {
         border-left-color: color-mix(in oklch, var(--input) 92%, oklch(1 0 0) 8%) !important;
         border-bottom-color: color-mix(in oklch, var(--input) 92%, oklch(0 0 0) 8%) !important;
         border-right-color: color-mix(in oklch, var(--input) 92%, oklch(0 0 0) 8%) !important;
-        transition: all 150ms ease-in-out !important;
+        transition: all 150ms ease-[var(--ease-in-out)] !important;
         outline: none !important;
         --tw-ring-width: 0 !important;
         --tw-ring-offset-width: 0 !important;

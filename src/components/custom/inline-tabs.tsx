@@ -9,7 +9,7 @@ export const inlineTabsListClass =
 
 /** Matches core TabsTrigger geometry so the sliding pill animates cleanly. */
 export const inlineTabsTriggerClass =
-  "flex-none shrink-0 whitespace-nowrap px-3.5 h-[calc(100%-1px)] text-xs font-medium transition-colors motion-safe:duration-200 motion-safe:ease-out"
+  "flex-none shrink-0 whitespace-nowrap px-3.5 h-[calc(100%-1px)] text-xs font-medium transition-colors motion-safe:duration-[var(--duration-standard)] motion-safe:ease-out"
 
 /** Keeps short tabs (e.g. empty History) from collapsing and shifting page scroll. */
 export const inlineTabsPanelsClass = "min-h-[28rem]"

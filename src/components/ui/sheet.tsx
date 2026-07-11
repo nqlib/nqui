@@ -69,7 +69,7 @@ function SheetOverlay({
 }
 
 const sheetVariants = cva(
-  "group/sheet-content fixed z-[var(--z-modal)] gap-4 bg-transparent p-6 text-card-foreground transition ease-in-out before:absolute before:inset-2 before:-z-10 before:rounded-xl before:bg-card before:shadow-(--shadow-modal) data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-250",
+  "group/sheet-content fixed z-[var(--z-modal)] gap-4 bg-transparent p-6 text-card-foreground transition ease-[var(--ease-in-out)] before:absolute before:inset-2 before:-z-10 before:rounded-xl before:bg-card before:shadow-(--shadow-modal) data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-[var(--duration-standard)] data-[state=open]:duration-[var(--duration-slow)]",
   {
     variants: {
       side: {

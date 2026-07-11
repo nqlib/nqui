@@ -38,6 +38,7 @@ function verifyTarball() {
     "dist/nqui.cjs.js",
     "dist/index.d.ts",
     "dist/styles.css",
+    "scripts/templates/colors.css",
   ]
   const missing = required.filter((r) => !files.includes(r))
   const leaked = files.filter((f) => f.includes(".."))

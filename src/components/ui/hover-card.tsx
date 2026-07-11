@@ -34,7 +34,7 @@ function HoverCardContent({
         sideOffset={sideOffset}
         className={cn(
           floatingSurface,
-          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 w-72 p-2.5 text-xs duration-100 z-[var(--z-popover)] origin-(--radix-hover-card-content-transform-origin) outline-hidden",
+          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 w-72 p-2.5 text-xs duration-[var(--duration-micro)] z-[var(--z-popover)] origin-(--radix-hover-card-content-transform-origin) outline-hidden",
           className
         )}
         {...props}

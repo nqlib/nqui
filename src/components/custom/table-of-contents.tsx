@@ -592,7 +592,7 @@ const NormalThumb = React.memo(({ containerRef, activeIds, lastActiveId, items: 
     <div
       ref={thumbRef}
       role="none"
-      className="absolute top-0 w-px bg-primary transition-[translate,height] ease-linear"
+      className="absolute top-0 w-px bg-primary transition-[translate,height] ease-[var(--ease-linear)]"
       style={{
         transform: `translateY(var(--normal-top, 0px))`,
         height: "var(--normal-height, 0px)",
@@ -757,7 +757,7 @@ const CircuitThumb = React.memo(({ containerRef, activeIds, className, lastActiv
     <div
       ref={thumbRef}
       role="none"
-      className={cn("absolute top-0 w-full bg-primary transition-[translate,height] ease-linear", className)}
+      className={cn("absolute top-0 w-full bg-primary transition-[translate,height] ease-[var(--ease-linear)]", className)}
       style={{
         transform: `translateY(${thumbPosition.top}px)`,
         height: `${thumbPosition.height}px`,
@@ -1139,7 +1139,7 @@ const ClerkThumb = React.memo(({ containerRef, activeIds, items, className, onCi
     <div
       ref={thumbRef}
       role="none"
-      className={cn("absolute top-0 w-full bg-primary transition-[translate,height] duration-150 ease-out", className)}
+      className={cn("absolute top-0 w-full bg-primary transition-[translate,height] duration-[var(--duration-quick)] ease-out", className)}
       style={{
         transform: `translateY(${thumbPosition.top}px)`,
         height: `${thumbPosition.height}px`,
@@ -1154,7 +1154,7 @@ const ClerkThumbCircle = React.memo(({ circleX, circleY, opacity }: ClerkThumbCi
     <div
       role="none"
       aria-hidden="true"
-      className="bg-primary pointer-events-none absolute size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-[left,top,opacity] duration-150 ease-out"
+      className="bg-primary pointer-events-none absolute size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full transition-[left,top,opacity] duration-[var(--duration-quick)] ease-out"
       style={{
         left: `${circleX}px`,
         top: `${circleY}px`,
@@ -1412,7 +1412,7 @@ const ClerkTableOfContentsItem = React.memo(
           paddingInlineStart: getClerkItemOffset(item.level),
         }}
         className={cn(
-          "prose relative py-1.5 text-sm transition-colors duration-150 ease-out wrap-anywhere first:pt-0 last:pb-0",
+          "prose relative py-1.5 text-sm transition-colors duration-[var(--duration-quick)] ease-out wrap-anywhere first:pt-0 last:pb-0",
           "text-muted-foreground",
           "hover:text-foreground dark:hover:text-foreground",
           "data-[active=true]:text-primary",

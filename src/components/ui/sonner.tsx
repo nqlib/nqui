@@ -30,7 +30,7 @@ function injectToastStylesOnce() {
         box-shadow:
           0 1px 0 0 color-mix(in oklch, var(--normal-text) 12%, transparent),
           0 1px 2px 0 oklch(0.15 0 0 / 0.08);
-        transition: all 200ms ease-in-out !important;
+        transition: all 200ms ease-[var(--ease-in-out)] !important;
       }
 
       .dark [data-sonner-toast] .cn-toast {

@@ -7,6 +7,8 @@ description: How to customize nqui's brand color, density, radius, and dark/ligh
 
 nqui's defaults are opinionated. They are NOT the limit of what the kit can look like. This file is how you customize the kit while keeping the design rules (elevation, motion, hierarchy) intact.
 
+**Default primary (0.8+):** The package ships a **monochrome** primary scale. Running `npx @nqlib/nqui init-css` copies `nqui/colors.css` with the blue template (hue 240) and wires it after `@nqlib/nqui/styles`. Edit that file for your brand, or remove its `@import` to stay gray.
+
 ## What you can change (safely)
 
 | Token group | Where | Safe to override |
@@ -38,13 +40,16 @@ If your brand "needs" a third surface or default shadows on cards, the brand exp
 
 ### Brand color (the most common ask)
 
-Override the primary scale in your app's CSS, after nqui's import:
+After `init-css`, edit `nqui/colors.css` (blue template by default). It loads after the package import and overrides `--primary-*`.
+
+To customize manually, override the primary scale in your app's CSS, after nqui's import:
 
 ```css
-@import "@nqlib/nqui/index.css";
+@import "@nqlib/nqui/styles";
+@import "./nqui/colors.css"; /* or inline overrides below */
 
 :root {
-  /* Replace nqui's blue (hue 240) with your brand hue */
+  /* Replace monochrome / blue with your brand hue */
   --primary-100: oklch(0.655 0.11 30);   /* your hue */
   --primary-200: oklch(0.655 0.135 30);
   --primary-300: oklch(0.655 0.155 30);

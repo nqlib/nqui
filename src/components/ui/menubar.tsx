@@ -79,7 +79,7 @@ function MenubarContent({
         sideOffset={sideOffset}
         className={cn(
           floatingSurface,
-          "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 min-w-32 p-1 duration-100 z-[var(--z-popover)] origin-(--radix-menubar-content-transform-origin) overflow-hidden",
+          "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 min-w-32 p-1 duration-[var(--duration-micro)] z-[var(--z-popover)] origin-(--radix-menubar-content-transform-origin) overflow-hidden",
           className
         )}
         {...props}
@@ -247,7 +247,7 @@ function MenubarSubContent({
       data-slot="menubar-sub-content"
       className={cn(
         floatingSurface,
-        "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 min-w-32 p-1 duration-100 z-[var(--z-popover)] origin-(--radix-menubar-content-transform-origin) overflow-hidden",
+        "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 min-w-32 p-1 duration-[var(--duration-micro)] z-[var(--z-popover)] origin-(--radix-menubar-content-transform-origin) overflow-hidden",
         className
       )}
       {...props}

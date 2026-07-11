@@ -72,9 +72,13 @@ function generateIndexCssContent() {
  *
  * Usage in your globals.css:
  *   @import "./nqui/index.css";
+ *
+ * Brand color: edit nqui/colors.css (blue template copied on init).
+ * Remove the colors.css import below to keep the package monochrome default.
  */
 
 @import "@nqlib/nqui/styles";
+@import "./colors.css";
 `;
 }
 
@@ -91,6 +95,11 @@ function generateIndexCssContent() {
       // Create index.css that imports from library
       const indexCssContent = generateIndexCssContent();
       emit(outCssPath, indexCssContent, { force: args.force, dryRun: args['dry-run'] });
+
+      const colorsTemplatePath = resolve(root, 'scripts/templates/colors.css');
+      const colorsOutPath = resolve(process.cwd(), dirname(output) || 'nqui', 'colors.css');
+      const colorsTemplate = readFileSync(colorsTemplatePath, 'utf8');
+      emit(colorsOutPath, colorsTemplate, { force: args.force, dryRun: args['dry-run'] });
     } else {
       // Original behavior: generate local copy
       await runPipeline({
@@ -117,7 +126,12 @@ function generateIndexCssContent() {
       console.log(`\n📝 Next steps:`);
       console.log(`   1. Copy the contents of ${setupDir}/nqui-setup.css`);
       console.log(`   2. Paste them at the VERY TOP of your main CSS file`);
-      console.log(`      (e.g. ${mainCssFile})\n`);
+      console.log(`      (e.g. ${mainCssFile})`);
+      if (useLibraryImport) {
+        console.log(`   3. Edit ${setupDir}/colors.css to match your brand (or remove its import for monochrome)\n`);
+      } else {
+        console.log('');
+      }
     }
 
     // Copy examples: when --sidebar and --force, auto-enable so nqui:init is non-interactive

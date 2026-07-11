@@ -1,31 +1,37 @@
 ---
 name: nqui-install
-description: Install and setup nqui. Use when user wants to install nqui, set up project, fix missing peers, or run setup commands. Execute these commands in the project root.
+description: Install and setup @nqlib/nqui. Use when the user wants to install nqui, set up a project, fix missing peers, or run setup commands. Execute these commands in the consumer project root.
 ---
 
 # nqui Install & Setup
 
 **When to load:** User asks to install nqui, set up a new project, fix "module not found" or missing peer deps, or run setup.
 
-**Action:** Execute the relevant command(s) below in the project root. Run in sequence when doing full setup.
+**Action:** Run the relevant command(s) below in the **consumer project root**, in order when doing full setup.
 
 ## 1. Install nqui + peers
 
-**Minimal (icons only):**
+**Minimal:**
+
 ```bash
-pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons
+pnpm add @nqlib/nqui
 ```
-(npm: `npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons`)
+
+(npm: `npm install @nqlib/nqui`)
+
+Icons ship bundled in nqui components — no separate icon peer required.
 
 **Full (all optional components):**
+
 ```bash
 npx @nqlib/nqui install-peers
 ```
+
 Or manually:
+
 ```bash
-pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels
+pnpm add @nqlib/nqui cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels
 ```
-(npm: `npm install @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dnd-kit/utilities embla-carousel-react @tanstack/react-table react-day-picker date-fns sonner vaul react-resizable-panels`)
 
 ## 2. Setup CSS (required)
 
@@ -33,16 +39,39 @@ pnpm add @nqlib/nqui @hugeicons/react @hugeicons/core-free-icons cmdk @dnd-kit/c
 npx @nqlib/nqui init-css
 ```
 
-Then add to main CSS (app/globals.css or src/index.css): `@import "@nqlib/nqui/styles";`
-Or copy contents of `nqui/nqui-setup.css` to top of main CSS.
+Creates `nqui/index.css`, `nqui/colors.css` (blue brand template), and `nqui/nqui-setup.css`.
 
-## 3. Refresh Cursor rules (optional)
+Then add to main CSS (`app/globals.css` or `src/index.css`):
+
+```css
+@import "@nqlib/nqui/styles";
+@import "./nqui/colors.css";
+```
+
+Or `@import "./nqui/index.css";` or copy contents of `nqui/nqui-setup.css` to the top of main CSS.
+
+Edit `nqui/colors.css` for brand hue; remove its import to keep the package monochrome default.
+
+## 3. Cursor skills (optional)
 
 ```bash
 npx @nqlib/nqui init-cursor
 ```
 
-## File locations
+Copies `docs/nqui-skills` to `.cursor/nqui-skills/`, copies **`docs/components`** to **`.cursor/nqui-skills/components/`**, and may add rules. For skills only:
 
-- Docs: `node_modules/@nqlib/nqui/docs/components/README.md` (index) and `node_modules/@nqlib/nqui/docs/components/nqui-<name>.md` (per component)
-- Check setup: `npx nqui-setup`
+```bash
+npx @nqlib/nqui init-skills
+npx @nqlib/nqui init-claude-skills
+```
+
+Use **`HUMAN_GUIDE.md`** for task-based wayfinding; **`COMPONENTS_INDEX.md`** to pick **one** `nqui-*.md` at a time (saves tokens).
+
+## File locations (after install)
+
+- Task → docs: `node_modules/@nqlib/nqui/docs/nqui-skills/HUMAN_GUIDE.md`
+- Docs index: `node_modules/@nqlib/nqui/docs/components/README.md`
+- Per component: `node_modules/@nqlib/nqui/docs/components/nqui-<name>.md`
+- Skills (source in repo): `docs/nqui-skills/` inside the package
+- Check setup: `npx nqui-setup` (or `npx @nqlib/nqui setup`)
+

@@ -42,7 +42,7 @@ export function ThemeToggle() {
     >
       <IconPalette
         size={16}
-        className={`absolute h-4 w-4 transition-all duration-200 ${
+        className={`absolute h-4 w-4 transition-all duration-[var(--duration-standard)] ${
           currentTheme === "light"
             ? "rotate-0 scale-100 opacity-100"
             : "rotate-90 scale-0 opacity-0"
@@ -50,7 +50,7 @@ export function ThemeToggle() {
       />
       <IconMoon
         size={16}
-        className={`absolute h-4 w-4 transition-all duration-200 ${
+        className={`absolute h-4 w-4 transition-all duration-[var(--duration-standard)] ${
           currentTheme === "dark"
             ? "rotate-0 scale-100 opacity-100"
             : "rotate-90 scale-0 opacity-0"

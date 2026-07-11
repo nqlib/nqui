@@ -222,7 +222,7 @@ const EnhancedScrollArea = React.forwardRef<
     }, [orientation])
 
     const viewportClassName = cn(
-      "size-full rounded-[inherit] ring-offset-background outline-none transition-[color,box-shadow,mask-image] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "size-full rounded-[inherit] ring-offset-background outline-none transition-[color,box-shadow,mask-image] duration-[var(--duration-standard)] ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       orientation === "vertical" && "overflow-x-hidden",
       orientation === "horizontal" && "overflow-y-hidden"
     )

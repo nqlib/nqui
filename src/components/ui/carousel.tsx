@@ -189,7 +189,7 @@ function CarouselPrevious({
       variant={variant}
       size={size}
       className={cn(
-        "rounded-full absolute touch-manipulation z-[var(--z-content)] opacity-35 shadow-sm transition-[opacity,transform] duration-150 ease-out hover:opacity-100 focus-visible:opacity-100 active:opacity-100 group-hover/carousel:opacity-75 disabled:pointer-events-none disabled:opacity-20",
+        "rounded-full absolute touch-manipulation z-[var(--z-content)] opacity-35 shadow-sm transition-[opacity,transform] duration-[var(--duration-quick)] ease-out hover:opacity-100 focus-visible:opacity-100 active:opacity-100 group-hover/carousel:opacity-75 disabled:pointer-events-none disabled:opacity-20",
         orientation === "horizontal"
           ? "top-1/2 left-2 -translate-y-1/2"
           : "top-2 left-1/2 -translate-x-1/2 rotate-90",
@@ -219,7 +219,7 @@ function CarouselNext({
       variant={variant}
       size={size}
       className={cn(
-        "rounded-full absolute touch-manipulation z-[var(--z-content)] opacity-35 shadow-sm transition-[opacity,transform] duration-150 ease-out hover:opacity-100 focus-visible:opacity-100 active:opacity-100 group-hover/carousel:opacity-75 disabled:pointer-events-none disabled:opacity-20",
+        "rounded-full absolute touch-manipulation z-[var(--z-content)] opacity-35 shadow-sm transition-[opacity,transform] duration-[var(--duration-quick)] ease-out hover:opacity-100 focus-visible:opacity-100 active:opacity-100 group-hover/carousel:opacity-75 disabled:pointer-events-none disabled:opacity-20",
         orientation === "horizontal"
           ? "top-1/2 right-2 -translate-y-1/2"
           : "bottom-2 left-1/2 -translate-x-1/2 rotate-90",

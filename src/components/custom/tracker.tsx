@@ -43,7 +43,7 @@ const TrackerBlock = ({
     >
       <div
         className={cn(
-          "size-full rounded-[1px] transition-opacity duration-200 ease-in-out",
+          "size-full rounded-[1px] transition-opacity duration-[var(--duration-standard)] ease-[var(--ease-in-out)]",
           color || defaultBackgroundColor || "bg-muted",
           hoverEffect && "hover:opacity-50"
         )}

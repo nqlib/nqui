@@ -16,7 +16,7 @@ import { buttonVariants } from "@/components/ui/button"
 // on keyboard focus and on touch (no hover) so they stay reachable everywhere.
 const paginationArrowClasses = cn(
   "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full",
-  "opacity-0 pointer-events-none transition-[opacity,color] duration-150",
+  "opacity-0 pointer-events-none transition-[opacity,color] duration-[var(--duration-quick)]",
   "group-hover/pagination:pointer-events-auto group-hover/pagination:opacity-70",
   "focus-visible:pointer-events-auto focus-visible:opacity-100",
   "[@media(hover:none)]:pointer-events-auto [@media(hover:none)]:opacity-70",

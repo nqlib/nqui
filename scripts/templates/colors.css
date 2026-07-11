@@ -1,0 +1,35 @@
+/* nqui brand palette — primary scale overrides.
+ *
+ * Loaded after @nqlib/nqui/styles (via nqui/index.css).
+ * Edit the OKLCH hue/chroma for your brand, or remove the @import "./colors.css"
+ * line from nqui/index.css to keep the package monochrome default.
+ *
+ * Default template: blue (hue 240) — nqui's legacy brand primary (pre-0.7.2 default).
+ */
+
+:root {
+  /* Primary scale — blue hue 240 */
+  --primary-100: oklch(0.655 0.11 240);
+  --primary-200: oklch(0.655 0.135 240);
+  --primary-300: oklch(0.655 0.155 240);
+  --primary-400: oklch(0.655 0.172 240);
+  --primary-500: oklch(0.52 0.20 240);
+  --primary-600: oklch(0.47 0.185 240);
+
+  --primary: var(--primary-500);
+  --primary-foreground: oklch(0.98 0 0);
+  --primary-hover: var(--primary-400);
+}
+
+.dark {
+  --primary-100: oklch(0.30 0.14 240);
+  --primary-200: oklch(0.34 0.165 240);
+  --primary-300: oklch(0.385 0.185 240);
+  --primary-400: oklch(0.435 0.198 240);
+  --primary-500: oklch(0.515 0.168 240);
+  --primary-600: oklch(0.565 0.185 240);
+
+  --primary: var(--primary-500);
+  --primary-foreground: oklch(0.92 0 0);
+  --primary-hover: var(--primary-400);
+}

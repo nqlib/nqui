@@ -8,12 +8,23 @@ export function generateSetupContent(framework, nquiCssPath, useLibraryImport = 
   const mainCssFile = findMainCssFile(framework);
   const mainCssDir = mainCssFile.split('/').slice(0, -1).join('/');
   const nquiFileName = nquiCssPath.split('/').pop();
+  const nquiDir = nquiCssPath.split('/').slice(0, -1).join('/') || 'nqui';
 
   // Calculate relative path
   let relativeImport;
+  let relativeColorsImport;
   if (useLibraryImport) {
     // Import directly from library package
     relativeImport = '@nqlib/nqui/styles';
+    if (mainCssDir === 'app' || mainCssDir === 'src/app') {
+      relativeColorsImport = '../' + nquiDir + '/colors.css';
+    } else if (mainCssDir === 'src') {
+      relativeColorsImport = '../' + nquiDir + '/colors.css';
+    } else if (mainCssDir === nquiDir) {
+      relativeColorsImport = './colors.css';
+    } else {
+      relativeColorsImport = './' + nquiDir + '/colors.css';
+    }
   } else {
     // Import from local file
   if (mainCssDir === 'app' || mainCssDir === 'src/app') {
@@ -67,7 +78,9 @@ export function generateSetupContent(framework, nquiCssPath, useLibraryImport = 
 `,
   };
 
-  const finalImport = `\n/* Import nqui design tokens */\n@import "${relativeImport}";\n`;
+  const finalImport = useLibraryImport
+    ? `\n/* Import nqui design tokens */\n@import "${relativeImport}";\n@import "${relativeColorsImport}";\n`
+    : `\n/* Import nqui design tokens */\n@import "${relativeImport}";\n`;
 
   const viteTailwindSources =
     framework === 'vite'

@@ -32,7 +32,7 @@ All commands are run from your **project root** (where `package.json` lives).
 | `npx @nqlib/nqui install-peers`                 | Install `@nqlib/nqui` and all required + optional peer dependencies (icons, cmdk, dnd-kit, etc.).                                                  |
 | `npx @nqlib/nqui init-cursor`                   | Write `.cursor/rules` and `.cursor/skills`, and **download nqui-skills** (copy `docs/nqui-skills` → `.cursor/nqui-skills`, create `AGENTS.md`).    |
 | `npx @nqlib/nqui init-skills`                   | Only download skills: copy to `.cursor/nqui-skills`, (re)create `AGENTS.md`. Use `--force` to overwrite.                                           |
-| `npx @nqlib/nqui init-css`                      | Detect framework, create `nqui/index.css` and `nqui/nqui-setup.css`, optionally copy example layouts. Options: `--sidebar`, `--force`, `--wizard`. |
+| `npx @nqlib/nqui init-css`                      | Detect framework, create `nqui/index.css`, `nqui/colors.css`, and `nqui/nqui-setup.css`, optionally copy example layouts. Options: `--sidebar`, `--force`, `--wizard`. |
 | `npx @nqlib/nqui` *(no args)*                   | Runs **init-css** with default output `nqui/index.css`.                                                                                            |
 | `npx @nqlib/nqui init-debug` / `init-debug-css` | Initialize debug CSS for `DebugPanel`.                                                                                                             |
 | `npm run nqui:init`                             | One-shot full setup (only after install added the script): install-peers → init-cursor → init-skills → init-css --sidebar --force.                 |
@@ -112,7 +112,8 @@ npx @nqlib/nqui init-css
 
 Creates:
 
-- `nqui/index.css` — imports `@nqlib/nqui/styles`
+- `nqui/index.css` — imports `@nqlib/nqui/styles` and `./colors.css`
+- `nqui/colors.css` — blue primary brand template (edit for your hue, or remove its import for monochrome)
 - `nqui/nqui-setup.css` — framework-specific Tailwind + nqui snippet
 
 ### 2b. Add import to main CSS (manual)
@@ -131,7 +132,10 @@ Add the nqui import to your **main CSS file**:
 
 ```css
 @import "@nqlib/nqui/styles";
+@import "./nqui/colors.css";
 ```
+
+Or import the bundled stub: `@import "./nqui/index.css";` (includes both lines above).
 
 **Option B:** Copy the **entire contents** of `nqui/nqui-setup.css` to the **very top** of your main CSS file.
 

@@ -9,7 +9,8 @@
  * Usage in CSS:
  *   transition: opacity var(--duration-quick) var(--ease-out);
  *
- * Default if unsure: --duration-quick (150ms) + --ease-out.
+ * Default if unsure: --duration-quick (150ms). Neutral curve is --ease-in-out (wired to
+ * Tailwind's `transition` default via @theme in index.css); use --ease-out for entrances.
  * Most UI motion should be this fast.
  */
 
@@ -43,13 +44,17 @@
      * ease-in for exits. Never elastic/bounce/overshoot — they look dated.
      */
 
-    /* Default ease-out — DECELERATION, for things arriving. Most common. */
+    /* Ease-out — crisp DECELERATION for things arriving (mount/unmount entrances).
+     * Opt-in signature curve; the neutral state-change default is --ease-in-out below. */
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Ease-in — ACCELERATION, for things leaving. */
     --ease-in: cubic-bezier(0.4, 0, 1, 1);
 
-    /* Ease-in-out — symmetric back-and-forth (toggles, sliders). Use sparingly. */
+    /* Ease-in-out — NEUTRAL BASELINE for state-change transitions (hover, color shifts,
+     * toggles, sliders). Wired to Tailwind's `transition`/`transition-colors` defaults via
+     * @theme in index.css, so it is the library's default curve. Prefer --ease-out for
+     * mount/unmount entrances when you want a crisper, more designed arrival. */
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Linear — ONLY for continuous motion (spinners, loading bars, marquees).

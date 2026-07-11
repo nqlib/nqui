@@ -39,9 +39,18 @@ pnpm add @nqlib/nqui cmdk @dnd-kit/core @dnd-kit/modifiers @dnd-kit/sortable @dn
 npx @nqlib/nqui init-css
 ```
 
-Then add to main CSS (`app/globals.css` or `src/index.css`): `@import "@nqlib/nqui/styles";`
+Creates `nqui/index.css`, `nqui/colors.css` (blue brand template), and `nqui/nqui-setup.css`.
 
-Or copy contents of `nqui/nqui-setup.css` to the top of main CSS.
+Then add to main CSS (`app/globals.css` or `src/index.css`):
+
+```css
+@import "@nqlib/nqui/styles";
+@import "./nqui/colors.css";
+```
+
+Or `@import "./nqui/index.css";` or copy contents of `nqui/nqui-setup.css` to the top of main CSS.
+
+Edit `nqui/colors.css` for brand hue; remove its import to keep the package monochrome default.
 
 ## 3. Cursor skills (optional)
 

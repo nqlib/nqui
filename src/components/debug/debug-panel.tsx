@@ -1392,7 +1392,7 @@ export function DebugPanel({ className }: DebugPanelProps) {
         return (
           <div
             key={`highlight-${element.tagName}-${rect.left}-${rect.top}`}
-            className="fixed pointer-events-none z-[var(--z-debug)] border-2 border-primary transition-all duration-100"
+            className="fixed pointer-events-none z-[var(--z-debug)] border-2 border-primary transition-all duration-[var(--duration-micro)]"
             style={{
               left: `${rect.left}px`,
               top: `${rect.top}px`,

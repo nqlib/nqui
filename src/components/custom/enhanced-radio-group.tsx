@@ -464,7 +464,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
         <label
           htmlFor={inputId}
           className={cn(
-            "sliding-indicator-target relative z-[var(--z-content)] inline-flex cursor-pointer items-center justify-center rounded-(--radio-pill-radius) border border-transparent text-xs font-medium leading-normal transition-colors motion-safe:duration-150",
+            "sliding-indicator-target relative z-[var(--z-content)] inline-flex cursor-pointer items-center justify-center rounded-(--radio-pill-radius) border border-transparent text-xs font-medium leading-normal transition-colors motion-safe:duration-[var(--duration-quick)]",
             /* The focusable Item is sr-only, so surface its keyboard focus on the visible label. */
             "has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-ring has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-background",
             /* Match TabsTrigger: inactive muted + hover; active label stays transparent — pill supplies fill */

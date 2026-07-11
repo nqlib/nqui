@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2026-07-10
+
+### Changed
+
+- **Default primary is neutral, not blue** — `@nqlib/nqui/styles` ships warm ink in light mode
+  (hue 95, near-neutral) and an achromatic primary scale in dark mode. Dark mode **inverts**
+  `--primary` to near-white with dark foreground so filled actions (Button, Badge, Checkbox,
+  Switch, etc.) stay at max contrast instead of mid-gray. Success / warning / destructive /
+  info semantic colors are unchanged.
+- **Motion defaults wired to tokens** — `@theme` maps Tailwind's default `transition` /
+  `transition-colors` duration and easing to `--duration-quick` and `--ease-in-out`. Interactive
+  components updated to reference motion tokens explicitly instead of hardcoded `duration-150`
+  / `ease-in-out`.
+
+### Added
+
+- **`init-css` copies `nqui/colors.css`** — blue primary template (hue 240) is written beside
+  `nqui/index.css` on init. Both `nqui/index.css` and `nqui-setup.css` import it after the
+  package styles so consumers get brand color by editing one file. Remove the `colors.css`
+  import to keep the package neutral default.
+
 ## [0.7.1] - 2026-07-10
 
 ### Fixed

@@ -31,10 +31,10 @@ const checkboxStyles = `
      * not the 200ms ease-out deceleration (slow tail reads as lag). Scoped to
      * the properties that actually change instead of "all". */
     transition:
-      background-color var(--duration-quick) var(--ease-in-out),
-      border-color var(--duration-quick) var(--ease-in-out),
-      height var(--duration-quick) var(--ease-in-out),
-      opacity var(--duration-quick) var(--ease-in-out);
+      background-color var(--duration-quick) var(--ease-[var(--ease-in-out)]),
+      border-color var(--duration-quick) var(--ease-[var(--ease-in-out)]),
+      height var(--duration-quick) var(--ease-[var(--ease-in-out)]),
+      opacity var(--duration-quick) var(--ease-[var(--ease-in-out)]);
     border-radius: 10px;
     border: 1px solid transparent;
     background-color: transparent;
@@ -70,8 +70,8 @@ const checkboxStyles = `
     margin: 0;
     padding: 0;
     transition:
-      background-color var(--duration-quick) var(--ease-in-out),
-      border-color var(--duration-quick) var(--ease-in-out);
+      background-color var(--duration-quick) var(--ease-[var(--ease-in-out)]),
+      border-color var(--duration-quick) var(--ease-[var(--ease-in-out)]);
   }
 
   .checkbox-animated-input:hover:not([data-state="checked"]):not([data-disabled]) {
@@ -98,7 +98,7 @@ const checkboxStyles = `
     border-top: none;
     border-left: none;
     transform: rotate(45deg) scale(0);
-    transition: transform var(--duration-quick) var(--ease-in-out);
+    transition: transform var(--duration-quick) var(--ease-[var(--ease-in-out)]);
     position: absolute;
     margin-top: -2px;
     z-index: var(--z-content);
@@ -147,8 +147,8 @@ const checkboxStyles = `
     margin: 0;
     padding: 0;
     transition:
-      background-color var(--duration-quick) var(--ease-in-out),
-      border-color var(--duration-quick) var(--ease-in-out);
+      background-color var(--duration-quick) var(--ease-[var(--ease-in-out)]),
+      border-color var(--duration-quick) var(--ease-[var(--ease-in-out)]);
   }
 
   .checkbox-round-input:hover:not([data-state="checked"]):not([data-disabled]) {
@@ -174,7 +174,7 @@ const checkboxStyles = `
     border-top: none;
     border-left: none;
     transform: rotate(45deg) scale(0);
-    transition: transform var(--duration-quick) var(--ease-in-out);
+    transition: transform var(--duration-quick) var(--ease-[var(--ease-in-out)]);
     position: absolute;
     margin-top: -2px;
     z-index: var(--z-content);
