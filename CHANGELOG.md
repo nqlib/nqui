@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-07-15
+
+### Fixed
+
+- **ToggleGroup could be dragged out of alignment on its cross axis** — the group sets
+  `overflow-x: auto` so a toolbar too wide for its parent scrolls sideways rather than wrapping.
+  Per the CSS overflow spec, setting overflow on one axis resolves the *other* axis from
+  `visible` to `auto`, so the cross axis silently became scrollable. Items carry a `hit-area-*`
+  `::before` that intentionally overhangs the row by ~8px as a larger tap target, and that
+  overhang then counted as scrollable content — the whole pill could be dragged vertically and
+  its items slid off alignment. Both axes are now pinned explicitly
+  (`overflow-y-hidden` when horizontal, `overflow-x-hidden` when vertical), which clips only the
+  invisible overhang. (`overflow: clip` is not usable here: it computes to `hidden` when the
+  other axis is `auto`.)
+
+### Added
+
+- **ToggleGroup layout rules in the consumer skills** — the two failure modes above are now
+  documented where agents actually read: `docs/components/nqui-toggle-group.md` (new
+  *Layout — let the group own it* section), `docs/nqui-skills/AGENT_PROMPT.md` (component
+  mappings + anti-patterns), and `docs/nqui-skills/nqui-components/SKILL.md` (pre-ship
+  checklist). The general rule: reach for a component's props before its `className` —
+  components that manage their own overflow encode invariants a utility class silently breaks.
+  Use the `spacing` prop; never `flex-wrap`, `gap-*`, or `overflow-*` on `<ToggleGroup>`.
+
 ## [0.7.2] - 2026-07-10
 
 ### Changed

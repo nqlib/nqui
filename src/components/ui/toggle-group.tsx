@@ -64,8 +64,15 @@ const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(function 
       style={{ "--gap": spacing } as React.CSSProperties}
       className={cn(
         "group/toggle-group flex w-fit max-w-full flex-row items-stretch gap-[--spacing(var(--gap))] data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-stretch data-[orientation=vertical]:max-w-none data-[orientation=vertical]:max-h-full",
-        /* Single row + hidden-scrollbar horizontal scroll when parent is too narrow — never wrap */
-        "data-[orientation=horizontal]:overflow-x-auto data-[orientation=vertical]:overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        /* Single row + hidden-scrollbar horizontal scroll when parent is too narrow — never wrap.
+           The cross axis MUST be pinned hidden, not left to compute: setting overflow on one
+           axis makes CSS resolve the other from `visible` to `auto`, and the items' `hit-area-*`
+           ::before (which intentionally overhangs the row by ~8px as a larger tap target) then
+           counts as scrollable content — so the group could be dragged along the cross axis and
+           the items would slide out of alignment. Hidden clips only that invisible overhang. */
+        "data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden",
+        "data-[orientation=vertical]:overflow-y-auto data-[orientation=vertical]:overflow-x-hidden",
+        "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         /* Same flush pill for outline (type=multiple) and segmented (type=single): one shell, no hairline track */
         hasSegmentedStyle &&
           "rounded-full border border-input bg-background [--toggle-inner-radius:9999px]",

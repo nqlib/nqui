@@ -50,6 +50,8 @@ For every interactive surface, design **all** required states from `STATES.md`:
 |-----------|-----|-----------|
 | Inline toolbar selection (mode, format, view) | `ToggleGroup` | `RadioGroup` |
 | Form choice with descriptions | `RadioGroup` | `ToggleGroup` |
+| Separated toggle pills (not flush) | `spacing={2}` prop | `gap-*` className (fights `spacing={0}`) |
+| Toolbar wider than its parent | Nothing — `ToggleGroup` already scrolls sideways | `flex-wrap` (breaks the pill) |
 | Destructive confirmation | `AlertDialog` | `Dialog` |
 | Form with ≤ 5 fields | `Dialog` | `Sheet` for big forms only |
 | Form with > 5 fields | `Sheet` or route | `Dialog` (modal trap) |
@@ -87,8 +89,11 @@ For every interactive surface, design **all** required states from `STATES.md`:
 - `shadow-lg` on inline (non-elevated) surfaces
 - `Tooltip` as the only label for an icon button (touch users see nothing)
 - `Submit` / `OK` / `Cancel` (in non-destructive flows) buttons
+- `flex-wrap`, `gap-*` or `overflow-*` on `<ToggleGroup>` — it owns its row, gaps and overflow. Use the `spacing` prop; a narrow parent already scrolls sideways.
 
 If you find yourself writing any of these, stop. The kit has a correct alternative — find it in `RECIPES.md` or `COMPONENTS_INDEX.md`.
+
+**The general rule behind that last one:** when a component's layout looks wrong, reach for its props before its `className`. Components that manage their own overflow (`ToggleGroup`, `ScrollArea`, `Tabs`) encode invariants a utility class will silently break.
 
 ---
 

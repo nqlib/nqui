@@ -53,9 +53,21 @@ Sizes are enforced in CI (`npm run size`), so this table stays honest.
 
 **After `npm install`:** the post-install script may add a `nqui:init` script and write initial Cursor rules under `.cursor/`. It does **not** copy full **nqui-skills** or set up CSS — run the commands below. Run `npx nqui-setup` (same as `npx @nqlib/nqui setup`) anytime to see next steps again. Post-install is skipped when `CI=true` or `CI=1`.
 
-### IDE skills (Cursor and compatible agents)
+### Agent skills
 
-Copy the library’s **skills** into your app so your IDE can follow nqui patterns (components, design system, ToggleGroup rules, etc.):
+Copy the library’s **skills** into your app so your agent can follow nqui patterns (components, design system, ToggleGroup rules, etc.). Optional — the components work without it.
+
+**Any agent** ([agentskills.io](https://agentskills.io)-compatible: Claude Code, Cursor, and others). Reads this repo directly, so it works without installing the package:
+
+```bash
+npx skills add nqlib/nqui --skill nqui -y
+```
+
+Copies the hub plus its references into `.agents/skills/nqui/`.
+
+#### Cursor (nqui CLI)
+
+Run from your app root. These read the installed package, so `@nqlib/nqui` must be a dependency. They also copy the **per-component docs** (`docs/components/`), which the command above does not:
 
 
 | Command                       | What it does                                                                                                                                                                                                                       |
