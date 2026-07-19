@@ -73,7 +73,7 @@ Same structure as `packages/nqui/src/components/AppLayout.tsx`:
 
 ## Card with sticky header
 
-**Card** `stickyHeader` wires this pattern for you: `FrostedGlass` with `borderRadius={8}` under **CardHeader**, scrollable **CardContent** below. See `ComponentShowcase` and `packages/nqui/src/components/ui/card.tsx`.
+**Card** `stickyHeader` wires this pattern for you: `FrostedGlass` with `borderRadius={8}` under **CardHeader**, scrollable **CardContent** below. See nqui-showcase `/catalog` and `src/components/ui/card.tsx`.
 
 Use `--z-sticky-content` on the sticky region when the glass sits inside a card, not the full page.
 

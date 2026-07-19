@@ -187,7 +187,7 @@ Components: `Dialog`, `Field`, `Input`, `Select`, `Button`.
 
 | Mode | Question it answers | Where in the dev app |
 |------|---------------------|----------------------|
-| **Recipes** | How do I build a real screen? | `/`, `/patterns`, `/recipes/settings` |
+| **Recipes** | How do I build a real screen? | `/blocks`, `/patterns` |
 | **Catalog** | What props/variants exist? | `/catalog` |
 | **Tokens** | What are the colors, radius, type? | `/design-system` |
 
@@ -310,12 +310,15 @@ Scroll: custom main scroll container — see `README.md` → Layout & Scroll Pat
 - [ ] States: Skeleton / Empty / Alert (not placeholder lorem boxes)
 - [ ] Z-index from `elevation.css` only
 
-## Dev app map
+## Live catalog map (nqui-showcase)
 
 | Route | Recipe |
 |-------|--------|
-| `/` | Hub — start here |
+| `/nqui` | Hub — start here |
+| `/blocks` | Compact composed patterns (settings, toolbar, forms) |
 | `/patterns` | Commerce dashboard (dense product UI) |
-| `/recipes/settings` | Workspace settings (forms) |
+| `/recipes/elevation` | Surface / elevation tokens |
 | `/catalog` | Full variant catalog |
 | `/design-system` | Tokens |
+
+Catalog source: `../nqui-showcase/src/components/showcase/`. Do not recreate these pages in the nqui package.

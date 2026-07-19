@@ -14,7 +14,7 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 
 ## Start here (humans)
 
-1. **Building a screen (not looking up one prop)?** Read **`docs/nqui-skills/COMPOSITION.md`** and run the dev app **Recipes** hub (`npm run dev` → `/`).
+1. **Building a screen (not looking up one prop)?** Read **`docs/nqui-skills/COMPOSITION.md`** and open the **nqui-showcase** Recipes hub (`pnpm nqui:local && pnpm dev` → `/nqui`).
 2. **Know your task?** Open **`docs/nqui-skills/HUMAN_GUIDE.md`** (in the package) or **`node_modules/@nqlib/nqui/docs/nqui-skills/HUMAN_GUIDE.md`** after install — maps *forms, toolbar, dashboard, empty/loading, …* → which doc to open first.
 2. **Pick one component** → **`nqui-<kebab-case>.md`** in this folder (e.g. `nqui-combobox.md`). Don’t load every file.
 3. **Need “which component?” tables** → scroll to **When to Use (Selection & Action Components)** and **Shared Conventions** below; skip **Prerequisites** until you wire build/CSS.
@@ -41,7 +41,7 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 - **CSS vars required:** nqui uses `--primary`, `--background`, `--foreground`, etc. Run `npx @nqlib/nqui init-css`.
 - **Enhanced vs Core:** Default exports (`Button`, `Badge`, `Checkbox`, `Select`, etc.) are the polished/3D variants. Implementations live in **`packages/nqui/src/components/ui/*.tsx`** (single file per concern). Use `CoreButton`, `CoreBadge`, `CoreCheckbox`, etc. for base Radix/shadcn-style behavior. Separator: single component with `variant` prop (no CoreSeparator).
 - **Grouped controls:** ButtonGroup, ToggleGroup share border; outer container uses **pill** radius (`rounded-full`). ToggleGroup uses item dividers (`border-foreground/20`) or `ToggleGroupSeparator`.
-- **Toolbar context:** Always show Toggle/ToggleGroup in realistic context (document toolbar, chart settings, etc.). Reference: `src/pages/ComponentShowcase.tsx`.
+- **Toolbar context:** Always show Toggle/ToggleGroup in realistic context (document toolbar, chart settings, etc.). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup.
 - **Style injection:** Some components inject `<style>` once at mount (e.g. **Combobox** input chrome in `ui/combobox.tsx`) → safe for SSR if the component is client-only (`"use client"`).
 - **OKLCH:** ColorPicker expects OKLCH strings (`oklch(0.5 0.15 240)`), not hex.
 - **SidebarProvider:** Must wrap entire layout (sidebar + content).
@@ -53,7 +53,7 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 
 ## Layout & Scroll Patterns
 
-This section documents the CSS patterns used in the showcase app to ensure proper scroll behavior and prevent sticky element issues.
+This section documents the CSS patterns used in the **nqui-showcase** catalog app to ensure proper scroll behavior and prevent sticky element issues.
 
 ### Sticky Elements & Momentum Scroll
 
@@ -157,7 +157,7 @@ Use these rules to choose the right component. **Selection** = user picks from o
 
 **For toolbars, headers, and inline controls:** Always use ToggleGroup (never RadioGroup). Examples: view mode (List/Grid), scale (Linear/Log), format (Bold/Italic). Use RadioGroup only for form context (settings modal, stacked preference list).
 
-**Context-first design:** Place toolbars in realistic app context (document editor with content area, chart panel with labels). Never show Toggle/ToggleGroup floating alone. Canonical implementation: `src/pages/ComponentShowcase.tsx` → Toggle & ToggleGroup section.
+**Context-first design:** Place toolbars in realistic app context (document editor with content area, chart panel with labels). Never show Toggle/ToggleGroup floating alone. Canonical implementation: nqui-showcase `/catalog` → Toggle & ToggleGroup section.
 
 ### Single selection (pick one of N)
 
@@ -414,7 +414,7 @@ Use these rules to choose the right component. **Selection** = user picks from o
 2. **Read doc** – Open `nqui-<name>.md` for import and patterns.
 3. **Size** – Use `sm`/`default`/`lg` per design system. No custom heights.
 4. **Enhanced vs Core** – Prefer default (enhanced); use `Core*` when plain style needed.
-5. **Toolbar/context** – Place Toggle/ToggleGroup in realistic context (document toolbar, chart panel). Reference: `src/pages/ComponentShowcase.tsx`.
+5. **Toolbar/context** – Place Toggle/ToggleGroup in realistic context (document toolbar, chart panel). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup.
 6. **SSR** – Wrap style-injecting components (Checkbox, Rating, Combobox) in client boundary if SSR.
 7. **Z-index** – Use `var(--z-modal)`, `var(--z-popover)`, etc.
 8. **Keyboard** – Use `shouldIgnoreKeyboardShortcut` for global listeners.

@@ -35,4 +35,4 @@ import { Toggle } from "@nqlib/nqui"
 
 ## Context
 
-Place in realistic app context (toolbar, panel). Reference: `src/pages/ComponentShowcase.tsx` → Toggle & ToggleGroup section.
+Place in realistic app context (toolbar, panel). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup section.

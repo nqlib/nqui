@@ -115,7 +115,7 @@ Never use flat `bg-muted` only for selected state; always add gradient + shadow 
 
 ## Toolbar & In-Context Design
 
-**Rule:** Show controls in realistic app context, not isolated. Reference: `src/pages/ComponentShowcase.tsx` (Toggle & ToggleGroup section).
+**Rule:** Show controls in realistic app context, not isolated. Reference: nqui-showcase `/catalog` (Toggle & ToggleGroup section).
 
 | Context | Layout | Example |
 |---------|--------|---------|
@@ -152,7 +152,7 @@ Never use flat `bg-muted` only for selected state; always add gradient + shadow 
 - **ScrollArea root in a capped flex column:** **`h-0 max-h-full min-h-0 min-w-0 flex-1 overflow-hidden w-full`** so flex assigns a **finite** slot (not content-height blow-through).
 - **`viewportStyle`:** **`position: "absolute"`, `inset: 0`, `minHeight: 0`, `minWidth: 0`** — **`height: 100%`** on the Radix viewport often **does not bind** in deep flex layouts; the viewport then grows with content and overlaps a footer below. See **`docs/components/nqui-scroll-area.md` §6** and **`docs/nqui-skills/nqui-data-tables/SKILL.md`**.
 
-**Reference implementations:** `Card` + **`stickyHeader`** in `src/components/ui/card.tsx`; `src/pages/ComponentShowcase.tsx` where ScrollArea sits in a bounded layout.
+**Reference implementations:** `Card` + **`stickyHeader`** in `src/components/ui/card.tsx`; nqui-showcase `/catalog` where ScrollArea sits in a bounded layout.
 
 **Checklist before merging a scrollable card:**
 

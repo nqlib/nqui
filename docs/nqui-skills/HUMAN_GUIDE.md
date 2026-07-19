@@ -6,13 +6,13 @@ Use this file for **wayfinding** before diving into `README.md` (long) or dozens
 
 **Read:** [`COMPOSITION.md`](./COMPOSITION.md) — when to use Card, ToggleGroup vs RadioGroup, three-surface cap, anti-patterns.
 
-**Dev app (`npm run dev` in `packages/nqui`):**
+**Live catalog (sibling `nqui-showcase` — `pnpm nqui:local && pnpm dev`):**
 
 | Route | Purpose |
 |-------|---------|
-| `/` | **Recipes hub** — start here |
+| `/nqui` | **Recipes hub** — start here |
+| `/blocks` | Compact composed patterns |
 | `/patterns` | Commerce dashboard recipe |
-| `/recipes/settings` | Settings form recipe |
 | `/catalog` | Component variant catalog |
 | `/design-system` | Tokens |
 

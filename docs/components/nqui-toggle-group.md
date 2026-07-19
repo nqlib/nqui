@@ -79,7 +79,7 @@ Dividers are shown via item borders by default (using `foreground/20` for theme-
 
 ## Context
 
-Place in realistic app context (document toolbar, chart settings panel). Never show in isolation. Reference: `src/pages/ComponentShowcase.tsx` → Toggle & ToggleGroup section (document editor, chart settings).
+Place in realistic app context (document toolbar, chart settings panel). Never show in isolation. Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup section (document editor, chart settings).
 
 ## Notes
 

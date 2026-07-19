@@ -310,12 +310,14 @@ Scroll: custom main scroll container — see `README.md` → Layout & Scroll Pat
 - [ ] States: Skeleton / Empty / Alert (not placeholder lorem boxes)
 - [ ] Z-index from `elevation.css` only
 
-## Dev app map
+## Live catalog map (nqui-showcase)
 
 | Route | Recipe |
 |-------|--------|
-| `/` | Hub — start here |
+| `/nqui` | Hub — start here |
 | `/patterns` | Commerce dashboard (dense product UI) |
 | `/recipes/settings` | Workspace settings (forms) |
 | `/catalog` | Full variant catalog |
 | `/design-system` | Tokens |
+
+Catalog source: `../nqui-showcase/src/components/showcase/`. Do not recreate these pages in the nqui package.

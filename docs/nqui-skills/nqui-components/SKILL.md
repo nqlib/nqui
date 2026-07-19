@@ -64,11 +64,11 @@ When `Tabs` sit inside a **page-level** vertical scroller (`overflow-y-auto` on 
 | Chart/settings | Label + inline controls; `rounded-lg border bg-muted/30 p-3` | `/catalog` → Chart settings |
 | Standalone | Inline with related UI | `/catalog` → Standalone toggle |
 
-**Canonical implementation:** `/catalog` Toggle section, or full pages at `/patterns` and `/recipes/settings`.
+**Canonical implementation:** `/catalog` Toggle section, or full pages at `/patterns` and `/blocks` (settings / toolbar).
 
 ## Composition (product UI)
 
-Before picking components, read **`../COMPOSITION.md`** (or `docs/nqui-skills/COMPOSITION.md`). Dev app: **Recipes** at `/`, catalog at `/catalog`.
+Before picking components, read **`../COMPOSITION.md`** (or `docs/nqui-skills/COMPOSITION.md`). Live demos: **Recipes** at `/nqui`, catalog at `/catalog` in **nqui-showcase**.
 
 ### Pre-ship checklist
 

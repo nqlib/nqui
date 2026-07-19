@@ -1,13 +1,14 @@
 ---
 name: nqui-docs
 description: >-
-  Maintain nqui documentation — component markdown, skill bundle, showcase app, HTTP agent routes.
+  Maintain nqui documentation — component markdown, skill bundle, HTTP agent routes.
   NOT for integrating nqui in external apps. Use skills/consumer/nqui for that.
+  Live catalog/recipes live in sibling nqui-showcase — do not recreate them here.
 license: MIT
 compatibility: Node 20+, Vite 7
 metadata:
   author: nqlib
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # nqui-docs (maintainer)
@@ -20,10 +21,19 @@ metadata:
 |----------|--------------|
 | `docs/components/` API markdown | Library source changes (see nqui-dev) |
 | `docs/nqui-skills/` sub-skills | Consumer app integration |
-| `skills/consumer/nqui/` consumer SOT | |
-| Showcase app (`src/App.tsx`, pages) | |
+| `skills/consumer/nqui/` consumer SOT | **Vite showcase / catalog pages in this repo** |
 | `public/.well-known/`, `public/llms.txt` | |
 | `scripts/generate-docs.js` | |
+
+## Catalog / recipes (moved)
+
+Live component catalog, patterns, and recipes live in sibling **nqui-showcase**:
+
+- Routes: `/nqui`, `/catalog`, `/patterns`, `/recipes/*`, `/design-system`
+- Source: `../nqui-showcase/src/components/showcase/`
+- QA: `cd ../nqui-showcase && pnpm nqui:local && pnpm dev`
+
+**Do not add `src/pages/` catalog surfaces or a showcase app back into this package.**
 
 ## Cross-links
 
@@ -45,17 +55,12 @@ metadata:
 1. Add `docs/components/nqui-<name>.md` following existing format
 2. Add row to `docs/components/README.md` tables
 3. Verify props match `src/` exports
+4. Add a specimen in **nqui-showcase** `/catalog` when the component should appear in the live catalog
 
 ### Update consumer skill
 
 1. Edit `skills/consumer/nqui/SKILL.md` (≤150 lines; detail in `docs/nqui-skills/`)
 2. `npm run sync:skills && npm run skill:validate`
-
-### Showcase app
-
-- Routes: `src/App.tsx`, nav SSOT: `src/config/showcase-nav.ts`
-- Dev: `npm run dev` (port 3000)
-- Build: `npm run build:app` → `dist-app/`
 
 ## DoD checklist
 

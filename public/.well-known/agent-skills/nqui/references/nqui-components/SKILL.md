@@ -68,7 +68,7 @@ When `Tabs` sit inside a **page-level** vertical scroller (`overflow-y-auto` on 
 
 ## Composition (product UI)
 
-Before picking components, read **`../COMPOSITION.md`** (or `docs/nqui-skills/COMPOSITION.md`). Dev app: **Recipes** at `/`, catalog at `/catalog`.
+Before picking components, read **`../COMPOSITION.md`** (or `docs/nqui-skills/COMPOSITION.md`). Live demos: **Recipes** at `/nqui`, catalog at `/catalog` in **nqui-showcase**.
 
 ### Pre-ship checklist
 

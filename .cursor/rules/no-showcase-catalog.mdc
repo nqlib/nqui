@@ -1,0 +1,11 @@
+# Do not maintain a showcase catalog in nqui
+
+**Never** add or restore a Vite component catalog, recipes app, or `src/pages/` demo surfaces in this repository.
+
+| Need | Where |
+|------|--------|
+| Live `/catalog`, recipes, patterns | Sibling **nqui-showcase** → `src/components/showcase/` |
+| Pre-publish visual QA | `cd ../nqui-showcase && pnpm nqui:local && pnpm dev` |
+| Library components | `src/components/`, `src/entries/` |
+
+`npm run dev` only prints this pointer. See [AGENTS.md](../../AGENTS.md) and [CLAUDE.md](../../CLAUDE.md).

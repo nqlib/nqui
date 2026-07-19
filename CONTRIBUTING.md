@@ -7,17 +7,26 @@ Thanks for contributing. This guide covers maintainer workflow — **not** how t
 1. Read [`docs/index.md`](docs/index.md) — internal vault index
 2. Load the right agent skill from [`AGENTS.md`](AGENTS.md):
    - Library changes → `.agents/skills/nqui-dev/`
-   - Docs / skills / showcase → `.agents/skills/nqui-docs/`
-3. Check [`docs/product/ai-contract.md`](docs/product/ai-contract.md) for Definition of Done
+   - Docs / skills → `.agents/skills/nqui-docs/`
+   - Live catalog specimens → sibling **nqui-showcase** (`src/components/showcase/`)3. Check [`docs/product/ai-contract.md`](docs/product/ai-contract.md) for Definition of Done
 
 ## Development setup
 
 ```bash
 npm install
-npm run dev          # showcase app (port 3000)
 npm run build:lib    # library build
+npm run test
 ```
 
+**Live catalog / recipes** are not in this repo. Use the sibling app:
+
+```bash
+cd ../nqui-showcase
+pnpm nqui:local
+pnpm dev             # http://localhost:5173/catalog
+```
+
+Do **not** add a Vite showcase or `src/pages/` catalog back into this package.
 ## Agent skills
 
 | Audience | Edit here | Do NOT edit |

@@ -8,12 +8,9 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores([
     'dist',
-    'src/pages/**',
     'src/main.tsx',
     'src/App.tsx',
     'src/components/debug/**',
-    'src/components/component-example.tsx',
-    'src/components/design-system/**',
     'scripts/examples/**',
   ]),
   {

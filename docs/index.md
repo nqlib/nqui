@@ -25,7 +25,7 @@ Maintainer-facing notes: **why** and **where** — not public API prose.
 | Task | Skill |
 |------|-------|
 | Change library source, build, publish | [`.agents/skills/nqui-dev/`](../.agents/skills/nqui-dev/SKILL.md) |
-| Change component docs, showcase app | [`.agents/skills/nqui-docs/`](../.agents/skills/nqui-docs/SKILL.md) |
+| Change component docs, catalog specimens | [`.agents/skills/nqui-docs/`](../.agents/skills/nqui-docs/SKILL.md) + sibling **nqui-showcase** |
 | Integrate nqui in an **external app** | [`skills/consumer/nqui/`](../skills/consumer/nqui/SKILL.md) — **not** maintainer skills |
 
 ## Related (not duplicated here)
