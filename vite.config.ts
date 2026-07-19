@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => {
             carousel: path.resolve(__dirname, "src/entries/carousel.ts"),
             command: path.resolve(__dirname, "src/entries/command.ts"),
             sortable: path.resolve(__dirname, "src/entries/sortable.ts"),
+            dnd: path.resolve(__dirname, "src/entries/dnd.ts"),
             calendar: path.resolve(__dirname, "src/entries/calendar.ts"),
             sonner: path.resolve(__dirname, "src/entries/sonner.ts"),
             drawer: path.resolve(__dirname, "src/entries/drawer.ts"),
@@ -60,6 +61,10 @@ export default defineConfig(({ mode }) => {
             "@dnd-kit/modifiers",
             "@dnd-kit/sortable",
             "@dnd-kit/utilities",
+            // Pragmatic drag-and-drop (the ./dnd entry) and all its subpaths.
+            // Externalized so the core bundle stays clean; consumers install
+            // only if they use ./dnd. Regex covers /element/adapter etc.
+            /^@atlaskit\/pragmatic-drag-and-drop/,
             "embla-carousel-react",
             "@tanstack/react-table",
             "react-day-picker",

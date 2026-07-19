@@ -87,6 +87,18 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(tailwind-merge@3.6.0)(tailwindcss@4.3.0)
     devDependencies:
+      '@atlaskit/pragmatic-drag-and-drop':
+        specifier: ^2.0.1
+        version: 2.0.1
+      '@atlaskit/pragmatic-drag-and-drop-auto-scroll':
+        specifier: ^3.0.0
+        version: 3.0.0
+      '@atlaskit/pragmatic-drag-and-drop-hitbox':
+        specifier: ^2.0.0
+        version: 2.0.0
+      '@atlaskit/pragmatic-drag-and-drop-live-region':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@codesandbox/sandpack-react':
         specifier: ^2.20.0
         version: 2.20.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -228,6 +240,18 @@ packages:
 
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
+
+  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@3.0.0':
+    resolution: {integrity: sha512-8TlkMi417zIPrTnCpbNV0Ce63JTKBn3dGkqiadkGQROvzDAox7Y9TYRHpvbQiEdtPoHWnmyRBi+RsGDxXsQxgQ==}
+
+  '@atlaskit/pragmatic-drag-and-drop-hitbox@2.0.0':
+    resolution: {integrity: sha512-vkXCB/23pT8YgYU8biGmR9uu0fr9oWoaq2GMSKyiNPk3reA12XVrCdgB2SLBoB24Ic1FOm9PdaQJ9ZSUQdCVpw==}
+
+  '@atlaskit/pragmatic-drag-and-drop-live-region@2.0.0':
+    resolution: {integrity: sha512-GrlZdZQSw4yegSrU8EDcaO6IBDEAYbSMgv3tTTfkbdmOjpEnwXmNGHe7CiA3GR9LgUNiKpERR9tlfa+viXIGvA==}
+
+  '@atlaskit/pragmatic-drag-and-drop@2.0.1':
+    resolution: {integrity: sha512-5iSbCveKuWYh0HijDxfSsYKD2VE0UPObI9jO1pqq+RBk9LzaoOYeKyW0Fobv/6db8HAPcyT3vhRy8bmk5TMcMw==}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -2193,6 +2217,9 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
+  bind-event-listener@3.0.0:
+    resolution: {integrity: sha512-PJvH288AWQhKs2v9zyfYdPzlPqf5bXbGMmhmUIY9x4dAUGIWgomO771oBQNwJnMQSnUIXhKu6sgzpBRXTlvb8Q==}
+
   bippy@0.5.41:
     resolution: {integrity: sha512-jCP2pXXLhXqPrAN+iSEFZmLI4uUM4fjSqajh0K+TmM062VehfDT3ZJNkrTGyN701Z5XMejs9qAudSqkMGhSMKg==}
     peerDependencies:
@@ -3587,6 +3614,9 @@ packages:
       '@types/react-dom':
         optional: true
 
+  raf-schd@4.0.3:
+    resolution: {integrity: sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==}
+
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
@@ -4387,6 +4417,26 @@ snapshots:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
+
+  '@atlaskit/pragmatic-drag-and-drop-auto-scroll@3.0.0':
+    dependencies:
+      '@atlaskit/pragmatic-drag-and-drop': 2.0.1
+      '@babel/runtime': 7.29.7
+
+  '@atlaskit/pragmatic-drag-and-drop-hitbox@2.0.0':
+    dependencies:
+      '@atlaskit/pragmatic-drag-and-drop': 2.0.1
+      '@babel/runtime': 7.29.7
+
+  '@atlaskit/pragmatic-drag-and-drop-live-region@2.0.0':
+    dependencies:
+      '@babel/runtime': 7.29.7
+
+  '@atlaskit/pragmatic-drag-and-drop@2.0.1':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      bind-event-listener: 3.0.0
+      raf-schd: 4.0.3
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -6429,6 +6479,8 @@ snapshots:
 
   baseline-browser-mapping@2.10.33: {}
 
+  bind-event-listener@3.0.0: {}
+
   bippy@0.5.41(react@19.2.6):
     dependencies:
       react: 19.2.6
@@ -7828,6 +7880,8 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.15
       '@types/react-dom': 19.2.3(@types/react@19.2.15)
+
+  raf-schd@4.0.3: {}
 
   range-parser@1.2.1: {}
 

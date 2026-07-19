@@ -38,6 +38,13 @@ const FORBIDDEN_INLINE: Array<{ pkg: string; signatures: string[] }> = [
     pkg: "@codesandbox/sandpack-react",
     signatures: ["SandpackProvider", "useSandpack"],
   },
+  {
+    pkg: "@atlaskit/pragmatic-drag-and-drop",
+    // Internal module-body identifiers, not the public import specifiers. These
+    // only appear if the package source itself is bundled (the ./dnd entry must
+    // import it as an external, never inline it).
+    signatures: ["getElementFromPointWithoutHoneyPot", "makeDropTarget", "honeyPot"],
+  },
 ]
 
 function readAllJs(): Array<{ file: string; contents: string }> {

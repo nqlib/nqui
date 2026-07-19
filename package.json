@@ -27,6 +27,11 @@
       "import": "./dist/sortable.es.js",
       "require": "./dist/sortable.cjs.js"
     },
+    "./dnd": {
+      "types": "./dist/entries/dnd.d.ts",
+      "import": "./dist/dnd.es.js",
+      "require": "./dist/dnd.cjs.js"
+    },
     "./calendar": {
       "types": "./dist/entries/calendar.d.ts",
       "import": "./dist/calendar.es.js",
@@ -154,6 +159,10 @@
     "tailwind-variants": "^3.2.2"
   },
   "peerDependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^2.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.0.0",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@dnd-kit/core": "^6.0.0",
     "@dnd-kit/modifiers": "^9.0.0",
@@ -173,6 +182,18 @@
     "vaul": "^1.0.0"
   },
   "peerDependenciesMeta": {
+    "@atlaskit/pragmatic-drag-and-drop": {
+      "optional": true
+    },
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": {
+      "optional": true
+    },
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": {
+      "optional": true
+    },
+    "@atlaskit/pragmatic-drag-and-drop-live-region": {
+      "optional": true
+    },
     "@codesandbox/sandpack-react": {
       "optional": true
     },
@@ -217,6 +238,10 @@
     }
   },
   "devDependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^2.0.1",
+    "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^3.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-hitbox": "^2.0.0",
+    "@atlaskit/pragmatic-drag-and-drop-live-region": "^2.0.0",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/modifiers": "^9.0.0",

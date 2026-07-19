@@ -28,6 +28,7 @@ const BUDGETS = {
   "carousel.es.js": 5,
   "calendar.es.js": 5,
   "sortable.es.js": 5,
+  "dnd.es.js": 25,
   "debug.es.js": 5,
 };
 
