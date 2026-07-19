@@ -98,6 +98,7 @@
     "dev": "node scripts/dev-catalog-pointer.js",
     "sync:skills": "node scripts/sync-consumer-skills.mjs",
     "skill:validate": "node scripts/validate-skills.mjs",
+    "product:lint": "node scripts/lint-product-docs.mjs",
     "build": "npm run sync:skills && npm run build:lib",
     "build:lib": "vite build --mode library && npm run build:types && npm run build:styles && npm run verify:build && npm run copy:css",
     "build:types": "tsc -p tsconfig.lib.json",

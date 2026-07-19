@@ -6,6 +6,10 @@ Maintainer-facing notes: **why** and **where** — not public API prose.
 
 | Topic | Location |
 |-------|----------|
+| What we're building (epics / stories) | [`docs/product/README.md`](./product/README.md) |
+| How we work (agents + humans) | [`docs/product/agentic-coding-guideline.md`](./product/agentic-coding-guideline.md) |
+| Git workflow (branches, releases) | [`docs/conventions.md`](./conventions.md) |
+| Durable project context | [`memory/INDEX.md`](../memory/INDEX.md) — write-policy in [`memory/skills.md`](../memory/skills.md) |
 | Public API (components) | [`docs/components/`](./components/README.md) — shipped in npm |
 | Consumer agent skills (SOT) | [`skills/consumer/nqui/`](../skills/consumer/nqui/SKILL.md) |
 | Detailed skill bundle (npm) | [`docs/nqui-skills/`](./nqui-skills/SKILL.md) — synced from consumer SOT |
@@ -17,7 +21,7 @@ Maintainer-facing notes: **why** and **where** — not public API prose.
 | Section | Purpose |
 |---------|---------|
 | [`architecture/`](./architecture/overview.md) | Repo layers, build pipeline, package layout |
-| [`product/`](./product/roadmap.md) | Roadmap, maintainer DoD (`ai-contract.md`) |
+| [`product/`](./product/README.md) | Epics & stories, working guideline, roadmap, maintainer DoD (`ai-contract.md`) |
 | [`meta/`](./meta/llm-usage.md) | LLM/agent usage, publishing |
 
 ## Maintainer skills

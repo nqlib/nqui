@@ -4,11 +4,16 @@ Thanks for contributing. This guide covers maintainer workflow — **not** how t
 
 ## Before you start
 
+0. Find the work's home: [`docs/product/README.md`](docs/product/README.md). Anything that changes
+   the public API surface needs a story (`docs/product/epics/**/stories/ST-*.md`) before it lands —
+   see [`agentic-coding-guideline.md`](docs/product/agentic-coding-guideline.md) §8. Bug fixes log a
+   dated line under the owning story's `## Bugs`.
 1. Read [`docs/index.md`](docs/index.md) — internal vault index
 2. Load the right agent skill from [`AGENTS.md`](AGENTS.md):
    - Library changes → `.agents/skills/nqui-dev/`
    - Docs / skills → `.agents/skills/nqui-docs/`
-   - Live catalog specimens → sibling **nqui-showcase** (`src/components/showcase/`)3. Check [`docs/product/ai-contract.md`](docs/product/ai-contract.md) for Definition of Done
+   - Live catalog specimens → sibling **nqui-showcase** (`src/components/showcase/`)
+3. Check [`docs/product/ai-contract.md`](docs/product/ai-contract.md) for Definition of Done
 
 ## Development setup
 
@@ -49,6 +54,9 @@ npm run sync:skills && npm run skill:validate
 
 ## Pull request checklist
 
+- [ ] Branch off `dev`, PR into `dev` — see [`docs/conventions.md`](docs/conventions.md)
+- [ ] Story updated in the same PR — criteria ticked, `status: review` (never `done`), epic table in sync
+- [ ] `npm run product:lint` (IDs unique, frontmatter valid, epic tables match)
 - [ ] `npm run sync:skills && npm run skill:validate`
 - [ ] `npm run lint && npm run test && npm run build`
 - [ ] Component docs updated (if applicable)

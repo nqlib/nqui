@@ -2,6 +2,13 @@
 
 Checklist for changes to **this repository**. External app integration is covered by the [consumer skill](../../skills/consumer/nqui/SKILL.md).
 
+## Story gate (before the checklists below)
+
+- [ ] The work has a home — a story in [`epics/`](./epics/), or it is below the story line (see the [decision ladder](./README.md#the-decision-ladder--what-needs-a-story))
+- [ ] Acceptance criteria ticked as completed; `status: review` — **never `done`** (a human closes stories)
+- [ ] The epic's story table matches the story's status
+- [ ] Bugs logged as a dated line under the owning story's `## Bugs`
+
 ## Library changes (`nqui-dev`)
 
 - [ ] Component follows existing patterns in `src/components/`

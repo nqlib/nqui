@@ -1,21 +1,34 @@
 # Product roadmap
 
-High-level direction. Detailed engineering plans live in [`plans/README.md`](../../plans/README.md).
+Direction only. Tracking lives in [`README.md`](./README.md) (epics and stories); technical
+blueprints live in [`plans/README.md`](../../plans/README.md).
 
-## Current focus (2026)
+## Where 0.7.x got to
 
-1. **Dependency hygiene** — clean install, optional peers in subpath entries
-2. **Postinstall consent** — stop silent mutation of consumer `package.json` / `.cursor/`
-3. **Test + lint baseline** — scripts lint, CLI tests, component smoke tests
-4. **CI hardening** — full typecheck, export validation, Node matrix
-5. **Optional-peer entry restructure** — v0.7.0 breaking change (blocked on 003/004)
+0.7.0–0.7.3 delivered most of the 2026 audit backlog: dependency hygiene, subpath entries for every
+optional peer, publish hardening, a neutral primary default with consumer brand override, motion
+tokens, and the ToggleGroup layout contract. See EP-005 and EP-001.
 
-## Direction options (maintainer's call)
+## Next — the open gaps, by epic
 
-1. Deploy showcase app as live demo (biggest adoption lever)
-2. Release automation via changesets
-3. Consumer-facing theming guide for OKLCH ladder in `src/styles/colors.css`
-4. Document or drop `react-grab` in showcase
+1. **Ship drag & drop** ([EP-004](epics/EP-004-drag-and-drop/epic.md)) — Phases 0–2 are built and
+   verified but uncommitted and unreleased. Blocking question: the keyboard-move UX (ST-034).
+2. **Close the packaging gaps** ([EP-005](epics/EP-005-packaging-entries-publishing/epic.md)) —
+   postinstall consent (ST-043) is the one audit finding with zero code movement; `cmdk`'s optional
+   flag (ST-041) and the missing `./resizable` / `./table` entries follow.
+3. **Make green mean something** ([EP-006](epics/EP-006-quality-baseline/epic.md)) — wire the
+   orphaned `validate-exports`, put skill validation and drift detection in CI, then close the test
+   gap on form controls and overlays.
+4. **Stop shipping misleading docs** ([EP-007](epics/EP-007-docs-vault-agent-skills/epic.md)) —
+   remove doc pages for components that no longer exist (they ship in the npm tarball), document the
+   undocumented ones, and migrate `internal-notes/` into the vault.
+
+## Direction options (maintainer's call, no epic yet)
+
+- Deploy **nqui-showcase** as a live demo (catalog at `/catalog`).
+- Release automation via changesets (drafted as EP-005 ST-046).
+- A consumer-facing theming guide for the OKLCH ladder in `src/styles/colors.css`.
+- Decide the fate of `react-grab` in nqui-showcase.
 
 ## Docs + agent skills
 

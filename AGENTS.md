@@ -1,6 +1,9 @@
 # AGENTS.md
 
-This file points to nqui skills for AI assistants.
+This file points to nqui skills for AI assistants. For *what to build and how we work*, start at
+[`CLAUDE.md`](./CLAUDE.md) → [`docs/product/README.md`](docs/product/README.md) (epics & stories) and
+[`docs/product/agentic-coding-guideline.md`](docs/product/agentic-coding-guideline.md). Durable
+project context: [`memory/INDEX.md`](memory/INDEX.md).
 
 ## Catalog boundary (do not violate)
 
