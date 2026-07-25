@@ -94,6 +94,8 @@ Before picking components, read **`../COMPOSITION.md`** (or `docs/nqui-skills/CO
 
 - React 18+ and 19 supported
 - **cmdk list rows:** nqui ≥ 0.6.1 uses `aria-selected:bg-accent` in `floatingListItemInteractive`. Do not add custom `data-selected:bg-accent` on `CommandItem` (React 19 + `[data-selected]` highlights every row). See `docs/components/nqui-command-palette.md`.
+- **Multi-line list rows (nqui ≥ 0.7.4):** use slots — `CommandItemContent` / `Title` / `Meta` / `Description`, `SelectItemContent` / `Title` / `Description`, `ComboboxItemContent` / `Title` / `Description`. Do **not** stack raw `<div>`/`<p>` or put `flex-col` on the item shell. Title is the closed-field label for Select/Combobox.
+- **Floating list scroll:** `CommandList`, `SelectContent`, and Combobox lists compose nqui `ScrollArea` — do not wrap them in another `ScrollArea` or add `overflow-y-auto` on the list. Raise Command list height with `maxHeight` / `--command-list-max-height`.
 - Control sizes: sm=h-6, default=h-7, lg=h-8
 - Enhanced vs Core: default is enhanced; use Core* for plain
 - Z-index: CSS vars from elevation.css only

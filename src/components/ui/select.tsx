@@ -5,10 +5,18 @@ import {
   IconChevronsUpDown,
 } from "@/components/icons"
 import * as React from "react"
-import { Select as SelectPrimitive } from "radix-ui"
+import { ScrollArea as ScrollAreaPrimitive, Select as SelectPrimitive } from "radix-ui"
 
+import { ScrollBar } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { floatingListItemInteractive, floatingSurface } from "@/lib/floating-surface"
+
+/** Keyboard nav wins until the pointer intentionally moves (Radix focuses on pointermove). */
+const selectPointerGuard = {
+  modality: "pointer" as "pointer" | "keyboard",
+  x: 0,
+  y: 0,
+}
 
 function Select({
   ...props
@@ -77,6 +85,40 @@ function SelectContent({
   align = "center",
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
+  const scrollRootRef = React.useRef<HTMLDivElement>(null)
+  const scrollViewportRef = React.useRef<HTMLDivElement>(null)
+
+  // Bridge wheel → ScrollArea viewport (Select scroll-lock often swallows native wheel),
+  // and mark keyboard modality so pointermove cannot steal highlight.
+  React.useEffect(() => {
+    const root = scrollRootRef.current
+    const saVp = scrollViewportRef.current
+    if (!root || !saVp) return
+
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) return
+      const max = saVp.scrollHeight - saVp.clientHeight
+      if (max <= 1) return
+      const prev = saVp.scrollTop
+      const next = Math.min(max, Math.max(0, prev + e.deltaY))
+      if (next === prev) return
+      saVp.scrollTop = next
+      e.preventDefault()
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!["ArrowDown", "ArrowUp", "Home", "End", "PageDown", "PageUp"].includes(e.key)) return
+      selectPointerGuard.modality = "keyboard"
+    }
+
+    root.addEventListener("wheel", onWheel, { passive: false })
+    root.addEventListener("keydown", onKeyDown, true)
+    return () => {
+      root.removeEventListener("wheel", onWheel)
+      root.removeEventListener("keydown", onKeyDown, true)
+    }
+  }, [])
+
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -91,18 +133,37 @@ function SelectContent({
         align={align}
         {...props}
       >
-        <div className="relative z-[var(--z-content)] bg-popover overflow-y-auto overflow-x-hidden max-h-[var(--radix-select-content-available-height)] rounded-lg">
-          <SelectScrollUpButton />
-          <SelectPrimitive.Viewport
-            data-position={position}
-            className={cn(
-              "data-[position=popper]:h-[var(--radix-select-trigger-height)] data-[position=popper]:w-full data-[position=popper]:min-w-[var(--radix-select-trigger-width)]"
-            )}
+        {/*
+          ScrollArea viewport is the scrollport (CommandList contract).
+          type="always" keeps the styled thumb mounted — default "hover" Presence left
+          no scrollbar in the DOM while Radix also hides the native bar.
+          Wheel is bridged above because Select scroll-lock often blocks native wheel.
+        */}
+        <ScrollAreaPrimitive.Root
+          ref={scrollRootRef}
+          type="always"
+          data-slot="select-content-scroll"
+          className="relative z-[var(--z-content)] min-h-0 w-full max-h-[min(24rem,var(--radix-select-content-available-height,24rem))] rounded-lg bg-popover"
+        >
+          <ScrollAreaPrimitive.Viewport
+            ref={scrollViewportRef}
+            data-slot="select-content-viewport"
+            className="size-full max-h-[inherit] rounded-[inherit] outline-none"
           >
-            {children}
-          </SelectPrimitive.Viewport>
-          <SelectScrollDownButton />
-        </div>
+            <SelectPrimitive.Viewport
+              data-position={position}
+              style={{ overflow: "visible" }}
+              className={cn(
+                "w-full min-w-0",
+                "data-[position=popper]:h-[var(--radix-select-trigger-height)] data-[position=popper]:w-full data-[position=popper]:min-w-[var(--radix-select-trigger-width)]"
+              )}
+            >
+              {children}
+            </SelectPrimitive.Viewport>
+          </ScrollAreaPrimitive.Viewport>
+          <ScrollBar />
+          <ScrollAreaPrimitive.Corner />
+        </ScrollAreaPrimitive.Root>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   )
@@ -121,28 +182,134 @@ function SelectLabel({
   )
 }
 
+function isSelectItemContent(
+  child: React.ReactNode
+): child is React.ReactElement {
+  return React.isValidElement(child) && child.type === SelectItemContent
+}
+
 function SelectItem({
   className,
   children,
+  onPointerMove,
+  textValue,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Item>) {
+  const childArray = React.Children.toArray(children)
+  const usesContentSlots = childArray.some(isSelectItemContent)
+  // Prefer explicit textValue; otherwise derive from title slot for typeahead.
+  const derivedTextValue =
+    textValue ??
+    (usesContentSlots
+      ? childArray.reduce<string | undefined>((found, child) => {
+          if (found || !React.isValidElement(child) || child.type !== SelectItemContent) {
+            return found
+          }
+          const nested = React.Children.toArray(
+            (child.props as { children?: React.ReactNode }).children
+          )
+          const title = nested.find(
+            (n) => React.isValidElement(n) && n.type === SelectItemTitle
+          )
+          if (!React.isValidElement(title)) return found
+          const t = (title.props as { children?: React.ReactNode }).children
+          return typeof t === "string" ? t : found
+        }, undefined)
+      : undefined)
+
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
+      textValue={derivedTextValue}
       className={cn(
-        "not-data-[variant=destructive]:focus:**:text-accent-foreground my-0.5 mx-1 min-h-8 gap-2 px-2.5 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-3.5 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 relative flex w-auto cursor-default select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "group/select-item not-data-[variant=destructive]:focus:**:text-accent-foreground my-0.5 mx-1 min-h-8 gap-2 px-2.5 py-1.5 pr-8 text-sm [&_svg:not([class*='size-'])]:size-3.5 relative flex w-auto cursor-default select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        // Multi-line: start-align; keep py stable and grow the text stack.
+        "has-[[data-slot=select-item-content]]:items-start has-[[data-slot=select-item-content]]:min-h-0",
+        "has-[[data-slot=select-item-content]]:[&>*:first-child]:mt-0.5",
         floatingListItemInteractive,
         className
       )}
       {...props}
+      onPointerMove={(event) => {
+        onPointerMove?.(event)
+        if (event.defaultPrevented) return
+        // After keyboard nav, ignore stationary hover (scrollIntoView moves rows under the cursor).
+        if (selectPointerGuard.modality === "keyboard") {
+          const moved =
+            Math.abs(event.clientX - selectPointerGuard.x) > 4 ||
+            Math.abs(event.clientY - selectPointerGuard.y) > 4
+          if (!moved) {
+            event.preventDefault()
+            return
+          }
+          selectPointerGuard.modality = "pointer"
+        }
+        selectPointerGuard.x = event.clientX
+        selectPointerGuard.y = event.clientY
+      }}
     >
-      <span className="pointer-events-none absolute right-2 flex items-center justify-center">
+      <span
+        className={cn(
+          "pointer-events-none absolute right-2 flex items-center justify-center",
+          "top-1/2 -translate-y-1/2 group-has-[[data-slot=select-item-content]]/select-item:top-2.5 group-has-[[data-slot=select-item-content]]/select-item:translate-y-0"
+        )}
+      >
         <SelectPrimitive.ItemIndicator>
           <IconCheck strokeWidth={2} className="pointer-events-none" />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      {usesContentSlots ? (
+        children
+      ) : (
+        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      )}
     </SelectPrimitive.Item>
+  )
+}
+
+function SelectItemContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="select-item-content"
+      className={cn("flex min-w-0 flex-1 flex-col gap-0.5", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectItemTitle({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="select-item-title"
+      className={cn("line-clamp-1 text-sm font-medium leading-snug", className)}
+      {...props}
+    >
+      {/* ItemText = what SelectValue shows in the trigger */}
+      <SelectPrimitive.ItemText className="contents">{children}</SelectPrimitive.ItemText>
+    </div>
+  )
+}
+
+function SelectItemDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="select-item-description"
+      className={cn(
+        "line-clamp-2 text-xs font-normal leading-snug text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
   )
 }
 
@@ -194,6 +361,9 @@ export {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectItemContent,
+  SelectItemTitle,
+  SelectItemDescription,
   SelectLabel,
   SelectScrollDownButton,
   SelectScrollUpButton,

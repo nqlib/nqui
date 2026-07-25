@@ -4,6 +4,7 @@ import {
 } from "@/components/icons"
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
+import { ScrollArea as ScrollAreaPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { floatingListItemInteractive, floatingSurface } from "@/lib/floating-surface"
@@ -18,6 +19,7 @@ import {
   InputGroup,
   InputGroupAddon,
 } from "@/components/ui/input-group"
+import { ScrollBar } from "@/components/ui/scroll-area"
 
 function Command({
   className,
@@ -91,20 +93,83 @@ function CommandInput({
   )
 }
 
+type CommandListProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.List
+> & {
+  /**
+   * Max height of the scrollable list. Sets `--command-list-max-height`
+   * (default `18rem`). Prefer this or the CSS variable over `max-h-*!`.
+   */
+  maxHeight?: number | string
+}
+
 const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, ...props }, ref) => {
+  CommandListProps
+>(({ className, maxHeight, style, ...props }, ref) => {
+  const maxHeightValue =
+    maxHeight == null
+      ? undefined
+      : typeof maxHeight === "number"
+        ? `${maxHeight}px`
+        : maxHeight
+  const rootRef = React.useRef<HTMLDivElement>(null)
+  const viewportRef = React.useRef<HTMLDivElement>(null)
+
+  // Bridge wheel → viewport when popover scroll-lock swallows native wheel.
+  React.useEffect(() => {
+    const root = rootRef.current
+    const vp = viewportRef.current
+    if (!root || !vp) return
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) return
+      const max = vp.scrollHeight - vp.clientHeight
+      if (max <= 1 || e.deltaY === 0) return
+      const next = Math.min(max, Math.max(0, vp.scrollTop + e.deltaY))
+      if (next === vp.scrollTop) return
+      vp.scrollTop = next
+      e.preventDefault()
+    }
+    root.addEventListener("wheel", onWheel, { passive: false, capture: true })
+    return () => root.removeEventListener("wheel", onWheel, true)
+  }, [])
+
   return (
-    <CommandPrimitive.List
-      ref={ref}
-      data-slot="command-list"
+    <ScrollAreaPrimitive.Root
+      ref={rootRef}
+      type="always"
+      data-slot="command-list-scroll"
       className={cn(
-        "no-scrollbar max-h-72 scroll-py-1 outline-none overflow-x-hidden overflow-y-auto",
+        "relative min-h-0 w-full max-h-(--command-list-max-height)",
         className
       )}
-      {...props}
-    />
+      style={
+        {
+          "--command-list-max-height": maxHeightValue ?? "18rem",
+          ...style,
+        } as React.CSSProperties
+      }
+    >
+      {/*
+        Viewport is the scrollport. Cap with max-height (not size-full/%) — under
+        Command's h-auto flex column, height:100% resolved to content height so
+        scrollHeight === clientHeight and wheel did nothing.
+      */}
+      <ScrollAreaPrimitive.Viewport
+        ref={viewportRef}
+        data-slot="command-list-viewport"
+        className="w-full max-h-(--command-list-max-height) scroll-py-1 rounded-[inherit] outline-none"
+      >
+        <CommandPrimitive.List
+          ref={ref}
+          data-slot="command-list"
+          className="outline-none overflow-visible p-1"
+          {...props}
+        />
+      </ScrollAreaPrimitive.Viewport>
+      <ScrollBar />
+      <ScrollAreaPrimitive.Corner />
+    </ScrollAreaPrimitive.Root>
   )
 })
 CommandList.displayName = "CommandList"
@@ -129,7 +194,10 @@ function CommandGroup({
   return (
     <CommandPrimitive.Group
       data-slot="command-group"
-      className={cn("text-foreground [&_[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1 [&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium", className)}
+      className={cn(
+        "text-foreground overflow-hidden [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium",
+        className
+      )}
       {...props}
     />
   )
@@ -159,13 +227,83 @@ function CommandItem({
       className={cn(
         floatingListItemInteractive,
         "relative flex min-h-7 cursor-default items-center gap-2 px-2.5 py-1.5 text-xs select-none [&_svg:not([class*='size-'])]:size-3.5 [[data-slot=dialog-content]_&]:rounded-md group/command-item data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        // Search-result stack: keep py-1.5; grow the text block, not the padding.
+        "has-[[data-slot=command-item-content]]:items-start has-[[data-slot=command-item-content]]:min-h-0",
+        "has-[[data-slot=command-item-content]]:[&>*:first-child]:mt-0.5",
         className
       )}
       {...props}
     >
       {children}
-      <IconCheck strokeWidth={2} className="ml-auto opacity-0 group-has-[[data-slot=command-shortcut]]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
+      <IconCheck
+        strokeWidth={2}
+        className="ml-auto opacity-0 group-has-[[data-slot=command-shortcut]]/command-item:hidden group-data-[checked=true]/command-item:opacity-100 group-has-[[data-slot=command-item-content]]/command-item:mt-0.5 group-has-[[data-slot=command-item-content]]/command-item:self-start"
+      />
     </CommandPrimitive.Item>
+  )
+}
+
+function CommandItemContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="command-item-content"
+      className={cn(
+        "flex min-w-0 flex-1 flex-col gap-0.5",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CommandItemTitle({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="command-item-title"
+      className={cn(
+        "line-clamp-1 text-xs font-medium leading-snug",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CommandItemMeta({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="command-item-meta"
+      className={cn(
+        "line-clamp-1 text-[0.625rem] leading-snug text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function CommandItemDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="command-item-description"
+      className={cn(
+        "line-clamp-2 text-[0.625rem] font-normal leading-snug text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
   )
 }
 
@@ -176,7 +314,11 @@ function CommandShortcut({
   return (
     <span
       data-slot="command-shortcut"
-      className={cn("text-muted-foreground group-aria-selected/command-item:text-accent-foreground ml-auto text-[0.625rem] tracking-widest", className)}
+      className={cn(
+        "text-muted-foreground group-aria-selected/command-item:text-accent-foreground ml-auto text-[0.625rem] tracking-widest",
+        "group-has-[[data-slot=command-item-content]]/command-item:self-start group-has-[[data-slot=command-item-content]]/command-item:mt-0.5",
+        className
+      )}
       {...props}
     />
   )
@@ -190,6 +332,10 @@ export {
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandItemContent,
+  CommandItemTitle,
+  CommandItemMeta,
+  CommandItemDescription,
   CommandShortcut,
   CommandSeparator,
 }

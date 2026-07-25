@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.4] - 2026-07-25
+
+### Added
+
+- **Command search-result slots** — `CommandItemContent`, `CommandItemTitle`,
+  `CommandItemMeta`, and `CommandItemDescription` for multi-line ⌘K / help-search
+  rows. The item shell keeps constant `py-1.5` while the text block grows; default
+  single-line command-menu density is unchanged. (ST-064)
+- **CommandList ScrollArea + raisable max height** — list composes nqui
+  `ScrollArea`/`ScrollBar` (viewport is the scroll container for cmdk
+  `scrollIntoView`), bakes in `p-1` so bare lists are not flush under the input,
+  and exposes `--command-list-max-height` / `maxHeight` (default `18rem`) instead
+  of a hard `max-h-72`. (ST-064)
+- **Select / Combobox multi-line item slots** — `SelectItemContent` /
+  `SelectItemTitle` / `SelectItemDescription` and matching `ComboboxItem*`
+  (form density). Title is the closed-field label; description is muted
+  `line-clamp-2` secondary copy.
+
+### Changed
+
+- **SelectContent ScrollArea** — long option lists scroll via nqui
+  `ScrollArea`/`ScrollBar` (same viewport-is-scrollport contract as
+  `CommandList`). Overrides Radix SelectViewport’s inline
+  `overflow: hidden auto` (which hid the native bar and stole the scrollport).
+  Default content no longer mounts `SelectScrollUpButton` /
+  `SelectScrollDownButton` (still exported for custom compositions).
+- **CommandList / Combobox scroll** — list viewport caps with
+  `max-h-(--command-list-max-height)` (not `size-full`/% height),
+  `type="always"` scrollbar, and a wheel bridge. Fixes stuck scroll when
+  Command uses `h-auto` and the viewport grew to content height.
+- **ComboboxItem** — removed CSS `hover:bg-accent` so pointer hover and
+  cmdk `aria-selected` no longer paint two “active” rows at once.
+- **Select keyboard vs pointer** — after keyboard navigation, ignore stationary
+  `pointermove` focus (scrollIntoView moves rows under the cursor).
+- **CommandGroup** no longer adds outer `p-1` (padding lives on `CommandList` so
+  grouped and bare lists share one inset). (ST-064)
+
 ## [0.7.3] - 2026-07-15
 
 ### Fixed

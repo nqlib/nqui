@@ -182,6 +182,29 @@ function getTextFromNode(node: React.ReactNode): string {
   return ""
 }
 
+/** Prefer title slot for trigger/badge label when multi-line content is used. */
+function getComboboxItemLabel(node: React.ReactNode): string {
+  const kids = React.Children.toArray(node)
+  for (const child of kids) {
+    if (!React.isValidElement(child)) continue
+    const slot = (child.props as { "data-slot"?: string })["data-slot"]
+    // ComboboxItemContent uses command-item-content slot for CommandItem layout hooks.
+    if (slot === "command-item-content") {
+      const nested = React.Children.toArray(
+        (child.props as { children?: React.ReactNode }).children
+      )
+      for (const n of nested) {
+        if (!React.isValidElement(n)) continue
+        const nSlot = (n.props as { "data-slot"?: string })["data-slot"]
+        if (nSlot === "command-item-title") {
+          return getTextFromNode((n.props as { children?: React.ReactNode }).children)
+        }
+      }
+    }
+  }
+  return getTextFromNode(node)
+}
+
 const ComboboxContext = React.createContext<ComboboxContextValue | null>(null)
 
 function useComboboxContext() {
@@ -838,6 +861,7 @@ function ComboboxList({
   className,
   children,
   renderItem,
+  style,
   ...props
 }: Omit<React.ComponentProps<typeof CommandList>, "children"> & {
   children?: React.ReactNode
@@ -878,6 +902,14 @@ function ComboboxList({
         "max-h-[min(18rem,max(0px,calc(var(--radix-popover-content-available-height,24rem)-5.5rem)))]",
         className
       )}
+      style={
+        {
+          // Viewport scroll cap (CommandList reads --command-list-max-height).
+          ["--command-list-max-height" as string]:
+            "min(18rem, max(0px, calc(var(--radix-popover-content-available-height, 24rem) - 5.5rem)))",
+          ...style,
+        } as React.CSSProperties
+      }
       {...props}
     >
       {staticNodes}
@@ -901,7 +933,8 @@ function ComboboxItem({
   keywords?: string[]
 }) {
   const ctx = useComboboxContext()
-  const label = React.useMemo(() => getTextFromNode(children), [children])
+  const label = React.useMemo(() => getComboboxItemLabel(children), [children])
+  const filterText = React.useMemo(() => getTextFromNode(children), [children])
 
   React.useEffect(() => {
     ctx.registerLabel(itemValue, label || itemValue)
@@ -916,7 +949,7 @@ function ComboboxItem({
     <CommandItem
       data-slot="combobox-item"
       value={searchLabel}
-      keywords={[itemValue, searchLabel, ...(keywordsProp ?? [])]}
+      keywords={[itemValue, searchLabel, filterText, ...(keywordsProp ?? [])].filter(Boolean)}
       data-checked={ctx.isSelected(itemValue) ? true : undefined}
       onSelect={(cmdkValue) => {
         if (skipSelectFromPointerRef.current) {
@@ -937,13 +970,61 @@ function ComboboxItem({
         userMouseDown?.(e)
       }}
       className={cn(
-        "transition-colors hover:bg-accent hover:text-accent-foreground aria-selected:bg-accent aria-selected:text-accent-foreground min-h-8 my-0.5 mx-1 gap-2 rounded-md px-2.5 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-3.5 relative flex w-auto cursor-pointer items-center outline-none select-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/30 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        // No CSS :hover fill — cmdk sets aria-selected for both pointer + keyboard.
+        // hover:bg-accent + aria-selected together painted two “active” rows (hover fight).
+        "min-h-8 my-0.5 mx-1 gap-2 rounded-md px-2.5 py-1.5 text-sm [&_svg:not([class*='size-'])]:size-3.5 relative flex w-auto cursor-pointer items-center outline-none select-none aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        // Multi-line (ComboboxItemContent): start-align like Command search hits.
+        "has-[[data-slot=command-item-content]]:items-start has-[[data-slot=command-item-content]]:min-h-0",
+        "has-[[data-slot=command-item-content]]:[&>*:first-child]:mt-0.5",
         className
       )}
       {...props}
     >
       {children}
     </CommandItem>
+  )
+}
+
+/** Form-density multi-line stack (reuses Command item-content slot for layout). */
+function ComboboxItemContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="command-item-content"
+      className={cn("flex min-w-0 flex-1 flex-col gap-0.5", className)}
+      {...props}
+    />
+  )
+}
+
+function ComboboxItemTitle({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="command-item-title"
+      className={cn("line-clamp-1 text-sm font-medium leading-snug", className)}
+      {...props}
+    />
+  )
+}
+
+function ComboboxItemDescription({
+  className,
+  ...props
+}: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="command-item-description"
+      className={cn(
+        "line-clamp-2 text-xs font-normal leading-snug text-muted-foreground",
+        className
+      )}
+      {...props}
+    />
   )
 }
 
@@ -1079,6 +1160,9 @@ export {
   ComboboxContent,
   ComboboxList,
   ComboboxItem,
+  ComboboxItemContent,
+  ComboboxItemTitle,
+  ComboboxItemDescription,
   ComboboxGroup,
   ComboboxLabel,
   ComboboxCollection,

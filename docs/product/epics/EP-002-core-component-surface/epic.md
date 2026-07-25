@@ -71,6 +71,7 @@ subpaths; `docs/components/nqui-*.md`.
 | ST-019 | Data display and feedback set | done | pre-baseline |
 | ST-020 | DataTable on TanStack Table | in-progress | unset |
 | ST-021 | Bundled icon set | in-progress | pre-baseline |
+| ST-064 | Command search-result density, list chrome, ScrollArea | done | 0.7.4 |
 
 ## Implementation references
 

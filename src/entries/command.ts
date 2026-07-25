@@ -11,6 +11,10 @@ export {
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandItemContent,
+  CommandItemTitle,
+  CommandItemMeta,
+  CommandItemDescription,
   CommandShortcut,
   CommandSeparator,
 } from "../components/ui/command"
