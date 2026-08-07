@@ -38,7 +38,7 @@ export { Checkbox as CoreCheckbox } from "./ui/checkbox"
 // main entry does not pull the cmdk peer. See MIGRATION note.
 //   import { Command, CommandPalette } from "@nqlib/nqui/command"
 
-// Dropdown Menu — flat field chrome (public path is identity with ui/dropdown-menu)
+// Dropdown Menu — flat field chrome (direct ui export; keep types path-resolvable)
 export {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -55,7 +55,7 @@ export {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
-} from "./custom/enhanced-dropdown-menu"
+} from "./ui/dropdown-menu"
 
 // Combobox — flat field chrome (single implementation; no separate Core*)
 export {

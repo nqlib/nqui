@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.6] - 2026-08-06
+
+### Fixed
+
+- **DropdownMenu types** — public exports resolve through `./ui/dropdown-menu`
+  (relative paths). The 0.7.5 enhanced barrel re-exported via `@/…`, which
+  broke consumer `.d.ts` resolution so `onCheckedChange` / `onSelect` params
+  became implicit `any`.
+
 ## [0.7.5] - 2026-08-06
 
 ### Changed
