@@ -184,13 +184,16 @@
  * Surface classes
  *
  * Per ELEVATION.md (the 2+1 rule), inline Cards do NOT get a default shadow.
- * Shadows are reserved for ELEVATED surfaces only (Dialog, Sheet, Popover,
- * DropdownMenu) — those use `.nqui-elevated` directly or via the overlay
- * components.
+ * Shadows are reserved for float/modal surfaces only (Dialog, Sheet, Popover,
+ * DropdownMenu) — those use `.nqui-float` (or `floatingSurface` helper).
  *
- * `.nqui-card` keeps the border treatment only. If a consumer needs an
- * elevated inline card (rare — should be a Sheet or Popover instead), they
- * can opt in with `.nqui-elevated`.
+ * `.nqui-card` keeps the border treatment only. If a consumer needs a
+ * floating inline card (rare — should be a Sheet or Popover instead), they
+ * can opt in with `.nqui-float`.
+ *
+ * Naming: `--shadow-tooltip` (legacy `--shadow-elevated`) = tooltips;
+ * `--shadow-float` = panels; `--shadow-modal` = dialogs.
+ * Class `.nqui-float` matches the panel token. Do not use `.nqui-elevated`.
  */
 @layer components {
   .nqui-card {
@@ -201,13 +204,26 @@
     border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
   }
 
-  /* Elevated surfaces — modals, sheets, popovers, dropdowns.
-   * The ONE legitimate place a shadow belongs (depth metaphor is real).
-   * Shadow values come from shadows.css. */
+  /* Float panels — Select / Combobox / Command / Dropdown / Popover chrome. */
+  .nqui-float {
+    background: var(--popover);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-float);
+  }
+
+  .dark .nqui-float {
+    border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+
+  /**
+   * @deprecated Identical to `.nqui-float`. Kept for older markup only.
+   * New code: `.nqui-float` or `floatingSurface` / `shadow-(--shadow-float)`.
+   * Note: this is NOT `--shadow-elevated` (that token is tooltip-scale).
+   */
   .nqui-elevated {
     background: var(--popover);
     border: 1px solid var(--border);
-    box-shadow: var(--shadow-elevated);
+    box-shadow: var(--shadow-float);
   }
 
   .dark .nqui-elevated {

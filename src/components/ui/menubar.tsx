@@ -6,7 +6,11 @@ import * as React from "react"
 import { Menubar as MenubarPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { floatingListItemInteractive, floatingSurface } from "@/lib/floating-surface"
+import {
+  floatingListItemInteractive,
+  floatingSurface,
+  interactiveWashHover,
+} from "@/lib/floating-surface"
 
 function Menubar({
   className,
@@ -55,7 +59,8 @@ function MenubarTrigger({
     <MenubarPrimitive.Trigger
       data-slot="menubar-trigger"
       className={cn(
-        "hover:bg-accent hover:text-accent-foreground aria-expanded:bg-accent aria-expanded:text-accent-foreground rounded-md px-2 py-[calc(--spacing(0.875))] text-xs font-medium flex items-center outline-hidden select-none transition-colors",
+        interactiveWashHover,
+        "aria-expanded:bg-interactive rounded-md px-2 py-[calc(--spacing(0.875))] text-xs font-medium flex items-center outline-hidden select-none transition-colors",
         className
       )}
       {...props}
@@ -227,7 +232,7 @@ function MenubarSubTrigger({
       data-inset={inset}
       className={cn(
         floatingListItemInteractive,
-        "data-open:bg-accent data-open:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground min-h-7 gap-2 px-2 py-1 text-xs data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-3.5 flex cursor-default select-none",
+        "data-open:bg-interactive not-data-[variant=destructive]:focus:**:text-foreground min-h-7 gap-2 px-2 py-1 text-xs data-[inset]:pl-8 [&_svg:not([class*='size-'])]:size-3.5 flex cursor-default select-none",
         className
       )}
       {...props}

@@ -38,96 +38,30 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 
-const ENHANCED_COMBOBOX_STYLE_ID = "nqui-combobox-styles-v1"
+/** Flat field shell — same contract as SelectTrigger (no elevation). */
+const comboboxFieldShellClassName = cn(
+  "border-input bg-transparent shadow-none hover:bg-interactive dark:bg-input/30",
+  "rounded-md border transition-colors",
+  "focus-within:border-ring focus-within:ring-[2px] focus-within:ring-ring/30"
+)
 
-function useComboboxFieldSurfaceStyles() {
+/**
+ * Field chrome lives outside the portaled popover content. Radix treats the
+ * opening click on Anchor as an outside interact and immediately closes —
+ * ignore dismiss when the event target is still on the field.
+ */
+const COMBOBOX_FIELD_DISMISS_GUARD =
+  "[data-slot=combobox-anchor], [data-slot=combobox-trigger], [data-slot=combobox-value], [data-slot=combobox-badge-trigger], [data-slot=combobox-badge-trigger-control], [data-slot=combobox-chips], [data-slot=combobox-chip], [data-slot=combobox-chip-input], [data-slot=combobox-clear], [data-slot=input-group-control], [data-slot=input-group-button]"
+
+function isComboboxFieldTarget(target: EventTarget | null) {
+  return target instanceof Element && Boolean(target.closest(COMBOBOX_FIELD_DISMISS_GUARD))
+}
+
+/** Drop legacy injected elevation sheets from earlier Combobox iterations. */
+function usePurgeLegacyComboboxFieldStyles() {
   React.useEffect(() => {
-    if (document.getElementById(ENHANCED_COMBOBOX_STYLE_ID)) return
-
-    const style = document.createElement("style")
-    style.id = ENHANCED_COMBOBOX_STYLE_ID
-    style.textContent = `
-      [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input) {
-        border: 1px solid color-mix(in oklch, var(--input) 50%, transparent) !important;
-        box-shadow:
-          0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
-          0 1px 2px 0 oklch(0.15 0 0 / 0.05),
-          0 2px 4px -1px oklch(0.15 0 0 / 0.03) !important;
-        border-top-color: color-mix(in oklch, var(--input) 92%, oklch(1 0 0) 8%) !important;
-        border-left-color: color-mix(in oklch, var(--input) 92%, oklch(1 0 0) 8%) !important;
-        border-bottom-color: color-mix(in oklch, var(--input) 92%, oklch(0 0 0) 8%) !important;
-        border-right-color: color-mix(in oklch, var(--input) 92%, oklch(0 0 0) 8%) !important;
-        transition: all 150ms ease-[var(--ease-in-out)] !important;
-        outline: none !important;
-        --tw-ring-width: 0 !important;
-        --tw-ring-offset-width: 0 !important;
-        --tw-ring-offset-color: transparent !important;
-        --tw-ring-color: transparent !important;
-      }
-
-      .dark [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input) {
-        border: 1px solid color-mix(in oklch, var(--input) 50%, transparent) !important;
-        box-shadow:
-          0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
-          0 1px 2px 0 oklch(0 0 0 / 0.3),
-          0 2px 4px -1px oklch(0 0 0 / 0.2) !important;
-      }
-
-      [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input):hover {
-        box-shadow:
-          0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
-          0 1px 3px 0 oklch(0.15 0 0 / 0.08),
-          0 2px 6px -1px oklch(0.15 0 0 / 0.04),
-          0 4px 8px -2px oklch(0.15 0 0 / 0.02) !important;
-      }
-
-      .dark [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input):hover {
-        box-shadow:
-          0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
-          0 1px 3px 0 oklch(0 0 0 / 0.4),
-          0 2px 6px -1px oklch(0 0 0 / 0.3),
-          0 4px 8px -2px oklch(0 0 0 / 0.2) !important;
-      }
-
-      [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input:focus-visible),
-      [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input:focus-within) {
-        outline: none !important;
-        --tw-ring-width: 0 !important;
-        --tw-ring-offset-width: 0 !important;
-        --tw-ring-offset-color: transparent !important;
-        --tw-ring-color: transparent !important;
-        box-shadow:
-          0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
-          0 1px 2px 0 oklch(0.15 0 0 / 0.05),
-          0 2px 4px -1px oklch(0.15 0 0 / 0.03),
-          0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent) !important;
-      }
-
-      .dark [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input:focus-visible),
-      .dark [data-slot="input-group"]:has([data-slot="input-group-control"].enhanced-combobox-input:focus-within) {
-        box-shadow:
-          0 1px 0 0 color-mix(in oklch, var(--input) 40%, transparent),
-          0 1px 2px 0 oklch(0 0 0 / 0.3),
-          0 2px 4px -1px oklch(0 0 0 / 0.2),
-          0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent) !important;
-      }
-
-      [data-slot="input-group-control"].enhanced-combobox-input {
-        outline: none !important;
-        --tw-ring-width: 0 !important;
-        --tw-ring-offset-width: 0 !important;
-      }
-
-      [data-slot="input-group-control"].enhanced-combobox-input:focus,
-      [data-slot="input-group-control"].enhanced-combobox-input:focus-visible {
-        outline: none !important;
-        --tw-ring-width: 0 !important;
-        --tw-ring-offset-width: 0 !important;
-        box-shadow: none !important;
-      }
-    `
-
-    document.head.appendChild(style)
+    document.getElementById("nqui-combobox-styles-v1")?.remove()
+    document.getElementById("nqui-combobox-styles-v2")?.remove()
   }, [])
 }
 
@@ -231,6 +165,7 @@ function Combobox({
   children,
   ...popoverProps
 }: ComboboxProps) {
+  usePurgeLegacyComboboxFieldStyles()
   const [listboxIdAria, setListboxIdAria] = React.useState<string | undefined>(undefined)
 
   const [uncontrolledValue, setUncontrolledValue] = React.useState<string | string[] | undefined>(
@@ -562,12 +497,16 @@ function ComboboxInput({
 
   const displayValue = multiple ? (open ? search : "") : open ? search : selectedLabel
 
-  useComboboxFieldSurfaceStyles()
-
   return (
     <PopoverPrimitive.Anchor asChild>
-      <div className={cn("w-full min-w-0", className)}>
-        <InputGroup className="w-auto">
+      <div data-slot="combobox-anchor" className={cn("w-full min-w-0", className)}>
+        <InputGroup
+          className={cn(
+            "w-auto !bg-transparent !shadow-none hover:!bg-interactive dark:!bg-input/30",
+            comboboxFieldShellClassName
+          )}
+          style={{ boxShadow: "none" }}
+        >
           <InputGroupInput
             data-slot="input-group-control"
             role="combobox"
@@ -577,7 +516,7 @@ function ComboboxInput({
             disabled={isDisabled}
             value={displayValue}
             placeholder={placeholder}
-            className="enhanced-combobox-input"
+            className="shadow-none"
             onClick={() => setOpen(true)}
             onChange={(e) => {
               setSearch(e.target.value)
@@ -639,6 +578,9 @@ function ComboboxContent({
   align = "start",
   alignOffset = 0,
   onOpenAutoFocus,
+  onInteractOutside,
+  onPointerDownOutside,
+  onFocusOutside,
   showPanelSearch = false,
   children,
   onPointerDownCapture: userPointerDownCapture,
@@ -676,6 +618,18 @@ function ComboboxContent({
         onOpenAutoFocus={(e) => {
           if (!showPanelSearch) e.preventDefault()
           onOpenAutoFocus?.(e)
+        }}
+        onInteractOutside={(e) => {
+          if (isComboboxFieldTarget(e.target)) e.preventDefault()
+          onInteractOutside?.(e)
+        }}
+        onPointerDownOutside={(e) => {
+          if (isComboboxFieldTarget(e.target)) e.preventDefault()
+          onPointerDownOutside?.(e)
+        }}
+        onFocusOutside={(e) => {
+          if (isComboboxFieldTarget(e.target)) e.preventDefault()
+          onFocusOutside?.(e)
         }}
         onPointerDownCapture={userPointerDownCapture}
         {...props}
@@ -715,8 +669,6 @@ function ComboboxBadgeTrigger({
   const generatedId = React.useId()
   const id = idProp ?? generatedId
 
-  useComboboxFieldSurfaceStyles()
-
   const selected = Array.isArray(value) ? value : []
   const visible = expanded ? selected : selected.slice(0, maxShownItems)
   const hiddenCount = selected.length - visible.length
@@ -730,24 +682,28 @@ function ComboboxBadgeTrigger({
 
   return (
     <PopoverPrimitive.Anchor asChild>
-      <div className={cn("w-full min-w-0", className)} {...props}>
-        <InputGroup
+      <div data-slot="combobox-anchor" className={cn("w-full min-w-0", className)} {...props}>
+        {/* Flat SelectTrigger-like shell — avoid InputGroup's filled field chrome. */}
+        <div
+          data-slot="combobox-badge-trigger"
+          data-disabled={disabled ? "" : undefined}
           className={cn(
-            "h-auto min-h-8 w-auto items-start gap-0 py-0.5",
+            "flex h-auto min-h-8 w-auto items-start gap-1.5 px-2 py-0.5",
+            comboboxFieldShellClassName,
             disabled && "pointer-events-none opacity-50"
           )}
-          data-disabled={disabled ? "" : undefined}
+          style={{ boxShadow: "none" }}
         >
           <div
             id={id}
-            data-slot="input-group-control"
+            data-slot="combobox-badge-trigger-control"
             role="combobox"
             tabIndex={disabled ? -1 : 0}
             aria-expanded={open}
             aria-controls={open ? listboxIdAria : undefined}
             aria-disabled={disabled}
             className={cn(
-              "enhanced-combobox-input text-foreground flex min-h-7 min-w-0 flex-1 cursor-pointer flex-wrap items-center gap-1 border-0 bg-transparent px-2.5 py-1 text-left text-sm shadow-none outline-none",
+              "text-foreground flex min-h-7 min-w-0 flex-1 cursor-pointer flex-wrap items-center gap-1 border-0 bg-transparent py-1 text-left text-sm shadow-none outline-none",
               disabled && "cursor-not-allowed"
             )}
             onClick={() => !disabled && setOpen(!open)}
@@ -767,13 +723,13 @@ function ComboboxBadgeTrigger({
                   <EnhancedBadge
                     key={val}
                     variant="outline"
-                    className="max-w-full !rounded-md py-0 pl-1.5 pr-0.5"
+                    className="max-w-full !rounded-md py-0 pl-1.5 pr-0.5 !shadow-none"
                   >
                     <span className="min-w-0 max-w-[10rem] truncate">{getLabel(val) ?? val}</span>
                     <button
                       type="button"
                       aria-label={`Remove ${getLabel(val) ?? val}`}
-                      className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-70 outline-none hover:bg-accent hover:text-accent-foreground hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+                      className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-70 outline-none hover:bg-interactive hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
                       onPointerDown={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
@@ -790,7 +746,7 @@ function ComboboxBadgeTrigger({
                 {(hiddenCount > 0 || expanded) && (
                   <EnhancedBadge
                     variant="outline"
-                    className="cursor-pointer !rounded-md"
+                    className="cursor-pointer !rounded-md !shadow-none"
                     onPointerDown={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -806,14 +762,12 @@ function ComboboxBadgeTrigger({
               </>
             )}
           </div>
-          <InputGroupAddon align="inline-end" className="self-start pt-1">
-            <IconChevronsUpDown
-              strokeWidth={2}
-              className="text-muted-foreground/80 size-4 shrink-0"
-              aria-hidden
-            />
-          </InputGroupAddon>
-        </InputGroup>
+          <IconChevronsUpDown
+            strokeWidth={2}
+            className="text-muted-foreground size-3.5 mt-1.5 shrink-0 pointer-events-none"
+            aria-hidden
+          />
+        </div>
       </div>
     </PopoverPrimitive.Anchor>
   )
@@ -1078,7 +1032,7 @@ function ComboboxChips({
     <div
       data-slot="combobox-chips"
       className={cn(
-        "bg-input/20 dark:bg-input/30 border-input focus-within:border-ring focus-within:ring-ring/30 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive dark:has-aria-invalid:border-destructive/50 flex min-h-7 flex-wrap items-center gap-1 rounded-md border bg-clip-padding px-2 py-0.5 text-xs transition-colors focus-within:ring-[2px] has-aria-invalid:ring-[2px] has-data-[slot=combobox-chip]:px-1",
+        "bg-transparent hover:bg-interactive dark:bg-input/30 border-input shadow-none focus-within:border-ring focus-within:ring-ring/30 has-aria-invalid:ring-destructive/20 dark:has-aria-invalid:ring-destructive/40 has-aria-invalid:border-destructive dark:has-aria-invalid:border-destructive/50 flex min-h-7 flex-wrap items-center gap-1 rounded-md border bg-clip-padding px-2 py-0.5 text-xs transition-colors focus-within:ring-[2px] has-aria-invalid:ring-[2px] has-data-[slot=combobox-chip]:px-1",
         className
       )}
       {...props}

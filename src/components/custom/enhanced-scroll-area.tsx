@@ -44,7 +44,8 @@ export interface EnhancedScrollAreaProps
  * Compute dynamic mask-image based on scroll position.
  * Fades only show when there's overflow and user has scrolled (top fade when not at top, bottom fade when not at bottom).
  */
-function getMaskStyle(
+/** Shared by CommandList / SelectContent so popover lists get the same edge fade. */
+export function getMaskStyle(
   el: HTMLDivElement | null,
   fadeMask: boolean,
   orientation: "vertical" | "horizontal" | "both"

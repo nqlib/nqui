@@ -92,4 +92,4 @@ Optional: pass `textValue` on `SelectItem` when the title is not a plain string 
 - **Content:** FrostedGlass + popover surface; **items** use relaxed row spacing (hover `accent`, margins) for dropdown parity with **Combobox** list items.
 - **Scroll:** `SelectContent` composes nqui `ScrollArea`/`ScrollBar` like `CommandList` (viewport is the scrollport). Radix’s Select viewport is forced to `overflow: visible` so it does not steal the scrollport. Do not wrap content in another `ScrollArea` or add `overflow-y-auto` on the list.
 - `SelectScrollUpButton` / `SelectScrollDownButton` remain exported for custom compositions; the default content no longer mounts them (ScrollArea handles overflow).
-- **`CoreSelect*`** for the same primitives without the enhanced trigger chrome (re-exported from the same `ui/select` module).
+- Single implementation — there is no separate `CoreSelect*` tree (aliases were removed; use `Select*`).

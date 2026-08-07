@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * DropdownMenu composition (distinct from Select / Command):
+ *
+ * - SubTrigger’s layout box IS the submenu anchor. Row width must match siblings.
+ * - ScrollArea is OK for the styled thumb, but NEVER add a content-level pr gutter
+ *   (that insets SubTrigger → submenu overlap, or widened SubTrigger → hover bleed).
+ * - Scrollbar overlays the panel edge; long lists get the nqui thumb without
+ *   changing menu geometry.
+ */
+
 import {
   IconCheck,
   IconChevronRight,
@@ -7,13 +17,52 @@ import {
 } from "@/components/icons"
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
+import { ScrollArea as ScrollAreaPrimitive } from "radix-ui"
 
+import { getMaskStyle } from "@/components/custom/enhanced-scroll-area"
+import { ScrollBar } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { floatingListItemInteractive, floatingSurface, menuRowDensity } from "@/lib/floating-surface"
+import {
+  floatingListItemInteractive,
+  floatingSurface,
+  interactiveWashHover,
+  menuRowDensity,
+} from "@/lib/floating-surface"
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
-const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+/**
+ * Flat field chrome when used as the button itself.
+ * With `asChild`, stay style-neutral so SidebarMenuButton / Button keep their own surface.
+ */
+const DropdownMenuTrigger = React.forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Trigger>
+>(({ className, asChild = false, style, ...props }, ref) => (
+  <DropdownMenuPrimitive.Trigger
+    ref={ref}
+    asChild={asChild}
+    data-slot="dropdown-menu-trigger"
+    className={cn(
+      !asChild &&
+        cn(
+          // Kill UA button chrome — platform default button shadow reads as a heavy drop.
+          "appearance-none border-input bg-transparent shadow-none ring-0 [box-shadow:none]",
+          "data-[state=open]:bg-interactive",
+          interactiveWashHover,
+          "inline-flex h-7 w-fit items-center justify-center gap-1.5 whitespace-nowrap rounded-md border border-solid px-2.5 text-sm",
+          "transition-colors duration-[var(--duration-quick)] ease-[var(--ease-in-out)]",
+          "outline-none focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring/30",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          "[&_svg:not([class*='size-'])]:size-3.5 [&_svg]:pointer-events-none [&_svg]:shrink-0"
+        ),
+      className
+    )}
+    style={asChild ? style : { boxShadow: "none", ...style }}
+    {...props}
+  />
+))
+DropdownMenuTrigger.displayName = DropdownMenuPrimitive.Trigger.displayName
 
 const DropdownMenuGroup = DropdownMenuPrimitive.Group
 
@@ -32,9 +81,10 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      "flex cursor-default select-none items-center transition-colors data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      "flex cursor-default select-none items-center transition-colors data-[state=open]:bg-interactive [&_svg]:pointer-events-none [&_svg]:shrink-0",
       menuRowDensity,
       floatingListItemInteractive,
+      interactiveWashHover,
       inset && "pl-8",
       className
     )}
@@ -47,21 +97,101 @@ const DropdownMenuSubTrigger = React.forwardRef<
 DropdownMenuSubTrigger.displayName =
   DropdownMenuPrimitive.SubTrigger.displayName
 
+function useDropdownScrollMask() {
+  const scrollRootRef = React.useRef<HTMLDivElement>(null)
+  const scrollViewportRef = React.useRef<HTMLDivElement>(null)
+  const [maskStyle, setMaskStyle] = React.useState<React.CSSProperties>({})
+
+  const updateMask = React.useCallback(() => {
+    setMaskStyle((prev) => {
+      const next = getMaskStyle(scrollViewportRef.current, true, "vertical")
+      return (
+        prev.maskImage === next.maskImage &&
+        prev.WebkitMaskImage === next.WebkitMaskImage
+      )
+        ? prev
+        : next
+    })
+  }, [])
+
+  React.useEffect(() => {
+    const root = scrollRootRef.current
+    const vp = scrollViewportRef.current
+    if (!root || !vp) return
+    const onWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) return
+      const max = vp.scrollHeight - vp.clientHeight
+      if (max <= 1 || e.deltaY === 0) return
+      const next = Math.min(max, Math.max(0, vp.scrollTop + e.deltaY))
+      if (next === vp.scrollTop) return
+      vp.scrollTop = next
+      e.preventDefault()
+    }
+    root.addEventListener("wheel", onWheel, { passive: false, capture: true })
+    return () => root.removeEventListener("wheel", onWheel, true)
+  }, [])
+
+  React.useEffect(() => {
+    const element = scrollViewportRef.current
+    if (!element) return
+    updateMask()
+    element.addEventListener("scroll", updateMask, { passive: true })
+    const resizeObserver = new ResizeObserver(updateMask)
+    resizeObserver.observe(element)
+    return () => {
+      resizeObserver.disconnect()
+      element.removeEventListener("scroll", updateMask)
+    }
+  }, [updateMask])
+
+  return { scrollRootRef, scrollViewportRef, maskStyle }
+}
+
+function DropdownScrollBody({ children }: { children: React.ReactNode }) {
+  const { scrollRootRef, scrollViewportRef, maskStyle } = useDropdownScrollMask()
+
+  return (
+    <ScrollAreaPrimitive.Root
+      ref={scrollRootRef}
+      type="always"
+      data-slot="dropdown-menu-scroll"
+      className="relative z-[var(--z-content)] min-h-0 w-full max-h-[min(24rem,var(--radix-dropdown-menu-content-available-height,24rem))] rounded-lg bg-popover"
+    >
+      {/*
+        No pr gutter — SubTrigger width must match siblings for submenu anchoring.
+        Thumb overlays the edge (Select/Command can use a reserved gutter; menus cannot).
+      */}
+      <ScrollAreaPrimitive.Viewport
+        ref={scrollViewportRef}
+        data-slot="dropdown-menu-viewport"
+        className="size-full max-h-[inherit] rounded-[inherit] outline-none transition-[mask-image] duration-[var(--duration-standard)] ease-out"
+        style={maskStyle}
+      >
+        <div className="p-1">{children}</div>
+      </ScrollAreaPrimitive.Viewport>
+      <ScrollBar />
+      <ScrollAreaPrimitive.Corner />
+    </ScrollAreaPrimitive.Root>
+  )
+}
+
 const DropdownMenuSubContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
->(({ className, sideOffset = 6, alignOffset = -4, ...props }, ref) => (
+>(({ className, sideOffset = 6, alignOffset = -4, children, ...props }, ref) => (
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     sideOffset={sideOffset}
     alignOffset={alignOffset}
     className={cn(
       floatingSurface,
-      "z-[var(--z-popover)] min-w-[8rem] overflow-hidden p-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-dropdown-menu-content-transform-origin]",
+      "z-[var(--z-popover)] min-w-[8rem] overflow-hidden p-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-dropdown-menu-content-transform-origin]",
       className
     )}
     {...props}
-  />
+  >
+    <DropdownScrollBody>{children}</DropdownScrollBody>
+  </DropdownMenuPrimitive.SubContent>
 ))
 DropdownMenuSubContent.displayName =
   DropdownMenuPrimitive.SubContent.displayName
@@ -69,18 +199,20 @@ DropdownMenuSubContent.displayName =
 const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
+>(({ className, sideOffset = 4, children, ...props }, ref) => (
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
       ref={ref}
       sideOffset={sideOffset}
-    className={cn(
-      floatingSurface,
-      "z-[var(--z-popover)] max-h-[var(--radix-dropdown-menu-content-available-height)] min-w-[8rem] overflow-y-auto overflow-x-hidden p-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-dropdown-menu-content-transform-origin]",
-      className
-    )}
+      className={cn(
+        floatingSurface,
+        "z-[var(--z-popover)] max-h-[var(--radix-dropdown-menu-content-available-height)] min-w-[8rem] overflow-hidden p-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-dropdown-menu-content-transform-origin]",
+        className
+      )}
       {...props}
-    />
+    >
+      <DropdownScrollBody>{children}</DropdownScrollBody>
+    </DropdownMenuPrimitive.Content>
   </DropdownMenuPrimitive.Portal>
 ))
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName

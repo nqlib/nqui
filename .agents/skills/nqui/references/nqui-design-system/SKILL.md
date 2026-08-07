@@ -15,7 +15,7 @@ nqui uses a **hybrid elevation model**: 2 alternating inline surface tokens + 1 
 |-------|----------|------|
 | `surface-a` | `bg-background` | Page, alternates with B |
 | `surface-b` | `bg-muted/40` | Card/panel/distinct topic region |
-| `surface-elevated` | `bg-popover` + `shadow-lg` | Modals, sheets, popovers (the only legitimate third surface) |
+| `surface-elevated` | `bg-popover` + `.nqui-float` / `--shadow-float` (modals: `--shadow-modal`) | Modals, sheets, popovers (the only legitimate third surface) |
 
 **Hard cap: 2 nested inline surfaces.** If you reach for a third shade, use spacing (`gap-6` between sections) + an uppercase label (`text-xs uppercase tracking-wider`) instead. A third nested surface is almost always a symptom of weak composition.
 

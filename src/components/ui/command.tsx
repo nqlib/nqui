@@ -8,6 +8,7 @@ import { ScrollArea as ScrollAreaPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { floatingListItemInteractive, floatingSurface } from "@/lib/floating-surface"
+import { getMaskStyle } from "@/components/custom/enhanced-scroll-area"
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,9 @@ import {
   InputGroupAddon,
 } from "@/components/ui/input-group"
 import { ScrollBar } from "@/components/ui/scroll-area"
+
+/** Right gutter so row highlights clear the w-2 ScrollBar thumb. */
+const COMMAND_LIST_SCROLL_GUTTER = "pr-3.5"
 
 function Command({
   className,
@@ -75,7 +79,7 @@ function CommandInput({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
   return (
-    <div data-slot="command-input-wrapper" className="p-1 pb-0">
+    <div data-slot="command-input-wrapper" className="shrink-0 px-1 pt-1 pb-1.5">
       <InputGroup className="bg-input/20 dark:bg-input/30">
         <CommandPrimitive.Input
           data-slot="command-input"
@@ -115,6 +119,19 @@ const CommandList = React.forwardRef<
         : maxHeight
   const rootRef = React.useRef<HTMLDivElement>(null)
   const viewportRef = React.useRef<HTMLDivElement>(null)
+  const [maskStyle, setMaskStyle] = React.useState<React.CSSProperties>({})
+
+  const updateMask = React.useCallback(() => {
+    setMaskStyle((prev) => {
+      const next = getMaskStyle(viewportRef.current, true, "vertical")
+      return (
+        prev.maskImage === next.maskImage &&
+        prev.WebkitMaskImage === next.WebkitMaskImage
+      )
+        ? prev
+        : next
+    })
+  }, [])
 
   // Bridge wheel → viewport when popover scroll-lock swallows native wheel.
   React.useEffect(() => {
@@ -133,6 +150,19 @@ const CommandList = React.forwardRef<
     root.addEventListener("wheel", onWheel, { passive: false, capture: true })
     return () => root.removeEventListener("wheel", onWheel, true)
   }, [])
+
+  React.useEffect(() => {
+    const element = viewportRef.current
+    if (!element) return
+    updateMask()
+    element.addEventListener("scroll", updateMask, { passive: true })
+    const resizeObserver = new ResizeObserver(updateMask)
+    resizeObserver.observe(element)
+    return () => {
+      resizeObserver.disconnect()
+      element.removeEventListener("scroll", updateMask)
+    }
+  }, [updateMask])
 
   return (
     <ScrollAreaPrimitive.Root
@@ -158,12 +188,16 @@ const CommandList = React.forwardRef<
       <ScrollAreaPrimitive.Viewport
         ref={viewportRef}
         data-slot="command-list-viewport"
-        className="w-full max-h-(--command-list-max-height) scroll-py-1 rounded-[inherit] outline-none"
+        className="w-full max-h-(--command-list-max-height) scroll-py-1 rounded-[inherit] outline-none transition-[mask-image] duration-[var(--duration-standard)] ease-out"
+        style={maskStyle}
       >
         <CommandPrimitive.List
           ref={ref}
           data-slot="command-list"
-          className="outline-none overflow-visible p-1"
+          className={cn(
+            "outline-none overflow-visible py-0.5 pl-1",
+            COMMAND_LIST_SCROLL_GUTTER
+          )}
           {...props}
         />
       </ScrollAreaPrimitive.Viewport>
@@ -226,7 +260,7 @@ function CommandItem({
       data-slot="command-item"
       className={cn(
         floatingListItemInteractive,
-        "relative flex min-h-7 cursor-default items-center gap-2 px-2.5 py-1.5 text-xs select-none [&_svg:not([class*='size-'])]:size-3.5 [[data-slot=dialog-content]_&]:rounded-md group/command-item data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "relative mx-1 my-0.5 flex min-h-7 cursor-default items-center gap-2 rounded-md px-2.5 py-1.5 text-xs select-none [&_svg:not([class*='size-'])]:size-3.5 [[data-slot=dialog-content]_&]:rounded-md group/command-item data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         // Search-result stack: keep py-1.5; grow the text block, not the padding.
         "has-[[data-slot=command-item-content]]:items-start has-[[data-slot=command-item-content]]:min-h-0",
         "has-[[data-slot=command-item-content]]:[&>*:first-child]:mt-0.5",

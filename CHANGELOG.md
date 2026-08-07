@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.5] - 2026-08-06
+
+### Changed
+
+- **Flat field / overlay chrome** — Select, Combobox, Command, and DropdownMenu
+  triggers and panels align on `floatingSurface`, `--interactive` wash, and
+  flat field borders (no heavy trigger drop shadows). Public dropdown no longer
+  injects `.enhanced-dropdown-trigger` 3D shadows.
+- **Elevation glossary** — prefer `--shadow-tooltip` / `--shadow-float` /
+  `--shadow-modal` and `.nqui-float`. `--shadow-elevated` is a legacy alias of
+  tooltip scale; `.nqui-elevated` is deprecated. Docs (`ELEVATION.md`) updated.
+- **ButtonGroup** — flush flat segmented shell matching ToggleGroup
+  (`spacing=0`): one `border-input` pill, interactive wash, secondary when
+  selected; no inner hairlines, scale, or gradients between segments.
+- **Button / Badge** — removed `nqui-button-gradient` overlays; filled CTAs keep
+  `nqui-button-shadow` only. Outline/ghost stay flat.
+- **Public API honesty** — dropped identical `CoreSelect*` / `CoreCombobox*` /
+  `CoreDropdownMenu*` re-exports (same module as the public names). Real
+  Core* dual trees remain for Button, Badge, Tabs, etc.
+- **Wash adoption** — ButtonGroup and outline Badge use `bg-interactive`; Tabs /
+  radio sliding pills and carousel nav drop stray `shadow-sm` / `shadow-md`.
+
+### Fixed
+
+- DropdownMenuTrigger heavy shadow from enhanced wrapper `!important` layers.
+- Combobox open/close flicker and related field dismiss edge cases from prior
+  polish (local iteration).
+
 ## [0.7.4] - 2026-07-25
 
 ### Added

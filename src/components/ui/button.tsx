@@ -19,21 +19,22 @@ const buttonSizeVariants = {
 
 const buttonVariants = cva(
   cn(
-    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
     actionFocusClasses,
   ),
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "rounded-full bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "rounded-md border border-input bg-transparent shadow-none hover:bg-interactive",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "rounded-md hover:bg-interactive",
+        link: "rounded-md text-primary underline-offset-4 hover:underline",
       },
       size: buttonSizeVariants,
     },
@@ -93,7 +94,7 @@ const enhancedButtonVariants = cva(
       variant: {
         default: [
           "bg-primary text-primary-foreground border border-primary",
-          "nqui-button-gradient nqui-button-shadow",
+          "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-primary/90 hover:border-primary/90",
           "focus:bg-primary/80 focus:border-primary/80",
@@ -103,7 +104,7 @@ const enhancedButtonVariants = cva(
         ],
         destructive: [
           "bg-destructive text-destructive-foreground border border-destructive",
-          "nqui-button-gradient nqui-button-shadow",
+          "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-destructive/90 hover:border-destructive/90",
           "focus:bg-destructive/80 focus:border-destructive/80",
@@ -112,7 +113,7 @@ const enhancedButtonVariants = cva(
         ],
         secondary: [
           "bg-secondary text-secondary-foreground border border-border",
-          "nqui-button-gradient nqui-button-shadow",
+          "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-secondary/90 hover:border-border",
           "focus:bg-secondary/80 focus:border-border",
@@ -121,7 +122,7 @@ const enhancedButtonVariants = cva(
         ],
         success: [
           "bg-success text-success-foreground border border-success",
-          "nqui-button-gradient nqui-button-shadow",
+          "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-success/90 hover:border-success/90",
           "focus:bg-success/80 focus:border-success/80",
@@ -130,7 +131,7 @@ const enhancedButtonVariants = cva(
         ],
         warning: [
           "bg-warning text-warning-foreground border border-warning",
-          "nqui-button-gradient nqui-button-shadow",
+          "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-warning/90 hover:border-warning/90",
           "focus:bg-warning/80 focus:border-warning/80",
@@ -139,16 +140,17 @@ const enhancedButtonVariants = cva(
         ],
         info: [
           "bg-info text-info-foreground border border-info",
-          "nqui-button-gradient nqui-button-shadow",
+          "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-info/90 hover:border-info/90",
           "focus:bg-info/80 focus:border-info/80",
           "active:bg-info/75 active:border-info/75 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        outline:
+          "rounded-md border border-input bg-transparent shadow-none hover:bg-interactive",
+        ghost: "rounded-md hover:bg-interactive",
+        link: "rounded-md text-primary underline-offset-4 hover:underline",
       },
       size: buttonSizeVariants,
     },
@@ -169,7 +171,7 @@ export interface EnhancedButtonProps
  * Enhanced Button component with meccs-ui styling
  *
  * Wraps the base shadcn Button component with enhanced styling:
- * - Borders, gradients, and shadows for dimensional appearance
+ * - Borders and shadows for filled CTAs (no gradient overlay)
  * - Enhanced focus and active states with scale animation
  * - Smooth opacity and transform transitions
  *
@@ -197,6 +199,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
           size={size}
           className={className}
           asChild={asChild}
+          data-variant={variant}
           {...props}
         >
           {children}

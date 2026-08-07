@@ -184,7 +184,7 @@ nqui **ComboboxItem** and **CommandItem** (≥ 0.6.1) use `aria-selected:bg-acce
 ## Implementation
 
 - **Source:** `packages/nqui/src/components/ui/combobox.tsx`
-- **Public API:** exported from `@nqlib/nqui` (same as `CoreCombobox*` aliases in the barrel if you need the unprefixed base re-exports)
+- **Public API:** exported from `@nqlib/nqui` (single implementation; no separate `CoreCombobox*` aliases)
 - **Styling:** Input group uses injected CSS once per page (`nqui-combobox-styles-v1`) for trigger depth/shadow; component is `"use client"`.
 - **Docs location:** In-repo `packages/nqui/docs/components/`; in apps, `node_modules/@nqlib/nqui/docs/components/` (docs ship with the npm package). Skill: **nqui-components** (`.cursor/skills/nqui-components/SKILL.md`).
 

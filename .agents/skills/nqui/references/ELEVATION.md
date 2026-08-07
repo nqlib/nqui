@@ -42,10 +42,24 @@ This file is the rule. Apply it to every layered UI.
 | Token | Tailwind class | When to use |
 |-------|---------------|-------------|
 | `surface-a` | `bg-background` | Page background, alternates with B |
-| `surface-b` | `bg-muted/40` (or `bg-muted/30` for a subtler step) | Cards, panels, regions that need to read as a distinct topic |
-| `surface-elevated` | `bg-popover` + `shadow-lg` | Modals, sheets, popovers, dropdowns — anything physically "above" the page |
+| `surface-b` | Full tone: `--surface-b` / `--muted`. Soft fill: `bg-surface-soft` (`--surface-soft` = muted @ 50%) | Cards, panels, regions that need to read as a distinct topic |
+| `surface-elevated` | `bg-popover` + `.nqui-float` / `shadow-(--shadow-float)` | Modals, sheets, popovers, dropdowns — overlay **color** only; lift is the float shadow |
+| `interactive` | `bg-interactive` / `hover:bg-interactive` | Hover + selection wash (light: soft accent tint; dark: solid accent) |
 
 **These are the only legitimate inline surface tokens.** If you find yourself wanting a fourth, the answer is *not* a new shade — the answer is more spacing, a stronger label, or a different layout.
+
+### Elevation glossary (do not conflate “elevated”)
+
+| Name | Role |
+|------|------|
+| `--shadow-tooltip` | Small lift for tooltips. Prefer this name. |
+| `--shadow-elevated` | **Legacy alias of `--shadow-tooltip`.** Not for panels. |
+| `--shadow-float` / `.nqui-float` / `floatingSurface` | Cloudy lift for Select, Combobox, Command, Dropdown, Popover |
+| `--shadow-modal` | Dialog / Sheet / Drawer |
+| `--surface-elevated` | Color alias (`--popover`), not a shadow |
+| `.nqui-elevated` | **Deprecated** class alias of `.nqui-float` — do not use in new code |
+
+**Chrome dialects:** Field triggers (Select / Combobox / Dropdown / outline Button) are flat (`shadow-none` + `bg-interactive` wash). Filled Button / Badge keep sculpted `nqui-button-shadow` on purpose — CTAs, not fields.
 
 ## The depth rule
 
@@ -53,7 +67,7 @@ This file is the rule. Apply it to every layered UI.
 
 | Depth | Carrier | Example |
 |-------|---------|---------|
-| Page → card | Surface flip (A → B) | Page is `bg-background`, card is `bg-muted/40` |
+| Page → card | Surface flip (A → B) | Page is `bg-background`, card is `bg-surface-soft` |
 | Inside card → sub-section | **Spacing only** (`gap-6` between sections + uppercase label) | No new surface. `<h3 className="text-xs uppercase tracking-wider">Section</h3>` + content |
 | Section → detail group | **Spacing only** (`gap-4`) or one horizontal `Separator` | No new surface |
 | Sub-detail | **Type weight + indentation** | `text-sm` → `text-xs text-muted-foreground` |
@@ -155,7 +169,7 @@ The biggest failure mode: removing surfaces but keeping every horizontal divider
 | "Slightly darker shade for the sub-region" | More space, uppercase label, no shade |
 | `border-l-4 border-accent` on a sub-section | Uppercase label + spacing |
 | `shadow-md` on a flat inline card | No shadow — shadows are for elevated surfaces only |
-| `bg-muted/20` inside `bg-muted/40` inside `bg-background` | `bg-background` (A) → `bg-muted/40` (B) → spacing for the third level |
+| `bg-muted/20` inside `bg-surface-soft` inside `bg-background` | `bg-background` (A) → `bg-surface-soft` (B) → spacing for the third level |
 
 ## The check before shipping any layered UI
 
@@ -164,7 +178,7 @@ Walk the screen from outside in. Count surface changes.
 - [ ] Did I use more than 2 distinct inline surface colors? If yes, collapse to 2.
 - [ ] Did I nest a card inside a card inside a card? If yes, flatten one level.
 - [ ] Did I add a shade just because "this section needed to feel distinct"? If yes, use spacing + label instead.
-- [ ] Is my elevated surface (Modal/Sheet/Popover) using `shadow-lg` + `bg-popover`? If not, fix.
+- [ ] Is my overlay (Modal/Sheet) using `bg-popover` + `--shadow-modal`, and float panels (Popover/Dropdown/Select) using `--shadow-float` / `.nqui-float`? If you still have `shadow-lg` / `.nqui-elevated`, fix.
 - [ ] Are my section gaps varied (some `gap-4`, some `gap-6`, some `gap-8`)? If everything is the same, the hierarchy is monotonous.
 
 ## Why this works (the principle)

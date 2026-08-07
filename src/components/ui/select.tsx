@@ -7,9 +7,13 @@ import {
 import * as React from "react"
 import { ScrollArea as ScrollAreaPrimitive, Select as SelectPrimitive } from "radix-ui"
 
+import { getMaskStyle } from "@/components/custom/enhanced-scroll-area"
 import { ScrollBar } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { floatingListItemInteractive, floatingSurface } from "@/lib/floating-surface"
+
+/** Right gutter so row highlights clear the w-2 ScrollBar thumb. */
+const SELECT_LIST_SCROLL_GUTTER = "pr-3.5"
 
 /** Keyboard nav wins until the pointer intentionally moves (Radix focuses on pointermove). */
 const selectPointerGuard = {
@@ -31,7 +35,7 @@ function SelectGroup({
   return (
     <SelectPrimitive.Group
       data-slot="select-group"
-      className={cn("scroll-my-1 p-1", className)}
+      className={cn("scroll-my-1", className)}
       {...props}
     />
   )
@@ -63,7 +67,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "border-input data-[placeholder]:text-muted-foreground bg-input/20 dark:bg-input/30 dark:hover:bg-input/50 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-md border px-2 py-1.5 text-sm transition-[color,background-color,border-color,box-shadow] duration-[var(--duration-quick)] ease-[var(--ease-in-out)] focus-visible:ring-[2px] aria-invalid:ring-[2px] data-[size=default]:h-7 data-[size=sm]:h-6 shadow-[0_1px_0_0_color-mix(in_oklch,var(--input)_40%,transparent),0_1px_2px_0_oklch(0.15_0_0_/_0.05),0_2px_4px_-1px_oklch(0.15_0_0_/_0.03)] hover:shadow-[0_1px_0_0_color-mix(in_oklch,var(--input)_40%,transparent),0_1px_3px_0_oklch(0.15_0_0_/_0.08),0_2px_6px_-1px_oklch(0.15_0_0_/_0.04)] dark:shadow-[0_1px_0_0_color-mix(in_oklch,var(--input)_40%,transparent),0_1px_2px_0_oklch(0_0_0_/_0.3),0_2px_4px_-1px_oklch(0_0_0_/_0.2)] dark:hover:shadow-[0_1px_0_0_color-mix(in_oklch,var(--input)_40%,transparent),0_1px_3px_0_oklch(0_0_0_/_0.4),0_2px_6px_-1px_oklch(0_0_0_/_0.3)] *:data-[slot=select-value]:flex *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:gap-1.5 [&_svg:not([class*='size-'])]:size-3.5 flex min-w-0 max-w-full w-fit items-center justify-between whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "border-input data-[placeholder]:text-muted-foreground bg-transparent hover:bg-interactive dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 gap-1.5 rounded-md border px-2 py-1.5 text-sm shadow-none transition-colors duration-[var(--duration-quick)] ease-[var(--ease-in-out)] focus-visible:ring-[2px] aria-invalid:ring-[2px] data-[size=default]:h-7 data-[size=sm]:h-6 *:data-[slot=select-value]:flex *:data-[slot=select-value]:min-w-0 *:data-[slot=select-value]:gap-1.5 [&_svg:not([class*='size-'])]:size-3.5 flex min-w-0 max-w-full w-fit items-center justify-between whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:items-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
         minWidth === "120px" && "min-w-[120px]",
         className
       )}
@@ -87,6 +91,19 @@ function SelectContent({
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
   const scrollRootRef = React.useRef<HTMLDivElement>(null)
   const scrollViewportRef = React.useRef<HTMLDivElement>(null)
+  const [maskStyle, setMaskStyle] = React.useState<React.CSSProperties>({})
+
+  const updateMask = React.useCallback(() => {
+    setMaskStyle((prev) => {
+      const next = getMaskStyle(scrollViewportRef.current, true, "vertical")
+      return (
+        prev.maskImage === next.maskImage &&
+        prev.WebkitMaskImage === next.WebkitMaskImage
+      )
+        ? prev
+        : next
+    })
+  }, [])
 
   // Bridge wheel → ScrollArea viewport (Select scroll-lock often swallows native wheel),
   // and mark keyboard modality so pointermove cannot steal highlight.
@@ -119,6 +136,19 @@ function SelectContent({
     }
   }, [])
 
+  React.useEffect(() => {
+    const element = scrollViewportRef.current
+    if (!element) return
+    updateMask()
+    element.addEventListener("scroll", updateMask, { passive: true })
+    const resizeObserver = new ResizeObserver(updateMask)
+    resizeObserver.observe(element)
+    return () => {
+      resizeObserver.disconnect()
+      element.removeEventListener("scroll", updateMask)
+    }
+  }, [updateMask])
+
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -148,13 +178,15 @@ function SelectContent({
           <ScrollAreaPrimitive.Viewport
             ref={scrollViewportRef}
             data-slot="select-content-viewport"
-            className="size-full max-h-[inherit] rounded-[inherit] outline-none"
+            className="size-full max-h-[inherit] rounded-[inherit] outline-none transition-[mask-image] duration-[var(--duration-standard)] ease-out"
+            style={maskStyle}
           >
             <SelectPrimitive.Viewport
               data-position={position}
               style={{ overflow: "visible" }}
               className={cn(
-                "w-full min-w-0",
+                "w-full min-w-0 py-1 pl-1",
+                SELECT_LIST_SCROLL_GUTTER,
                 "data-[position=popper]:h-[var(--radix-select-trigger-height)] data-[position=popper]:w-full data-[position=popper]:min-w-[var(--radix-select-trigger-width)]"
               )}
             >

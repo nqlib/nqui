@@ -18,10 +18,10 @@ export type { EnhancedBadgeProps as BadgeProps } from "./ui/badge"
 // Core Badge (base shadcn version)
 export { Badge as CoreBadge } from "./ui/badge"
 
-// Button - Enhanced with meccs-ui styling (implementation: ui/button.tsx)
+// Button — public default is sculpted filled CTAs (nqui-button-shadow).
+// Outline/ghost/link are flat (field dialect). CoreButton = thinner base variant.
 export { EnhancedButton as Button, enhancedButtonVariants as buttonVariants } from "./ui/button"
 export type { EnhancedButtonProps as ButtonProps } from "./ui/button"
-// Core Button (base shadcn version)
 export { Button as CoreButton } from "./ui/button"
 
 // Calendar — moved to the "@nqlib/nqui/calendar" subpath so the main entry
@@ -38,7 +38,7 @@ export { Checkbox as CoreCheckbox } from "./ui/checkbox"
 // main entry does not pull the cmdk peer. See MIGRATION note.
 //   import { Command, CommandPalette } from "@nqlib/nqui/command"
 
-// Dropdown Menu - Enhanced with button-like 3D effects
+// Dropdown Menu — flat field chrome (public path is identity with ui/dropdown-menu)
 export {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -56,26 +56,8 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
 } from "./custom/enhanced-dropdown-menu"
-// Core Dropdown Menu (base version)
-export {
-  DropdownMenu as CoreDropdownMenu,
-  DropdownMenuTrigger as CoreDropdownMenuTrigger,
-  DropdownMenuContent as CoreDropdownMenuContent,
-  DropdownMenuItem as CoreDropdownMenuItem,
-  DropdownMenuCheckboxItem as CoreDropdownMenuCheckboxItem,
-  DropdownMenuRadioItem as CoreDropdownMenuRadioItem,
-  DropdownMenuLabel as CoreDropdownMenuLabel,
-  DropdownMenuSeparator as CoreDropdownMenuSeparator,
-  DropdownMenuShortcut as CoreDropdownMenuShortcut,
-  DropdownMenuGroup as CoreDropdownMenuGroup,
-  DropdownMenuPortal as CoreDropdownMenuPortal,
-  DropdownMenuSub as CoreDropdownMenuSub,
-  DropdownMenuSubContent as CoreDropdownMenuSubContent,
-  DropdownMenuSubTrigger as CoreDropdownMenuSubTrigger,
-  DropdownMenuRadioGroup as CoreDropdownMenuRadioGroup,
-} from "./ui/dropdown-menu"
 
-// Combobox - Enhanced with button-like 3D effects (Form Input Component)
+// Combobox — flat field chrome (single implementation; no separate Core*)
 export {
   Combobox,
   ComboboxInput,
@@ -99,31 +81,6 @@ export {
   ComboboxAnchor,
   ComboboxClear,
   useComboboxAnchor,
-} from "./ui/combobox"
-// Core Combobox (base version)
-export {
-  Combobox as CoreCombobox,
-  ComboboxInput as CoreComboboxInput,
-  ComboboxBadgeTrigger as CoreComboboxBadgeTrigger,
-  ComboboxList as CoreComboboxList,
-  ComboboxItem as CoreComboboxItem,
-  ComboboxItemContent as CoreComboboxItemContent,
-  ComboboxItemTitle as CoreComboboxItemTitle,
-  ComboboxItemDescription as CoreComboboxItemDescription,
-  ComboboxEmpty as CoreComboboxEmpty,
-  ComboboxContent as CoreComboboxContent,
-  ComboboxGroup as CoreComboboxGroup,
-  ComboboxLabel as CoreComboboxLabel,
-  ComboboxCollection as CoreComboboxCollection,
-  ComboboxSeparator as CoreComboboxSeparator,
-  ComboboxChips as CoreComboboxChips,
-  ComboboxChip as CoreComboboxChip,
-  ComboboxChipsInput as CoreComboboxChipsInput,
-  ComboboxTrigger as CoreComboboxTrigger,
-  ComboboxValue as CoreComboboxValue,
-  ComboboxAnchor as CoreComboboxAnchor,
-  ComboboxClear as CoreComboboxClear,
-  useComboboxAnchor as CoreUseComboboxAnchor,
 } from "./ui/combobox"
 
 // Progress - Enhanced with block-based segmented design
@@ -154,7 +111,7 @@ export type { RatingProps } from "./custom/rating"
 export { Tracker } from "./custom/tracker"
 export type { TrackerProps, TrackerBlockProps } from "./custom/tracker"
 
-// Select - Enhanced with button-like 3D effects
+// Select — flat field chrome (single implementation; no separate Core*)
 export {
   Select,
   SelectGroup,
@@ -169,22 +126,6 @@ export {
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,
-} from "./ui/select"
-// Core Select (base version)
-export {
-  Select as CoreSelect,
-  SelectGroup as CoreSelectGroup,
-  SelectValue as CoreSelectValue,
-  SelectTrigger as CoreSelectTrigger,
-  SelectContent as CoreSelectContent,
-  SelectLabel as CoreSelectLabel,
-  SelectItem as CoreSelectItem,
-  SelectItemContent as CoreSelectItemContent,
-  SelectItemTitle as CoreSelectItemTitle,
-  SelectItemDescription as CoreSelectItemDescription,
-  SelectSeparator as CoreSelectSeparator,
-  SelectScrollUpButton as CoreSelectScrollUpButton,
-  SelectScrollDownButton as CoreSelectScrollDownButton,
 } from "./ui/select"
 
 // Table of Contents

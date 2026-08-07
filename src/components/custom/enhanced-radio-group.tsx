@@ -296,7 +296,7 @@ const EnhancedRadioGroup = React.forwardRef<
           <div
             data-slot="radio-group-pill"
             className={cn(
-              "sliding-indicator rounded-(--radio-pill-radius) border border-input bg-background shadow-sm box-border"
+              "sliding-indicator rounded-(--radio-pill-radius) border border-input bg-background box-border"
             )}
             style={indicatorStyle}
             aria-hidden="true"
@@ -471,7 +471,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
             hasIcons ? "size-7 p-0" : "h-7 w-full min-w-0 px-1.5 py-0.5",
             isChecked
               ? "text-foreground shadow-none"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              : "text-muted-foreground hover:bg-interactive hover:text-foreground",
             isDisabled && "cursor-not-allowed opacity-50"
           )}
         >

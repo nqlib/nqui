@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority"
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { floatingSurface } from "@/lib/floating-surface"
+import { floatingSurface, interactiveWashHover } from "@/lib/floating-surface"
 
 function NavigationMenu({
   className,
@@ -62,7 +62,13 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-  "bg-background hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground data-open:hover:bg-accent data-open:focus-visible:bg-accent data-open:bg-accent data-open:text-accent-foreground focus-visible:ring-ring/30 data-popup-open:bg-accent data-popup-open:text-accent-foreground data-popup-open:hover:bg-accent rounded-md px-2.5 py-1.5 text-xs font-medium transition-[color,background-color,box-shadow] focus-visible:ring-[2px] focus-visible:outline-1 disabled:opacity-50 group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center disabled:pointer-events-none outline-none"
+  cn(
+    "bg-transparent focus-visible:ring-ring/30 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors shadow-none focus-visible:ring-[2px] focus-visible:outline-1 disabled:opacity-50 group/navigation-menu-trigger inline-flex h-9 w-max items-center justify-center disabled:pointer-events-none outline-none",
+    interactiveWashHover,
+    "focus-visible:bg-interactive",
+    "data-open:bg-interactive data-open:hover:bg-interactive data-open:focus-visible:bg-interactive",
+    "data-popup-open:bg-interactive data-popup-open:hover:bg-interactive"
+  )
 )
 
 function NavigationMenuTrigger({
@@ -90,7 +96,7 @@ function NavigationMenuContent({
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
       className={cn(
-        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:border-border group-data-[viewport=false]/navigation-menu:shadow-sm p-1.5 ease-[var(--ease-out)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:duration-[var(--duration-standard)] top-0 left-0 w-full min-w-[200px] group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none md:absolute md:w-auto group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0",
+        "data-[motion^=from-]:animate-in data-[motion^=to-]:animate-out data-[motion^=from-]:fade-in data-[motion^=to-]:fade-out data-[motion=from-end]:slide-in-from-right-52 data-[motion=from-start]:slide-in-from-left-52 data-[motion=to-end]:slide-out-to-right-52 data-[motion=to-start]:slide-out-to-left-52 group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:border-border group-data-[viewport=false]/navigation-menu:shadow-(--shadow-float) p-1.5 ease-[var(--ease-out)] group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:duration-[var(--duration-standard)] top-0 left-0 w-full min-w-[200px] group-data-[viewport=false]/navigation-menu:top-full group-data-[viewport=false]/navigation-menu:mt-1.5 group-data-[viewport=false]/navigation-menu:overflow-hidden **:data-[slot=navigation-menu-link]:focus:ring-0 **:data-[slot=navigation-menu-link]:focus:outline-none md:absolute md:w-auto group-data-[viewport=false]/navigation-menu:data-open:animate-in group-data-[viewport=false]/navigation-menu:data-closed:animate-out group-data-[viewport=false]/navigation-menu:data-closed:zoom-out-95 group-data-[viewport=false]/navigation-menu:data-open:zoom-in-95 group-data-[viewport=false]/navigation-menu:data-open:fade-in-0 group-data-[viewport=false]/navigation-menu:data-closed:fade-out-0",
         className
       )}
       {...props}
@@ -128,7 +134,13 @@ function NavigationMenuLink({
   return (
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
-      className={cn("data-[active=true]:focus-visible:bg-accent data-[active=true]:hover:bg-accent data-[active=true]:bg-accent data-[active=true]:text-accent-foreground focus-visible:ring-ring/30 hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground flex items-center gap-1.5 rounded-lg p-2 text-xs whitespace-nowrap transition-[color,background-color,box-shadow] outline-none focus-visible:ring-[2px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4", className)}
+      className={cn(
+        interactiveWashHover,
+        "data-[active=true]:bg-interactive data-[active=true]:hover:bg-interactive data-[active=true]:focus-visible:bg-interactive",
+        "focus-visible:ring-ring/30 focus-visible:bg-interactive",
+        "flex items-center gap-1.5 rounded-md p-2 text-xs whitespace-nowrap transition-colors outline-none focus-visible:ring-[2px] focus-visible:outline-1 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
       {...props}
     />
   )
@@ -147,7 +159,7 @@ function NavigationMenuIndicator({
       )}
       {...props}
     >
-      <div className="bg-border rounded-tl-sm shadow-md relative top-[60%] h-2 w-2 rotate-45" />
+      <div className="bg-border rounded-tl-sm relative top-[60%] h-2 w-2 rotate-45" />
     </NavigationMenuPrimitive.Indicator>
   )
 }

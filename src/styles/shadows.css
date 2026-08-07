@@ -1,22 +1,41 @@
-/* Shadow tokens — for ELEVATED surfaces only (modals, sheets, popovers,
- * dropdowns). Per ELEVATION.md (the 2+1 rule), inline cards do NOT get
- * shadows — depth comes from background contrast, not lift.
+/* Shadow tokens — for OVERLAY surfaces only (tooltips, float panels, modals).
+ * Per ELEVATION.md (the 2+1 rule), inline cards do NOT get shadows —
+ * depth comes from background contrast, not lift.
+ *
+ * Glossary (do not conflate “elevated”):
+ *   --shadow-tooltip   small lift (tooltips). Prefer this name.
+ *   --shadow-elevated  legacy alias of --shadow-tooltip (NOT panels).
+ *   --shadow-float     Select / Combobox / Command / Dropdown / Popover
+ *                      → floatingSurface / class .nqui-float
+ *   --shadow-modal     Dialog / Sheet / Drawer
+ *   --surface-elevated color alias (= --popover), not a shadow token
+ *   .nqui-elevated     legacy class alias of .nqui-float — do not use in new code
  *
  * Usage:
- *   .my-popover { box-shadow: var(--shadow-elevated); }
+ *   .my-tooltip { box-shadow: var(--shadow-tooltip); }
+ *   .my-select  { box-shadow: var(--shadow-float); }
  *   .my-modal   { box-shadow: var(--shadow-modal); }
  *
  * If you find yourself reaching for a shadow on an inline surface, stop —
- * use surface-b instead (the 2+1 rule).
+ * use surface-b / bg-surface-soft instead (the 2+1 rule).
  */
 
 @layer base {
   :root {
-    /* Elevated surfaces — popovers, dropdowns, hover cards.
-     * Subtle two-layer lift: 1px hairline + soft drop. */
-    --shadow-elevated:
+    /* Tooltip-scale — small two-layer lift. */
+    --shadow-tooltip:
       0 1px 2px -1px oklch(0.28 0.02 95 / 0.08),
       0 8px 24px -8px oklch(0.28 0.02 95 / 0.12);
+    /* Legacy name — same as --shadow-tooltip. Not for float panels. */
+    --shadow-elevated: var(--shadow-tooltip);
+
+    /* Float panels — Select / Combobox / Command / Dropdown (floatingSurface).
+     * Wide soft layers so the surroundings read cloudy and the panel is the focus. */
+    --shadow-float:
+      0 1px 2px -1px oklch(0.28 0.02 95 / 0.06),
+      0 12px 32px -8px oklch(0.28 0.02 95 / 0.14),
+      0 32px 72px -16px oklch(0.28 0.02 95 / 0.16),
+      0 48px 120px -24px oklch(0.28 0.02 95 / 0.10);
 
     /* Modal surfaces — dialogs, sheets, drawers.
      * Stronger drop because they sit further "above" the page. */
@@ -32,9 +51,16 @@
   .dark {
     /* Dark mode — drop shadows are darker (true black at low opacity).
      * The hairline becomes a subtle border-color highlight. */
-    --shadow-elevated:
+    --shadow-tooltip:
       0 1px 0 0 color-mix(in oklch, var(--border) 40%, transparent),
       0 8px 24px -4px oklch(0 0 0 / 0.5);
+    --shadow-elevated: var(--shadow-tooltip);
+
+    --shadow-float:
+      0 1px 0 0 color-mix(in oklch, var(--border) 35%, transparent),
+      0 12px 36px -6px oklch(0 0 0 / 0.45),
+      0 36px 80px -12px oklch(0 0 0 / 0.55),
+      0 56px 140px -20px oklch(0 0 0 / 0.4);
 
     --shadow-modal:
       0 4px 0 0 color-mix(in oklch, var(--border) 30%, transparent),

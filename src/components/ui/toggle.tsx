@@ -13,19 +13,19 @@ const toggleVariants = cva(
     variants: {
       variant: {
         default: [
-          /* Aligned with ButtonGroup shell: border-input + bg-background; on = secondary. */
-          "border border-input bg-background",
-          "hover:bg-accent hover:text-accent-foreground",
+          /* Aligned with ButtonGroup shell: border-input; on = secondary. */
+          "border border-input bg-transparent",
+          "hover:bg-interactive",
           "data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground data-[state=on]:border-border",
         ],
         outline: [
           "border border-input bg-transparent",
-          "hover:bg-accent hover:text-accent-foreground",
+          "hover:bg-interactive",
           "data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground data-[state=on]:border-border",
         ],
         segmented: [
           /* Flush pill with outline groups: fill only, no inner border (see ToggleGroupItem !border-0). */
-          "border-0 bg-transparent text-foreground hover:bg-accent hover:text-accent-foreground",
+          "border-0 bg-transparent text-foreground hover:bg-interactive",
           "data-[state=on]:bg-secondary data-[state=on]:text-secondary-foreground data-[state=on]:shadow-none data-[state=on]:hover:bg-secondary/90",
         ],
       },

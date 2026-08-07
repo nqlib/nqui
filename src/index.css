@@ -7,7 +7,7 @@
  * Loaded order matters: base tokens before utilities that may reference them. */
 @import "./styles/colors.css";    /* palette + semantic color tokens */
 @import "./styles/motion.css";    /* duration + easing tokens (MOTION.md) */
-@import "./styles/shadows.css";   /* elevated-surface shadow tokens */
+@import "./styles/shadows.css";   /* overlay shadow tokens (tooltip / float / modal) */
 @import "./styles/z-index.css";   /* stacking only — not surface depth */
 @import "./styles/hit-area.css";  /* expanded pointer targets */
 
@@ -28,13 +28,13 @@
 @source inline("border border-primary border-secondary border-destructive border-success border-warning border-info border-border border-input border-ring rounded-md rounded-lg rounded-full rounded-(--tabs-pill-radius) rounded-(--radio-pill-radius)");
 
 /* Background color utilities */
-@source inline("bg-primary bg-secondary bg-destructive bg-success bg-warning bg-info bg-background bg-accent bg-transparent bg-none bg-muted bg-input bg-input/20 dark:bg-input/30 light:bg-input/30 bg-overlay bg-popover");
+@source inline("bg-primary bg-secondary bg-destructive bg-success bg-warning bg-info bg-background bg-accent bg-transparent bg-none bg-muted bg-input bg-input/20 dark:bg-input/30 light:bg-input/30 bg-overlay bg-popover bg-interactive bg-surface-soft");
 
 /* Text color utilities */
 @source inline("text-primary-foreground text-secondary-foreground text-destructive-foreground text-success-foreground text-warning-foreground text-info-foreground text-accent-foreground text-muted-foreground text-foreground");
 
 /* Hover state utilities */
-@source inline("hover:opacity-100 hover:bg-primary/90 hover:bg-secondary/90 hover:bg-destructive/90 hover:bg-success/90 hover:bg-warning/90 hover:bg-info/90 hover:bg-accent hover:bg-muted hover:border-primary/90 hover:border-secondary/90 hover:border-destructive/90 hover:border-success/90 hover:border-warning/90 hover:border-info/90 hover:border-border hover:text-accent-foreground hover:text-muted-foreground hover:underline dark:hover:bg-muted/50 light:hover:bg-muted/50");
+@source inline("hover:opacity-100 hover:bg-primary/90 hover:bg-secondary/90 hover:bg-destructive/90 hover:bg-success/90 hover:bg-warning/90 hover:bg-info/90 hover:bg-accent hover:bg-muted hover:bg-interactive hover:border-primary/90 hover:border-secondary/90 hover:border-destructive/90 hover:border-success/90 hover:border-warning/90 hover:border-info/90 hover:border-border hover:text-accent-foreground hover:text-muted-foreground hover:underline dark:hover:bg-muted/50 light:hover:bg-muted/50");
 
 /* Focus state utilities */
 @source inline("focus:bg-primary/80 focus:bg-secondary/80 focus:bg-destructive/80 focus:bg-success/80 focus:bg-warning/80 focus:bg-info/80 focus:border-primary/80 focus:border-secondary/80 focus:border-destructive/80 focus:border-success/80 focus:border-warning/80 focus:border-info/80 focus:border-border focus:outline-0 focus-visible:outline-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-destructive");
@@ -49,7 +49,7 @@
 @source inline("cursor-pointer select-none touch-manipulation opacity-90 overflow-hidden");
 
 /* cmdk row selection (React 19 — aria-selected, not data-selected) */
-@source inline("aria-selected:bg-accent aria-selected:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground");
+@source inline("aria-selected:bg-accent aria-selected:bg-interactive aria-selected:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:bg-interactive data-[highlighted]:text-accent-foreground focus-visible:bg-interactive data-open:bg-interactive data-[state=open]:bg-interactive");
 
 /* Transition utilities */
 @source inline("transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-150 ease-in-out");
@@ -70,7 +70,7 @@
 @source inline("transition-colors transition-transform duration-200 ease-out shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] dark:bg-white bg-white");
 
 /* Radix Accordion (settings panels, filters) */
-@source inline("data-open:bg-muted/50 data-open:animate-accordion-down data-closed:animate-accordion-up");
+@source inline("data-open:bg-muted/50 data-open:bg-interactive data-open:animate-accordion-down data-closed:animate-accordion-up");
 
 /* Radix Checkbox (row selection in tables / gantt sidebar) */
 @source inline("data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary");
@@ -117,6 +117,8 @@
     --color-info-foreground: var(--info-foreground);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
+    --color-interactive: var(--interactive);
+    --color-surface-soft: var(--surface-soft);
     --color-muted-foreground: var(--muted-foreground);
     --color-muted: var(--muted);
     --color-secondary-foreground: var(--secondary-foreground);
@@ -188,7 +190,8 @@
     --spacing-96: 24rem;
 
     /* Button enhanced styling */
-    --button-gradient: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+    /* Kept for back-compat; filled Button/Badge no longer apply nqui-button-gradient. */
+    --button-gradient: none;
     --button-shadow: 0 1px 0 0 rgba(255,255,255,0.15) inset, 0 1px 1px 0 rgba(0,0,0,0.075);
 
     /* Z-index elevation scale */
@@ -692,9 +695,11 @@
        (#FAF9F5 ≈ oklch(0.982 0.0054 95))
 
        Surface model (per ELEVATION.md — the 2+1 rule):
-         --surface-a  = --background  (page, the "outer" surface)
-         --surface-b  = --muted       (card/panel, the "inner" surface)
-         --surface-elevated = --popover (modals, sheets, popovers, dropdowns)
+         --surface-a  = --background  (page)
+         --surface-b  = --muted       (full card/panel tone)
+         --surface-soft = muted @ 50% → use Tailwind bg-surface-soft for soft B fills
+         --surface-elevated = --popover (overlay COLOR only — lift via .nqui-float /
+                              --shadow-float, not via --shadow-elevated)
        Cap inline nesting at 2 surfaces (A then B). Past that, use spacing
        and uppercase labels, NOT a third shade.
        ============================================ */
@@ -703,7 +708,7 @@
     --foreground: oklch(0.2416 0.0219 57);
 
     /* Card === popover by value. Aliased so the relationship is honest.
-       Visual elevation for popover comes from .nqui-elevated (shadow), not color. */
+       Visual lift for overlays comes from .nqui-float / --shadow-float, not color. */
     --card: oklch(0.993 0.003 95);
     --card-foreground: oklch(0.2416 0.0219 57);
     --popover: var(--card);
@@ -734,7 +739,13 @@
     /* ─── Semantic surface aliases (the 2+1 model) ──────────────────────── */
     --surface-a: var(--background);
     --surface-b: var(--muted);
+    /* Soft surface-B fill — one opacity for panels/rows (was scattered /30 /40 /50). */
+    --surface-soft: color-mix(in oklch, var(--muted) 50%, transparent);
     --surface-elevated: var(--popover);
+
+    /* Interactive wash — light: soft accent tint (readable on popover);
+       dark: solid accent (see .dark). Prefer bg-interactive over raw accent hover. */
+    --interactive: color-mix(in oklch, var(--accent) 55%, transparent);
 
     /* Chart colors — CATEGORICAL palette. Distinct hues at matched lightness
        so multi-series charts are actually readable. For SEQUENTIAL (ordinal)
@@ -769,7 +780,7 @@
     --background: oklch(0.16 0 0);
     --foreground: oklch(0.92 0 0);
 
-    /* Card === popover by value (aliased — visual lift via .nqui-elevated shadow) */
+    /* Card === popover by value (aliased — visual lift via .nqui-float / --shadow-float) */
     --card: oklch(0.205 0 0);
     --card-foreground: oklch(0.92 0 0);
     --popover: var(--card);
@@ -799,7 +810,11 @@
     /* ─── Semantic surface aliases (the 2+1 model) ──────────────────────── */
     --surface-a: var(--background);
     --surface-b: var(--muted);
+    --surface-soft: color-mix(in oklch, var(--muted) 50%, transparent);
     --surface-elevated: var(--popover);
+
+    /* Interactive wash — solid accent so hover reads on dark popovers/page. */
+    --interactive: var(--accent);
 
     /* Chart colors — CATEGORICAL palette (matches light mode hues, brighter L
        for dark-mode legibility). For SEQUENTIAL data use shades of --primary. */
