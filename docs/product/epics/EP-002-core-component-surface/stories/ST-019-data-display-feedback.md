@@ -54,6 +54,11 @@ so that a dashboard or settings page composes without reaching outside nqui.
 - `Tracker` blocks accept per-block colours; `defaultBackgroundColor` only fills blocks that omit
   one.
 
+## Bugs
+
+- 2026-08-13 — Pagination arrows, Carousel prev/next, and enhanced Progress tracks use `rounded-md`
+  instead of `rounded-full`.
+
 ## Out of scope
 
 - `DataTable` / TanStack Table — ST-020.

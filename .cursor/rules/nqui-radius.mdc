@@ -1,0 +1,29 @@
+---
+description: >-
+  nqui radius ladder: chrome / panels / overlays use different rungs of one
+  --radius. Circles, compact chips, and thin tracks stay off that ladder.
+globs: src/components/**/*.{ts,tsx},src/index.css,src/hooks/**/*.ts
+alwaysApply: false
+---
+
+# Radius: one base, role rungs, geometry exceptions
+
+`--radius` is the only consumer override. Chrome, Card, and Dialog **all respond to it**. They do not share one class.
+
+| Role | Class | Why |
+|------|-------|-----|
+| Chrome | `rounded-md` | Button, Input, ButtonGroup, Tabs — sits on a panel (`--radius − 2px`) |
+| Panels | `rounded-lg` | Card, Alert, popover — **is** `--radius` |
+| Overlays | `rounded-xl` | Dialog, Sheet, Drawer — outer must be larger than padded inner content |
+
+Do not flatten Card/Dialog to `rounded-md` to match ButtonGroup. The step is concentric nesting, not three brands.
+
+## Stay separate (do not “unify”)
+
+- **Circles** → `rounded-full`: radio disc, Switch + thumb, Slider thumb, Avatar, scrollbar thumb, drawer handle, status dots
+- **Compact chips** (short side ≤ 20px) → `rounded-xs`: Badge, kbd, Combobox chip, 20px icon buttons. `rounded-md` on `h-5` is a stadium at Soft.
+- **Thin tracks** → stadium is correct: Progress / Slider bar
+
+Never `rounded-full` on Badge/Button/Tabs. Never `rounded-md` on Switch/Avatar/radio disc. Never hardcode `border-radius: Npx`.
+
+Nested chip-in-shell: `inner = outer − inset` (Tabs / sliding Radio already do this).

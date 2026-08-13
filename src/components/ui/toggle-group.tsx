@@ -73,11 +73,11 @@ const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(function 
         "data-[orientation=horizontal]:overflow-x-auto data-[orientation=horizontal]:overflow-y-hidden",
         "data-[orientation=vertical]:overflow-y-auto data-[orientation=vertical]:overflow-x-hidden",
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-        /* Same flush pill for outline (type=multiple) and segmented (type=single): one shell, no hairline track */
+        /* Same flush shell for outline (type=multiple) and segmented (type=single): one track, no hairline */
         hasSegmentedStyle &&
-          "rounded-full border border-input bg-background [--toggle-inner-radius:9999px]",
+          "rounded-md border border-input bg-background [--toggle-inner-radius:var(--radius-md)]",
         !hasSegmentedStyle &&
-          "rounded-full",
+          "rounded-md",
         className
       )}
       {...props}

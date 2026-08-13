@@ -1058,7 +1058,7 @@ function ComboboxChip({
     <div
       data-slot="combobox-chip"
       className={cn(
-        "bg-muted-foreground/10 text-foreground flex h-[calc(--spacing(4.75))] min-w-0 max-w-full w-fit items-center justify-center gap-1 overflow-hidden rounded-[calc(var(--radius-sm)-2px)] px-1.5 text-xs font-medium whitespace-nowrap has-data-[slot=combobox-chip-remove]:pr-0 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50",
+        "bg-muted-foreground/10 text-foreground flex h-[calc(--spacing(4.75))] min-w-0 max-w-full w-fit items-center justify-center gap-1 overflow-hidden rounded-xs px-1.5 text-xs font-medium whitespace-nowrap has-data-[slot=combobox-chip-remove]:pr-0 has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50",
         className
       )}
       {...props}

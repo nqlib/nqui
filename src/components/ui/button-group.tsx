@@ -6,16 +6,16 @@ import { Separator } from "@/components/ui/separator"
 
 /**
  * Flat segmented shell — same dialect as ToggleGroup spacing=0:
- * one border-input pill, transparent segments, interactive wash, secondary when on.
+ * one border-input track, transparent segments, interactive wash, secondary when on.
  * No inner hairlines between actions (ToggleGroup “no hairline track”).
  */
 const buttonGroupVariants = cva(
   [
-    "group/button-group inline-flex w-fit max-w-full items-stretch gap-0 overflow-hidden rounded-full border border-input bg-background",
-    "[--toggle-inner-radius:9999px]",
+    "group/button-group inline-flex w-fit max-w-full items-stretch gap-0 overflow-hidden rounded-md border border-input bg-background",
+    "[--toggle-inner-radius:var(--radius-md)]",
     "has-[>[data-slot=button-group]]:gap-2",
     "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
-    "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-full",
+    "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md",
     // Flat segments — match toggleVariants segmented
     "[&>*]:!border-0 [&>*]:!shadow-none [&>*]:!rounded-none [&>*]:![background-image:none]",
     "[&>button]:!font-normal [&>a]:!font-normal [&>button]:!opacity-100 [&>a]:!opacity-100",

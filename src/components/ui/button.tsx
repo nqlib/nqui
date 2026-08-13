@@ -19,22 +19,22 @@ const buttonSizeVariants = {
 
 const buttonVariants = cva(
   cn(
-    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
     actionFocusClasses,
   ),
   {
     variants: {
       variant: {
         default:
-          "rounded-full bg-primary text-primary-foreground hover:bg-primary/90",
+          "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "rounded-md border border-input bg-transparent shadow-none hover:bg-interactive",
+          "border border-input bg-transparent shadow-none hover:bg-interactive",
         secondary:
-          "rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "rounded-md hover:bg-interactive",
-        link: "rounded-md text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-interactive",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: buttonSizeVariants,
     },
@@ -86,7 +86,7 @@ Button.displayName = "Button"
  */
 const enhancedButtonVariants = cva(
   cn(
-    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium leading-normal text-center cursor-pointer select-none touch-manipulation transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-[var(--duration-quick)] ease-[var(--ease-in-out)] focus:outline-0 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current",
+    "hit-area-2 inline-flex min-w-0 max-w-full items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium leading-normal text-center cursor-pointer select-none touch-manipulation transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-[var(--duration-quick)] ease-[var(--ease-in-out)] focus:outline-0 disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-current",
     actionFocusClasses,
   ),
   {
@@ -148,9 +148,9 @@ const enhancedButtonVariants = cva(
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         outline:
-          "rounded-md border border-input bg-transparent shadow-none hover:bg-interactive",
-        ghost: "rounded-md hover:bg-interactive",
-        link: "rounded-md text-primary underline-offset-4 hover:underline",
+          "border border-input bg-transparent shadow-none hover:bg-interactive",
+        ghost: "hover:bg-interactive",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: buttonSizeVariants,
     },

@@ -80,13 +80,16 @@ Change the single base — the scale derives from it:
 
 ```css
 :root {
+  /* Default is 0.75rem (Soft). Override the single base: */
+  --radius: 0.45rem;   /* tighter — previous nqui / showcase Default */
+  /* OR */
   --radius: 0.25rem;   /* sharper — closer to Stripe/GitHub */
   /* OR */
-  --radius: 0.75rem;   /* rounder — closer to Vercel/Linear */
+  --radius: 1.1rem;    /* capsule-like surfaces — showcase Pill */
 }
 ```
 
-`--radius-sm/md/lg/xl/2xl` automatically follow.
+`--radius-xs/sm/md/lg/xl/2xl` automatically follow. Chrome (`md`), panels (`lg` = the base), and overlays (`xl`) all move together — they are role offsets, not separate brands. `--radius-xs` is capped at `0.375rem` so compact chips never become pills. Circles (Switch, radio disc, Avatar) stay `rounded-full` and do not follow the ladder.
 
 ### Density (compact vs comfortable)
 
@@ -156,7 +159,7 @@ Run `/audit` (or whatever your eval is) after the theme is in place.
 | "Make it more colorful" | Use brand color in MORE places (active states, badges, accents) — don't add MORE colors |
 | "Make cards stand out more" | More space + uppercase labels. Not shadow + border + hue shift. |
 | "Make it feel premium" | Larger spacing scale, smaller font sizes, single restrained accent. NOT more flair. |
-| "Make it more playful" | Rounder radius (`--radius: 0.75rem`), warmer hue, slightly more saturated accent. NOT bouncy motion. |
+| "Make it more playful" | Rounder radius (`--radius: 1.1rem`), warmer hue, slightly more saturated accent. NOT bouncy motion. |
 | "Make it feel like Linear / Notion / Stripe" | Pick ONE; study their actual choices (hue, density, surface use). Don't try to be all three. |
 | "Add brand gradient backgrounds" | No. nqui doesn't do decorative gradients. If you need brand expression on a marketing page, do it there, not in product UI. |
 

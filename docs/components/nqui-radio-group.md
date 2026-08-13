@@ -79,6 +79,8 @@ Control the gap between radio button and label with the `spacing` prop on RadioG
 <RadioGroup variant="bar-right" />
 ```
 
+`variant="sliding"` uses the same `--radius-md` outer corners as Tabs / Button. The inner chip is `outer − 3px` so the pad stays concentric. Restore a full capsule with `className="[--radio-pill-radius:9999px]"`. The circular radio disc (`animated` / default) stays `rounded-full`.
+
 ## Orientation / Disabled
 
 ```tsx

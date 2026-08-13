@@ -31,6 +31,13 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 
+  it("uses rounded-md on filled and outline variants", () => {
+    const { rerender } = render(<Button>Save</Button>)
+    expect(screen.getByRole("button")).toHaveClass("rounded-md")
+    rerender(<Button variant="outline">Outline</Button>)
+    expect(screen.getByRole("button")).toHaveClass("rounded-md")
+  })
+
   it("renders as a child element when asChild is set", () => {
     render(
       <Button asChild>

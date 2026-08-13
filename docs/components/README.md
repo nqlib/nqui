@@ -40,7 +40,7 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 - **Control sizes:** `sm`=h-6, `default`=h-7, `lg`=h-8. Button, Toggle, ToggleGroup, Input, Select, Switch, Slider use this scale. See `docs/nqui-skills/nqui-design-system/SKILL.md` (package) or `.cursor/skills/nqui-design-system/SKILL.md` (monorepo copy).
 - **CSS vars required:** nqui uses `--primary`, `--background`, `--foreground`, etc. Run `npx @nqlib/nqui init-css`.
 - **Enhanced vs Core:** Default exports (`Button`, `Badge`, `Checkbox`, `Select`, etc.) are the polished/3D variants. Implementations live in **`packages/nqui/src/components/ui/*.tsx`** (single file per concern). Use `CoreButton`, `CoreBadge`, `CoreCheckbox`, etc. for base Radix/shadcn-style behavior. Separator: single component with `variant` prop (no CoreSeparator).
-- **Grouped controls:** ButtonGroup, ToggleGroup share border; outer container uses **pill** radius (`rounded-full`). ToggleGroup uses item dividers (`border-foreground/20`) or `ToggleGroupSeparator`.
+- **Grouped controls:** ButtonGroup, ToggleGroup share border; outer container uses **`rounded-md`**. ToggleGroup uses item dividers (`border-foreground/20`) or `ToggleGroupSeparator`.
 - **Toolbar context:** Always show Toggle/ToggleGroup in realistic context (document toolbar, chart settings, etc.). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup.
 - **Style injection:** Some components inject `<style>` once at mount (e.g. **Combobox** input chrome in `ui/combobox.tsx`) → safe for SSR if the component is client-only (`"use client"`).
 - **OKLCH:** ColorPicker expects OKLCH strings (`oklch(0.5 0.15 240)`), not hex.

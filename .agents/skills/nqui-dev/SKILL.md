@@ -30,11 +30,23 @@ metadata:
 - Internal vault: [`docs/index.md`](../../docs/index.md)
 - DoD: [`docs/product/ai-contract.md`](../../docs/product/ai-contract.md)
 
-## Dependency rules
+## Radius (do not flatten)
 
-- Optional peers live in subpath entries (`src/entries/`), not main entry (plan 005)
-- Showcase-only deps → `devDependencies`
-- New runtime dep → check bundle size skill + peer meta
+One `--radius` base. Chrome / panels / overlays use **different rungs of that ladder**, not different corner languages. Full rule: `docs/nqui-skills/nqui-design-system/SKILL.md` § Border Radius.
+
+| Role | Class | Why |
+|------|-------|-----|
+| Chrome | `rounded-md` | Controls sit on a panel; 2px tighter so corners stay concentric |
+| Panels | `rounded-lg` | Card **is** `--radius` |
+| Overlays | `rounded-xl` | Dialog/Sheet wrap padded content; outer must be larger than inner |
+
+**Stay off the ladder** (geometry / control nature — never “make it match ButtonGroup”):
+
+- **Circles:** radio disc, Switch + thumb, Slider thumb, Avatar, scrollbar thumb, drawer handle, status dots → `rounded-full`
+- **Compact chips** (short side ≤ 20px): Badge, kbd, Combobox chip, 20px icon buttons → `rounded-xs` (capped). `rounded-md` on `h-5` is a stadium at Soft.
+- **Thin tracks:** Progress / Slider bar — stadium is correct (height is a few px)
+
+Do not hardcode `border-radius: Npx`. Nested chip-in-shell (Tabs, sliding Radio): `inner = outer − inset`.
 
 ## Workflow
 

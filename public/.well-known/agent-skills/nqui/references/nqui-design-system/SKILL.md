@@ -54,25 +54,48 @@ Fits 4px/8px grid. Default button (h-7) in 48px header leaves 10px top/bottom; h
 | Input | — | h-7 px-3 py-1.5 text-sm | — |
 | InputGroup | — | h-7 | — |
 
-## Border Radius & Nested Radius
+## Border Radius
 
-| Token | Formula | Use Case |
-|-------|---------|----------|
-| --radius-sm | calc(--radius - 4px) | Compact controls, kbd |
-| --radius-md | calc(--radius - 2px) | Default (Button, Input, Card) |
-| --radius-lg | var(--radius) | Large surfaces |
-| --radius-xl | calc(--radius + 4px) | Modals, sheets |
+One `--radius` (`0.75rem` Soft). Every `rounded-*` utility derives from it. Changing the base rounds the kit together — chrome, Card, and Dialog included.
 
-**Nested radius formula:** `R_inner = R_outer - offset`. When a smaller element sits inside a larger one with padding, use concentric radius so corners align.
+They use **different rungs**, not different languages. A control sits on a panel; a panel sits inside an overlay. Matching the same pixel radius on nested shells makes the inner corner look sharper than the outer (non-concentric). The 2px / 4px steps are that inset, same idea as Tabs `inner = outer − 3px`.
+
+| Role | Class | Token | Soft | Why this rung |
+|------|-------|-------|------|----------------|
+| Compact chips | `rounded-xs` | `--radius-xs` capped at 6px | 6px | Short side ≤ 20px; `md` would stadium |
+| Dense controls | `rounded-sm` | `--radius − 4px` | 8px | Taller than a chip, tighter than chrome |
+| **Chrome** | `rounded-md` | `--radius − 2px` | ~10px | Button, Input, ButtonGroup, Tabs — sits *on* a panel |
+| **Panels** | `rounded-lg` | `var(--radius)` | 12px | Card, Alert, popover — the default surface |
+| **Overlays** | `rounded-xl` | `--radius + 4px` | 16px | Dialog, Sheet, Drawer — wraps padded panel-scale content |
+
+Do not collapse Card or Dialog to `rounded-md` to “match ButtonGroup”. Do not promote a Button to `rounded-lg` to “match Card”.
+
+### Must stay separate (geometry / control nature)
+
+These are not chrome/panel/overlay. Do not put them on that ladder to unify corners.
+
+| Kind | Class | Examples |
+|------|-------|----------|
+| **Circle** | `rounded-full` | Radio disc, Switch + thumb, Slider thumb, Avatar, scrollbar thumb, drawer handle, status dots |
+| **Compact chip** | `rounded-xs` | Badge, kbd, Combobox chip, 20px sidebar icon buttons |
+| **Thin track** | stadium OK | Progress bar, Slider track — height is a few px; pill is the shape |
+
+**Stadium rule:** `radius ≥ half the short side` reads as a pill. Soft `--radius-md` (~10px) on `h-5` (20px) is exactly a stadium — that is why chips are capped at `xs`, not `md`.
+
+Never `rounded-full` on Badge / Button / Tabs to “make it friendlier”. Never `rounded-md` on Switch / Avatar / a radio disc.
+
+### Nested radius (same shell family)
+
+When a chip or inner surface is inset inside a rounded shell: `R_inner = max(0px, R_outer − inset)`.
 
 ```
-/* Inner card with p-3 (12px) inset inside radius-lg card */
+/* Inner card with p-3 (12px) inset inside a radius-lg card */
 border-radius: calc(var(--radius-lg) - var(--spacing-3));
 ```
 
-- **Standalone** components (Button, Input) use radius tokens directly.
-- **Nested** elements (Card inside Card, panel in modal) use `calc(outer - offset)`.
-- Clamp to avoid negatives: `max(0px, calc(...))` when offset ≥ outer.
+Tabs / sliding Radio: `--*-pill-inner-radius: max(0px, var(--*-pill-radius) - 3px)`.
+
+Do not hardcode `border-radius: 12px` (or any px) on product UI.
 
 ## Typography
 
@@ -89,11 +112,11 @@ Font: `--font-sans` (Inter Variable). Leading: `leading-normal` or `text-xs/rela
 1. **Use the scale** – If the component has a `size` prop, map `sm`→h-6, `default`→h-7, `lg`→h-8.
 2. **Match padding** – Text controls: px-2–3, py-1.5. Icon-only: p-0 with explicit size.
 3. **Text size** – sm: `text-xs` or `text-[0.625rem]`, default: `text-sm`, lg: `text-sm`.
-4. **Border radius** – Use `rounded-md` (default) or `rounded-[min(var(--radius-md),8px)]` for sm; **Button** uses full pill (`rounded-full`). For nested layouts, use `calc(outer - offset)`.
+4. **Border radius** – Pick the **role**, then the rung: chrome `rounded-md`, panel `rounded-lg`, overlay `rounded-xl`. Segmented shells (ButtonGroup, ToggleGroup, Tabs, sliding Radio) are chrome. Compact chips (`h-5` / `w-5`) are `rounded-xs`. Circles stay `rounded-full`. Nested chip-in-shell: `calc(outer - inset)`. Never hardcode px.
 
 ## Grouped Controls (ButtonGroup, ToggleGroup)
 
-- **Shared border** – Container: `rounded-full border border-input overflow-hidden` (pill outer edge)
+- **Shared border** – Container: `rounded-md border border-input overflow-hidden`
 - **Child borders** – Items: `border-0` (container provides the border)
 - **Dividers** – ToggleGroup: item borders (`border-foreground/20`) between items. Or `ToggleGroupSeparator` when `separator={false}`.
 - **Corners** – First item: rounded-l (or rounded-t vertical), last: rounded-r (or rounded-b)

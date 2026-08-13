@@ -52,7 +52,7 @@ Render as `<a>` or custom element:
 
 ## Notes
 
-- **Shape:** full pill (`rounded-full`) for all sizes.
+- **Shape:** `rounded-md` for every variant (follows `--radius`, default `0.75rem`). ButtonGroup / ToggleGroup shells use the same chrome rung.
 - **Bounded label:** string/number children are wrapped so **`truncate`** + **`min-w-0`** apply in narrow layouts. Same pattern is used across **Toggle**, **Tabs**, **Badge**, **Combobox** chips; **Select** value uses **line-clamp**. Custom markup with one long inner node may still need its own `min-w-0 truncate` or a **`title`**.
 - Active state uses `scale-95`; avoid parent `transform` overrides.
 - Use `CoreButton` from `@nqlib/nqui` for base shadcn style.

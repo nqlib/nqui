@@ -41,3 +41,4 @@ import { Badge } from "@nqlib/nqui"
 - Implementation: **`packages/nqui/src/components/ui/badge.tsx`** (enhanced + core in one module).
 - ghost/link route to CoreBadge (different styling).
 - Use `CoreBadge` for plain shadcn badge.
+- **Shape:** `rounded-xs` (compact chip). Capped so Soft `--radius` cannot turn a 20px badge into a stadium.
