@@ -51,6 +51,12 @@ so that a form does not mix three component vocabularies.
 - `NativeSelect` exists alongside Radix `Select` for cases where the platform picker is preferable
   (mobile, dense tables); it is not an `Enhanced`/`Core` pair.
 
+## Bugs
+
+- 2026-08-13 — Sliding `RadioGroup` default `--radio-pill-radius` is `var(--radius-md)` (matches
+  Tabs / Button) instead of a full capsule. Inner chip uses `outer − 3px` inset. Circular radio
+  discs stay `rounded-full`.
+
 ## Out of scope
 
 - `Combobox` — ST-012 (searchable select, carries the cmdk dependency).

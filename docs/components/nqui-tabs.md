@@ -81,13 +81,15 @@ Override in increasing order of effort:
 2. **`className` on any part** — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`
    all accept `className`, merged last via `tailwind-merge`, so your class wins.
 
-3. **Reshape the pill** — the sliding pill's corner radius is driven by the
-   `--tabs-pill-radius` CSS var (default: full pill). Override it on `TabsList`
-   and the shell, triggers, and pill all reshape together:
+3. **Reshape the indicator** — outer shell uses `--tabs-pill-radius`
+   (default: `var(--radius-md)`). The sliding chip and triggers use
+   `--tabs-pill-inner-radius` = `max(0px, outer − 3px inset)` so the gap stays
+   even around the curve. Override `--tabs-pill-radius` on `TabsList` and both
+   layers follow:
 
    ```tsx
-   {/* softer, rounded tabs instead of full pill */}
-   <TabsList className="[--tabs-pill-radius:var(--radius-lg)]">…</TabsList>
+   {/* full capsule — inner still inset by 3px */}
+   <TabsList className="[--tabs-pill-radius:9999px]">…</TabsList>
    ```
 
    Or target the pill directly anywhere via `[data-slot="tabs-pill"]`

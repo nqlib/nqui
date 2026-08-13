@@ -368,8 +368,8 @@ export function EnhancedCalendar({
           color: var(--primary-foreground) !important;
           border-top-right-radius: 0 !important;
           border-bottom-right-radius: 0 !important;
-          border-top-left-radius: 9999px !important;
-          border-bottom-left-radius: 9999px !important;
+          border-top-left-radius: var(--radius-md) !important;
+          border-bottom-left-radius: var(--radius-md) !important;
         }
 
         .rdp-day.day-range-preview-end:not([data-selected-single="true"]):not([data-range-start="true"]):not([data-range-end="true"]):not([data-range-middle="true"]) button {
@@ -377,8 +377,8 @@ export function EnhancedCalendar({
           color: var(--primary-foreground) !important;
           border-top-left-radius: 0 !important;
           border-bottom-left-radius: 0 !important;
-          border-top-right-radius: 9999px !important;
-          border-bottom-right-radius: 9999px !important;
+          border-top-right-radius: var(--radius-md) !important;
+          border-bottom-right-radius: var(--radius-md) !important;
         }
 
         .rdp-day.day-range-preview-middle:not([data-selected-single="true"]):not([data-range-start="true"]):not([data-range-end="true"]):not([data-range-middle="true"]) button {

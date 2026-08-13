@@ -266,11 +266,11 @@ const EnhancedRadioGroup = React.forwardRef<
   const gapClass = typeof gap === "number" ? `gap-${gap}` : gap
   const containerClassName = cn(
     variant === "sliding"
-      ? /* Capsule + inset padding match TabsList (default) + sliding pill.
-         * --radio-pill-radius drives the sliding pill's corner radius; override
-         * it on the group (className="[--radio-pill-radius:var(--radius-lg)]")
-         * to reshape shell + pill together. */
-        "sliding-indicator-container isolate flex flex-row items-center gap-0 [--radio-pill-radius:9999px] rounded-(--radio-pill-radius) bg-muted p-[3px] box-border overflow-x-auto min-h-7 min-w-0"
+      ? /* Inset padding matches TabsList. Outer --radio-pill-radius; inner
+         * indicator/labels use --radio-pill-inner-radius = outer − inset so
+         * the pad stays concentric. Override --radio-pill-radius (e.g. 9999px)
+         * and both layers follow. Default matches Button / Tabs (radius-md). */
+        "sliding-indicator-container isolate flex flex-row items-center gap-0 [--radio-pill-radius:var(--radius-md)] [--radio-pill-inset:3px] [--radio-pill-inner-radius:max(0px,calc(var(--radio-pill-radius)-var(--radio-pill-inset)))] rounded-(--radio-pill-radius) bg-muted p-[var(--radio-pill-inset)] box-border overflow-x-auto min-h-7 min-w-0"
       : `grid ${gapClass} w-full`, // animated (default)
     className
   )
@@ -296,7 +296,7 @@ const EnhancedRadioGroup = React.forwardRef<
           <div
             data-slot="radio-group-pill"
             className={cn(
-              "sliding-indicator rounded-(--radio-pill-radius) border border-input bg-background box-border"
+              "sliding-indicator rounded-(--radio-pill-inner-radius) border border-input bg-background box-border"
             )}
             style={indicatorStyle}
             aria-hidden="true"
@@ -464,7 +464,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
         <label
           htmlFor={inputId}
           className={cn(
-            "sliding-indicator-target relative z-[var(--z-content)] inline-flex cursor-pointer items-center justify-center rounded-(--radio-pill-radius) border border-transparent text-xs font-medium leading-normal transition-colors motion-safe:duration-[var(--duration-quick)]",
+            "sliding-indicator-target relative z-[var(--z-content)] inline-flex cursor-pointer items-center justify-center rounded-(--radio-pill-inner-radius) border border-transparent text-xs font-medium leading-normal transition-colors motion-safe:duration-[var(--duration-quick)]",
             /* The focusable Item is sr-only, so surface its keyboard focus on the visible label. */
             "has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-ring has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-background",
             /* Match TabsTrigger: inactive muted + hover; active label stays transparent — pill supplies fill */

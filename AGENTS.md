@@ -43,7 +43,7 @@ Skills available under `.cursor/nqui-skills/`:
 When working with nqui components, AI assistants should:
 
 1. Load `.cursor/nqui-skills/SKILL.md` — the hub index
-2. Follow **`.cursor/rules/`** — especially **no-box-glow-ask-first** (no decorative box shadow/blur/glow; **ask** when glow context is unclear)
+2. Follow **`.cursor/rules/`** — especially **no-box-glow-ask-first** (no decorative glow; **ask** when unclear) and **nqui-radius** (chrome / panels / overlays are rungs of one `--radius`; circles and compact chips stay off that ladder)
 3. Open sub-skills by task (e.g. `nqui-components/SKILL.md`)
 4. For component docs: `.cursor/nqui-skills/COMPONENTS_INDEX.md` → one `components/nqui-<name>.md`
 5. For live variants / recipes: open **nqui-showcase** `/catalog` (not this repo)

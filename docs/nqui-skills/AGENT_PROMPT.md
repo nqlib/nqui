@@ -51,7 +51,7 @@ For every interactive surface, design **all** required states from `STATES.md`:
 | Inline toolbar selection (mode, format, view) | `ToggleGroup` | `RadioGroup` |
 | Form choice with descriptions | `RadioGroup` | `ToggleGroup` |
 | Separated toggle pills (not flush) | `spacing={2}` prop | `gap-*` className (fights `spacing={0}`) |
-| Toolbar wider than its parent | Nothing — `ToggleGroup` already scrolls sideways | `flex-wrap` (breaks the pill) |
+| Toolbar wider than its parent | Nothing — `ToggleGroup` already scrolls sideways | `flex-wrap` (breaks the shell) |
 | Destructive confirmation | `AlertDialog` | `Dialog` |
 | Form with ≤ 5 fields | `Dialog` | `Sheet` for big forms only |
 | Form with > 5 fields | `Sheet` or route | `Dialog` (modal trap) |

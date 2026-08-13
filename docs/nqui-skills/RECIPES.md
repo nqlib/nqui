@@ -191,7 +191,7 @@ Naming convention: a recipe is named for the **user's intent**, not the componen
 </div>
 ```
 
-**Do not** wrap `ToggleGroup` in `rounded-md border bg-muted/30 p-1`. At default `spacing={0}`, the component root already applies `rounded-full border border-input bg-background` — an outer box is **double chrome**.
+**Do not** wrap `ToggleGroup` in `rounded-md border bg-muted/30 p-1`. At default `spacing={0}`, the component root already applies `rounded-md border border-input bg-background` — an outer box is **double chrome**.
 
 **Do** place `ToggleGroup` directly in `flex items-center gap-2` next to labels, `Separator`, or `Select`.
 

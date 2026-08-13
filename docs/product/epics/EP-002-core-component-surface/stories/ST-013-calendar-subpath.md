@@ -51,6 +51,10 @@ so that `react-day-picker` and `date-fns` are not installed or bundled for my ap
 CHANGELOG migration line: *Calendar now imports from `@nqlib/nqui/calendar`; install
 `react-day-picker` and `date-fns` only if you use it.*
 
+## Bugs
+
+- 2026-08-13 — Day cells and range caps use `--cell-radius` (`rounded-md`) instead of a full circle.
+
 ## Out of scope
 
 - The build config that emits the entry and the publish verification of `exports` — EP-005.

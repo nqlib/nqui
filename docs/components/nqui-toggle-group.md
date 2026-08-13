@@ -61,7 +61,7 @@ Dividers are shown via item borders by default (using `foreground/20` for theme-
 | Don't | Why | Do instead |
 |-------|-----|------------|
 | `className="flex-wrap"` | It's deliberately **one row that scrolls horizontally** (hidden scrollbar) when the parent is too narrow. Wrapping makes the pill grow tall, push content down, and break its shape. | Nothing — narrow parents already scroll. |
-| `className="gap-1"` (any `gap-*`) | `spacing={0}` is **segmented mode**: items are `rounded-none` because they must sit *flush* inside one pill shell. A gap re-exposes the shell between items, so a hover fill stops short of its neighbour and reads as a sliver. | `spacing={2}` — the prop also drops the shell. |
+| `className="gap-1"` (any `gap-*`) | `spacing={0}` is **segmented mode**: items are `rounded-none` because they must sit *flush* inside one shell. A gap re-exposes the shell between items, so a hover fill stops short of its neighbour and reads as a sliver. | `spacing={2}` — the prop also drops the shell. |
 | `overflow-*` overrides | The cross axis is pinned `hidden` on purpose (see below). | Nothing. |
 
 ```tsx
@@ -71,7 +71,7 @@ Dividers are shown via item borders by default (using `foreground/20` for theme-
 // ✅ want separated pills? use the prop, not a class
 <ToggleGroup type="single" spacing={2} value={v} onValueChange={setV}>…</ToggleGroup>
 
-// ❌ breaks the pill: wraps tall, and becomes draggable on the cross axis
+// ❌ breaks the shell: wraps tall, and becomes draggable on the cross axis
 <ToggleGroup className="flex flex-wrap gap-1">…</ToggleGroup>
 ```
 

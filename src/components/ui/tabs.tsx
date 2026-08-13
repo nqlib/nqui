@@ -91,12 +91,12 @@ const Tabs = React.forwardRef<
 Tabs.displayName = "Tabs"
 
 const tabsListVariants = cva(
-  /* Capsule shell matches ToggleGroup segmented + rounded-full triggers (not rounded-lg vs pill) */
   /* h-7 matches default Button / Input / Toggle / pagination (28px strip) */
-  /* --tabs-pill-radius drives the sliding pill's corner radius; override it on
-   * TabsList (e.g. className="[--tabs-pill-radius:var(--radius-lg)]") to reshape
-   * shell, triggers, and pill together. */
-  "[--tabs-pill-radius:9999px] rounded-(--tabs-pill-radius) p-[3px] group-data-horizontal/tabs:h-7 data-[variant=line]:rounded-none group/tabs-list text-muted-foreground inline-flex w-fit items-center justify-center group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col",
+  /* --tabs-pill-radius = outer shell. Inner indicator / triggers use
+   * --tabs-pill-inner-radius = max(0, outer − inset) so the 3px pad stays
+   * concentric (R_inner = R_outer − padding). Override --tabs-pill-radius on
+   * TabsList (e.g. 9999px) and both layers follow. Default matches Button. */
+  "[--tabs-pill-radius:var(--radius-md)] [--tabs-pill-inset:3px] [--tabs-pill-inner-radius:max(0px,calc(var(--tabs-pill-radius)-var(--tabs-pill-inset)))] rounded-(--tabs-pill-radius) p-[var(--tabs-pill-inset)] group-data-horizontal/tabs:h-7 data-[variant=line]:rounded-none group/tabs-list text-muted-foreground inline-flex w-fit items-center justify-center group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col",
   {
     variants: {
       variant: {
@@ -136,11 +136,9 @@ const TabsList = React.forwardRef<
           aria-hidden
           data-slot="tabs-pill"
           className={cn(
-            /* Radius resolves from --tabs-pill-radius (default: full pill).
-             * Consumers override the pill shape via the CSS var on TabsList
-             * (e.g. className="[--tabs-pill-radius:var(--radius-lg)]"), by
-             * targeting [data-slot="tabs-pill"], or by setting the var globally. */
-            "pointer-events-none absolute z-0 rounded-(--tabs-pill-radius) border border-input bg-background",
+            /* Outer shell uses --tabs-pill-radius; this layer is inset by
+             * --tabs-pill-inset so it uses --tabs-pill-inner-radius. */
+            "pointer-events-none absolute z-0 rounded-(--tabs-pill-inner-radius) border border-input bg-background",
             "motion-safe:transition-[left,top,width,height,opacity] motion-safe:duration-[var(--duration-standard)] motion-safe:ease-out",
             "motion-reduce:transition-none",
             !pill.visible && "opacity-0"
@@ -171,7 +169,7 @@ const TabsTrigger = React.forwardRef<
       className={cn(
         /* Inactive: ghost-like (matches PaginationLink ghost); active: outline (matches PaginationLink isActive) */
         /* text-sm + icon size-4 match default Button */
-        "gap-1.5 rounded-(--tabs-pill-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] min-w-0 max-w-full flex-1 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] min-w-0 max-w-full flex-1 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent",
         /* default: sliding pill — active chip is transparent; pill layer supplies fill */
         "group-data-[variant=default]/tabs-list:data-[state=active]:border-transparent group-data-[variant=default]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=default]/tabs-list:data-[state=active]:shadow-none",

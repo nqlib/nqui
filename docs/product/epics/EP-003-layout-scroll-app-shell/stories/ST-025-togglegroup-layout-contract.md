@@ -33,7 +33,7 @@ controls around it.
       boxes are stable across selection.
 - [ ] Changing the selection cannot change any item's measured width, so siblings never shift.
 - [x] Segmented look is driven by props, not classes: `spacing={0}` (default) gives one
-      `rounded-full border border-input` shell with flush `rounded-none` items and auto separators;
+      `rounded-md border border-input` shell with flush `rounded-none` items and auto separators;
       `spacing>0` drops the shell and the dividers.
 - [x] `docs/components/nqui-toggle-group.md` has a "Layout — let the group own it" section with the
       don't/why/do table for `flex-wrap`, `gap-*` and `overflow-*`, and explains why `overflow: clip`

@@ -15,7 +15,7 @@ import { buttonVariants } from "@/components/ui/button"
 // Prev/Next arrows are hover-revealed on pointer devices, but must also appear
 // on keyboard focus and on touch (no hover) so they stay reachable everywhere.
 const paginationArrowClasses = cn(
-  "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-full",
+  "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-md",
   "opacity-0 pointer-events-none transition-[opacity,color] duration-[var(--duration-quick)]",
   "group-hover/pagination:pointer-events-auto group-hover/pagination:opacity-70",
   "focus-visible:pointer-events-auto focus-visible:opacity-100",

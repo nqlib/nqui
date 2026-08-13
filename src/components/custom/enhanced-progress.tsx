@@ -290,14 +290,14 @@ const EnhancedProgress = React.forwardRef<HTMLDivElement, EnhancedProgressProps>
         >
           <div
             className={cn(
-              "relative flex w-full items-center rounded-full",
+              "relative flex w-full items-center rounded-md",
               backgroundClass,
               height || "h-2"
             )}
           >
             <div
               className={cn(
-                "h-full rounded-full",
+                "h-full rounded-md",
                 barColorClass,
                 showAnimation && "transform-gpu transition-[width] duration-[var(--duration-standard)] ease-[var(--ease-in-out)]"
               )}

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.7] - 2026-08-13
+
+### Changed
+
+- **Radius** — default `--radius` is `0.75rem` (showcase Soft). Was `0.45rem`.
+  `--radius-xs/sm/md/lg/xl` still derive from the base. `--radius-xs` is capped
+  at 6px so compact chips never stadium. (ST-005)
+- **Button** — filled variants use `rounded-md` like outline/ghost/link, so CTAs
+  follow `--radius` instead of a hard-coded pill. (ST-010)
+- **Tabs / sliding RadioGroup** — `--tabs-pill-radius` and `--radio-pill-radius`
+  default to `var(--radius-md)` (same as Button). The inner sliding chip is
+  `outer − 3px` inset so nested corners stay concentric. Override the outer
+  var with `9999px` for a full capsule. Circular radio discs stay round.
+  (ST-024, ST-011)
+- **Segmented chrome** — ToggleGroup, ButtonGroup, Pagination arrows,
+  Carousel prev/next, Calendar days, and enhanced Progress tracks use
+  `rounded-md` (or `--cell-radius` on Calendar). Switch, Slider thumb, Avatar,
+  and radio discs stay circular.
+- **Compact chips** — Badge, Combobox chips, kbd, sidebar menu badges, and
+  20px sidebar icon buttons use `--radius-xs` (capped at 6px) so Soft/Pill
+  bases cannot stadium an `h-5` / `w-5` chip. (ST-005)
+- **Toast success icon** — checkmark eases in (`ease-out`) instead of a bounce
+  overshoot, matching the motion vocabulary.
+
 ## [0.7.6] - 2026-08-06
 
 ### Fixed

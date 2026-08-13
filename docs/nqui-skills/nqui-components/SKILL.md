@@ -29,11 +29,11 @@ When designing app UI (toolbars, headers, inline controls):
 
 ### ToggleGroup owns its own layout — don't restyle it
 
-`ToggleGroup` is a **single row** that scrolls horizontally (hidden scrollbar) when its parent is too narrow, and in `spacing={0}` (the default) its items sit **flush** inside one pill shell. Both are deliberate. Passing layout utilities fights them:
+`ToggleGroup` is a **single row** that scrolls horizontally (hidden scrollbar) when its parent is too narrow, and in `spacing={0}` (the default) its items sit **flush** inside one segmented shell. Both are deliberate. Passing layout utilities fights them:
 
 | Reflex | What actually happens | Correct |
 |--------|----------------------|---------|
-| `className="flex-wrap"` "so it won't overflow" | Pill grows tall, pushes content down, loses its shape — and becomes drag-scrollable on the cross axis, sliding items out of alignment | Delete it. Narrow parents already scroll sideways. |
+| `className="flex-wrap"` "so it won't overflow" | Shell grows tall, pushes content down, loses its shape — and becomes drag-scrollable on the cross axis, sliding items out of alignment | Delete it. Narrow parents already scroll sideways. |
 | `className="gap-1"` "to separate the items" | In `spacing={0}` items are `rounded-none` and must touch; a gap re-exposes the shell so hover fills stop short and read as a sliver | `spacing={2}` |
 | `className="overflow-y-auto"` | The cross axis is pinned `hidden` on purpose — items' `hit-area-*` `::before` overhangs the row as a larger tap target and would become "scrollable content" | Delete it. |
 

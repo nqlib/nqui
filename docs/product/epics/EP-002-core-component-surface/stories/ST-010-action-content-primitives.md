@@ -53,6 +53,12 @@ so that a first screen needs one import and no extra install.
   states compose from the same slots instead of ad-hoc flex wrappers.
 - `NquiLogo` (+ `NquiLogoProps`) also ships from the barrel but is branding, not a primitive.
 
+## Bugs
+
+- 2026-08-13 — Filled Button / CoreButton used `rounded-full` while outline / ghost / link used
+  `rounded-md`. All variants now use `rounded-md` so they follow `--radius`.
+- 2026-08-13 — ButtonGroup, ToggleGroup, and Badge shells use `rounded-md` (same as Button).
+
 ## Out of scope
 
 - The `Enhanced*` / `Core*` mapping itself — ST-009.

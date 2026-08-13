@@ -57,6 +57,13 @@ so that switching a tab never jumps the reader's position or reflows the panel.
 - `findVerticalScrollParent` deliberately skips ScrollArea viewports that contain a `[role=tablist]`
   so the tab bar's own horizontal scroller is never mistaken for the page scroller.
 
+## Bugs
+
+- 2026-08-13 — Default `--tabs-pill-radius` is `var(--radius-md)` (matches Button) instead of
+  a full capsule (`9999px`). Override with `[--tabs-pill-radius:9999px]` to restore the pill.
+- 2026-08-13 — Inner sliding chip / triggers use `--tabs-pill-inner-radius` =
+  `max(0px, outer − 3px inset)` so the pad is concentric (`R_inner = R_outer − padding`).
+
 ## Out of scope
 
 - ToggleGroup as the inline *selection* control — ST-025.
