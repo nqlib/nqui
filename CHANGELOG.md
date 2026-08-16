@@ -37,6 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tooltip** — each `Tooltip` mounts its own `TooltipProvider` so Rating and
   other callers work without an app-level provider (and across duplicate Radix
   copies).
+- **Tabs `variant="line"`** — underline slides with the same indicator as the
+  default pill (was a per-tab opacity fade).
+- **Tabs labels** — triggers size to the full name by default (no `flex-1` /
+  truncate ellipsis). Overflowing rows still use `InlineTabsList`.
 
 ## [0.7.7] - 2026-08-13
 

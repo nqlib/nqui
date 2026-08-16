@@ -76,7 +76,7 @@ Do not reimplement scroll preservation in app code — use these exports from `@
 Override in increasing order of effort:
 
 1. **Built-in variant** — `<TabsList variant="line">` swaps the pill capsule for
-   underline tabs (no code).
+   a **sliding underline** (same indicator motion as default, 2px bar).
 
 2. **`className` on any part** — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`
    all accept `className`, merged last via `tailwind-merge`, so your class wins.
@@ -105,5 +105,6 @@ Override in increasing order of effort:
 ## Notes
 
 - **Sliding indicator:** Handled on `TabsList` (position relative).
+- **Labels:** Triggers size to the full name (`shrink-0`, no ellipsis). Stretch equally with `className="flex-1"` on each trigger (and `w-full` on the list) if you want a filled strip.
 - **Responsive:** `InlineTabsList` scrolls horizontally via nqui **ScrollArea** (hidden thumb); swipe or trackpad when labels overflow.
 - **Resize:** Indicator recalculates on window resize (built-in).

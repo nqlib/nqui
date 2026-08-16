@@ -4,11 +4,12 @@ import { Tabs as TabsPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { useComposedRefs } from "@/lib/compose-refs"
-import { wrapInlineLabelTextNodes } from "@/lib/wrap-inline-label-text"
 
-function useSlidingTabPill(
+const LINE_THICKNESS = 2
+
+function useSlidingTabIndicator(
   listRef: React.RefObject<HTMLElement | null>,
-  slide: boolean
+  kind: "pill" | "line"
 ) {
   const [pill, setPill] = React.useState<{
     left: number
@@ -20,7 +21,7 @@ function useSlidingTabPill(
 
   const measure = React.useCallback(() => {
     const list = listRef.current
-    if (!list || !slide) return
+    if (!list) return
     const active = list.querySelector<HTMLElement>(
       '[data-slot="tabs-trigger"][data-state="active"]'
     )
@@ -30,17 +31,41 @@ function useSlidingTabPill(
     }
     const lr = list.getBoundingClientRect()
     const ar = active.getBoundingClientRect()
+    const left = ar.left - lr.left + list.scrollLeft
+    const top = ar.top - lr.top + list.scrollTop
+    if (kind === "line") {
+      const vertical =
+        list.closest('[data-slot="tabs"]')?.getAttribute("data-orientation") ===
+        "vertical"
+      setPill(
+        vertical
+          ? {
+              left: ar.right - lr.left + list.scrollLeft - LINE_THICKNESS,
+              top,
+              width: LINE_THICKNESS,
+              height: ar.height,
+              visible: true,
+            }
+          : {
+              left,
+              top: ar.bottom - lr.top + list.scrollTop - LINE_THICKNESS,
+              width: ar.width,
+              height: LINE_THICKNESS,
+              visible: true,
+            }
+      )
+      return
+    }
     setPill({
-      left: ar.left - lr.left + list.scrollLeft,
-      top: ar.top - lr.top + list.scrollTop,
+      left,
+      top,
       width: ar.width,
       height: ar.height,
       visible: true,
     })
-  }, [listRef, slide])
+  }, [listRef, kind])
 
   React.useLayoutEffect(() => {
-    if (!slide) return
     measure()
     const list = listRef.current
     if (!list) return
@@ -66,7 +91,7 @@ function useSlidingTabPill(
       window.removeEventListener("resize", onWin)
       list.removeEventListener("scroll", measure)
     }
-  }, [listRef, slide, measure])
+  }, [listRef, measure])
 
   return pill
 }
@@ -101,7 +126,7 @@ const tabsListVariants = cva(
     variants: {
       variant: {
         default: "bg-muted",
-        line: "gap-1 bg-transparent",
+        line: "gap-1 overflow-visible bg-transparent p-0",
       },
     },
     defaultVariants: {
@@ -116,42 +141,39 @@ const TabsList = React.forwardRef<
 >(({ className, variant = "default", children, ...props }, ref) => {
   const listRef = React.useRef<HTMLDivElement>(null)
   const composedRef = useComposedRefs(ref, listRef)
-  const slide = variant === "default"
-  const pill = useSlidingTabPill(listRef, slide)
+  const kind = variant === "line" ? "line" : "pill"
+  const pill = useSlidingTabIndicator(listRef, kind)
 
   return (
     <TabsPrimitive.List
       ref={composedRef}
       data-slot="tabs-list"
       data-variant={variant}
-      className={cn(
-        tabsListVariants({ variant }),
-        slide && "relative isolate",
-        className
-      )}
+      className={cn(tabsListVariants({ variant }), "relative isolate", className)}
       {...props}
     >
-      {slide && (
-        <span
-          aria-hidden
-          data-slot="tabs-pill"
-          className={cn(
-            /* Outer shell uses --tabs-pill-radius; this layer is inset by
-             * --tabs-pill-inset so it uses --tabs-pill-inner-radius. */
-            "pointer-events-none absolute z-0 rounded-(--tabs-pill-inner-radius) border border-input bg-background",
-            "motion-safe:transition-[left,top,width,height,opacity] motion-safe:duration-[var(--duration-standard)] motion-safe:ease-out",
-            "motion-reduce:transition-none",
-            !pill.visible && "opacity-0"
-          )}
-          style={{
-            left: pill.left,
-            top: pill.top,
-            width: pill.width,
-            height: pill.height,
-            opacity: pill.visible ? 1 : 0,
-          }}
-        />
-      )}
+      <span
+        aria-hidden
+        data-slot={kind === "line" ? "tabs-line" : "tabs-pill"}
+        className={cn(
+          "pointer-events-none absolute z-0",
+          kind === "line"
+            ? "rounded-full bg-foreground"
+            : /* Outer shell uses --tabs-pill-radius; this layer is inset by
+               * --tabs-pill-inset so it uses --tabs-pill-inner-radius. */
+              "rounded-(--tabs-pill-inner-radius) border border-input bg-background",
+          "motion-safe:transition-[left,top,width,height,opacity] motion-safe:duration-[var(--duration-standard)] motion-safe:ease-out",
+          "motion-reduce:transition-none",
+          !pill.visible && "opacity-0"
+        )}
+        style={{
+          left: pill.left,
+          top: pill.top,
+          width: pill.width,
+          height: pill.height,
+          opacity: pill.visible ? 1 : 0,
+        }}
+      />
       {children}
     </TabsPrimitive.List>
   )
@@ -169,17 +191,17 @@ const TabsTrigger = React.forwardRef<
       className={cn(
         /* Inactive: ghost-like (matches PaginationLink ghost); active: outline (matches PaginationLink isActive) */
         /* text-sm + icon size-4 match default Button */
-        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] min-w-0 max-w-full flex-1 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        /* Size to the label (no flex-1 / min-w-0 / truncate). Overflowing rows use InlineTabsList. */
+        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] w-auto shrink-0 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent",
         /* default: sliding pill — active chip is transparent; pill layer supplies fill */
         "group-data-[variant=default]/tabs-list:data-[state=active]:border-transparent group-data-[variant=default]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=default]/tabs-list:data-[state=active]:shadow-none",
         "data-[state=active]:text-foreground",
-        "after:bg-foreground after:absolute after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100",
         className
       )}
       {...props}
     >
-      {wrapInlineLabelTextNodes(children)}
+      {children}
     </TabsPrimitive.Trigger>
   )
 })

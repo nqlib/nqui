@@ -59,6 +59,12 @@ so that switching a tab never jumps the reader's position or reflows the panel.
 
 ## Bugs
 
+- 2026-08-16 — Triggers sized with `flex-1 min-w-0` plus `wrapInlineLabelTextNodes`
+  (`truncate`), so inactive labels ellipsized (`Ta…`) while the active tab looked
+  full. Default is now `shrink-0` and the raw label — no ellipsis.
+- 2026-08-16 — `variant="line"` used a per-trigger `::after` opacity fade, so the
+  underline did not slide. It now shares `useSlidingTabIndicator` with the default
+  pill (`data-slot="tabs-line"`).
 - 2026-08-13 — Default `--tabs-pill-radius` is `var(--radius-md)` (matches Button) instead of
   a full capsule (`9999px`). Override with `[--tabs-pill-radius:9999px]` to restore the pill.
 - 2026-08-13 — Inner sliding chip / triggers use `--tabs-pill-inner-radius` =

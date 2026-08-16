@@ -62,6 +62,20 @@ describe("EnhancedTabs", () => {
     expect(screen.getByText("Panel one")).toBeVisible()
   })
 
+  it("forwards variant=line to a sliding underline", () => {
+    render(
+      <EnhancedTabs defaultValue="one">
+        <EnhancedTabsList variant="line">
+          <EnhancedTabsTrigger value="one">One</EnhancedTabsTrigger>
+          <EnhancedTabsTrigger value="two">Two</EnhancedTabsTrigger>
+        </EnhancedTabsList>
+        <EnhancedTabsContent value="one">Panel one</EnhancedTabsContent>
+      </EnhancedTabs>
+    )
+    expect(document.querySelector('[data-slot="tabs-line"]')).toBeTruthy()
+    expect(document.querySelector('[data-slot="tabs-pill"]')).toBeNull()
+  })
+
   it("throws if a trigger is used outside EnhancedTabs", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {})
     expect(() =>
