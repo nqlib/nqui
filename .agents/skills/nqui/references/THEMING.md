@@ -73,6 +73,7 @@ To customize manually, override the primary scale in your app's CSS, after nqui'
 - One hue. Don't override into two hues alternating — that breaks the focus + selection consistency.
 - Match the L (lightness) values of nqui's defaults to keep contrast guarantees.
 - OKLCH only — don't mix HSL/RGB here.
+- Do **not** copy the brand hue onto `--accent` / `--interactive`. Those stay muted so hover and selected rows are a wash, not a primary fill.
 
 ### Radius (rounder or sharper)
 
