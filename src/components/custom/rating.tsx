@@ -5,14 +5,33 @@ import { useMemo, useRef, useEffect, useId } from "react"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
+// Full-star mask (one glyph per integer step). Half mode still pairs left/right halves.
+const FULL_STAR_MASK =
+  "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 576 512\"><path d=\"M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.6 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8l128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z\"/></svg>')"
+const RIGHT_HALF_MASK =
+  "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 264 512\"><path d=\"M0 0c12.2.1 23.3 7 28.6 18L93 150.3l143.6 21.2c12 1.8 22 10.2 25.7 21.7 3.7 11.5.7 24.2-7.9 32.7L150.2 329l24.6 145.7c2 12-3 24.2-12.9 31.3-9.9 7.1-23 8-33.8 2.3L0 439.8V0Z\"/></svg>')"
+const LEFT_HALF_MASK =
+  "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 264 512\"><path d=\"M264 0c-12.2.1-23.3 7-28.6 18L171 150.3 27.4 171.5c-12 1.8-22 10.2-25.7 21.7-3.7 11.5-.7 24.2 7.9 32.7L113.8 329 89.2 474.7c-2 12 3 24.2 12.9 31.3 9.9 7.1 23 8 33.8 2.3L264 439.8V0Z\"/></svg>')"
+
 // Rating Component Styles - CSS-only approach with flex-direction: row-reverse
 const ratingStyles = `
   .rating-wrapper {
+    --rating-star-size: 1.5rem;
+    --rating-half-size: calc(var(--rating-star-size) / 2);
     display: inline-flex;
     flex-direction: row-reverse;
     justify-content: flex-end;
+    align-items: center;
     border: none;
     gap: 0;
+    /* Never take Tailwind w-*; fieldset min-content + w-* clips/overflows in Safari */
+    width: max-content;
+    max-width: none;
+    min-width: 0;
+    height: var(--rating-star-size);
+    margin: 0;
+    padding: 0;
+    overflow: visible;
   }
 
   /* Visually hide radio input, but leave accessible to screen readers */
@@ -31,66 +50,67 @@ const ratingStyles = `
   /* Star label styling */
   .rating-wrapper label {
     display: block;
-    height: 1.5rem;
-    width: 0.75rem;
+    height: var(--rating-star-size);
     margin: 0 !important;
     padding: 0;
     cursor: pointer;
     position: relative;
     flex-shrink: 0;
     z-index: 1;
-    /* Ensure label covers the full clickable area */
     pointer-events: auto;
   }
 
-  /* Full star steps (odd labels) - right-handed half star */
-  /* These form the right half of each complete star, sit immediately after left half with no gap */
-  .rating-wrapper label:nth-of-type(odd) {
-    width: 0.75rem;
-    margin-left: 0 !important;
+  /* Integer mode: one full star glyph per step (first star is always a full star) */
+  .rating-wrapper[data-allow-half="false"] label {
+    width: var(--rating-star-size);
   }
 
-  /* Half star steps (even labels) - left-handed half star */
-  /* Keep zero margin so left/right halves stitch into one star with no seam. */
-  .rating-wrapper label:nth-of-type(even) {
-    width: 0.75rem;
-    margin-left: 0 !important;
+  .rating-wrapper[data-allow-half="false"] label::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: var(--rating-star-size);
+    height: var(--rating-star-size);
+    mask: ${FULL_STAR_MASK} no-repeat center / contain;
+    -webkit-mask: ${FULL_STAR_MASK} no-repeat center / contain;
+    transform: translateZ(0);
+    background-color: color-mix(in oklch, var(--muted-foreground) 38%, var(--background));
+    transition: none;
   }
 
-  /* Defensive reset (kept for overrides): first visual item should never offset. */
-  .rating-wrapper label:last-of-type {
-    margin-left: 0 !important;
+  /* Half mode: pair left/right halves into one star */
+  .rating-wrapper[data-allow-half="true"] label {
+    width: var(--rating-half-size);
   }
 
-  /* Star SVG mask for full stars (right half) */
-  .rating-wrapper label:nth-of-type(odd)::before {
+  .rating-wrapper[data-allow-half="true"] label:nth-of-type(odd)::before,
+  .rating-wrapper[data-allow-half="true"] label:nth-of-type(even)::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
-    width: 0.75rem;
-    height: 1.5rem;
-    mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 512"><path d="M0 0c12.2.1 23.3 7 28.6 18L93 150.3l143.6 21.2c12 1.8 22 10.2 25.7 21.7 3.7 11.5.7 24.2-7.9 32.7L150.2 329l24.6 145.7c2 12-3 24.2-12.9 31.3-9.9 7.1-23 8-33.8 2.3L0 439.8V0Z"/></svg>') no-repeat;
-    mask-size: 0.75rem 1.5rem;
+    width: var(--rating-half-size);
+    height: var(--rating-star-size);
     transform: translateZ(0);
-    /* Opaque mix: transparent + overlapping halves produced a darker seam between inactive halves. */
     background-color: color-mix(in oklch, var(--muted-foreground) 38%, var(--background));
     transition: none;
   }
 
-  /* Star SVG mask for half stars (left half) */
-  .rating-wrapper label:nth-of-type(even)::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0.75rem;
-    height: 1.5rem;
-    mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 512"><path d="M264 0c-12.2.1-23.3 7-28.6 18L171 150.3 27.4 171.5c-12 1.8-22 10.2-25.7 21.7-3.7 11.5-.7 24.2 7.9 32.7L113.8 329 89.2 474.7c-2 12 3 24.2 12.9 31.3 9.9 7.1 23 8 33.8 2.3L264 439.8V0Z"/></svg>') no-repeat;
-    mask-size: 0.75rem 1.5rem;
-    transform: translateZ(0);
-    background-color: color-mix(in oklch, var(--muted-foreground) 38%, var(--background));
-    transition: none;
+  .rating-wrapper[data-allow-half="true"] label:nth-of-type(odd)::before {
+    mask: ${RIGHT_HALF_MASK} no-repeat;
+    -webkit-mask: ${RIGHT_HALF_MASK} no-repeat;
+    mask-size: var(--rating-half-size) var(--rating-star-size);
+    -webkit-mask-size: var(--rating-half-size) var(--rating-star-size);
+    /* Overlap to kill Chrome subpixel hairline between left/right halves */
+    left: -1px;
+    width: calc(var(--rating-half-size) + 1px);
+  }
+
+  .rating-wrapper[data-allow-half="true"] label:nth-of-type(even)::before {
+    mask: ${LEFT_HALF_MASK} no-repeat;
+    -webkit-mask: ${LEFT_HALF_MASK} no-repeat;
+    mask-size: var(--rating-half-size) var(--rating-star-size);
+    -webkit-mask-size: var(--rating-half-size) var(--rating-star-size);
   }
 
   /* Base: Show checked state - highlight up to checked input (selected stars) */
@@ -130,6 +150,14 @@ const ratingStyles = `
     border-radius: 2px;
   }
 `
+
+function resolveStarSize(starSize: string): string {
+  if (/\bh-3\b|\bw-3\b/.test(starSize)) return "0.75rem"
+  if (/\bh-4\b|\bw-4\b/.test(starSize)) return "1rem"
+  if (/\bh-5\b|\bw-5\b/.test(starSize)) return "1.25rem"
+  if (/\bh-8\b|\bw-8\b/.test(starSize)) return "2rem"
+  return "1.5rem"
+}
 
 export interface RatingProps extends Omit<React.FieldsetHTMLAttributes<HTMLFieldSetElement>, 'onChange'> {
   /**
@@ -228,16 +256,23 @@ const Rating = React.forwardRef<
 
     // Current value (controlled or uncontrolled)
     const [internalValue, setInternalValue] = React.useState(defaultValue)
-    const currentValue = value !== undefined ? value : internalValue
+    const rawValue = value !== undefined ? value : internalValue
+    // Whole-star mode: snap fractions so the first star is never a half glyph.
+    const currentValue = allowHalf
+      ? rawValue
+      : Number.isFinite(rawValue)
+        ? Math.max(0, Math.min(maxRating, Math.round(rawValue)))
+        : 0
 
     // Handle change
     const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = parseFloat(e.target.value)
+      const parsed = parseFloat(e.target.value)
+      const newValue = allowHalf ? parsed : Math.round(parsed)
       if (value === undefined) {
         setInternalValue(newValue)
       }
       onValueChange?.(newValue)
-    }, [value, onValueChange])
+    }, [value, onValueChange, allowHalf])
 
     // Sync internal value when defaultValue changes
     useEffect(() => {
@@ -256,14 +291,23 @@ const Rating = React.forwardRef<
     }
     const ratingName = ratingNameRef.current
 
+    const resolvedStarSize = resolveStarSize(starSize)
+
     const ratingContent = (
       <fieldset
         ref={fieldsetRef}
-        className={cn("rating-wrapper", starSize, disabled && "opacity-50", className)}
+        data-allow-half={allowHalf ? "true" : "false"}
+        className={cn("rating-wrapper", disabled && "opacity-50", className)}
         disabled={disabled}
         role="radiogroup"
         aria-label={`Rating: ${currentValue} out of ${maxRating} stars`}
         {...props}
+        style={
+          {
+            ...(typeof props.style === "object" && props.style ? props.style : null),
+            ["--rating-star-size" as string]: resolvedStarSize,
+          } as React.CSSProperties
+        }
       >
         {ratingOptions.map((rating) => {
           const ratingStr = rating.toString()

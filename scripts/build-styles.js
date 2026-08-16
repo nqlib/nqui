@@ -9,7 +9,7 @@
  * All src/styles/*.css partials are inlined — consumers must not resolve ./styles/* paths.
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, copyFileSync, mkdirSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -159,7 +159,6 @@ function extractStandaloneCSS() {
     .replace(/@import\s+["']tailwindcss["'];?\s*\n/g, '')
     .replace(/@import\s+["']tw-animate-css["'];?\s*\n/g, '')
     .replace(/@import\s+["']shadcn\/tailwind\.css["'];?\s*\n/g, '')
-    .replace(/@import\s+["']@fontsource-variable\/inter["'];?\s*\n/g, '')
     .replace(/@import\s+["']\.\/styles\/[^"']+["'];?\s*(?:\/\*[^*]*\*\/\s*)?\n/g, '')
     .replace(/\/\*\s*Token system[\s\S]*?\*\/\s*\n/g, '')
     .replace(/@source\s+(?!inline\()[^;]+;?\s*\n/g, '')
@@ -295,11 +294,39 @@ function extractStandaloneCSS() {
   return header + sourceInlineSection + combinedCss;
 }
 
+const FONT_FILES = [
+  'Satoshi-Variable.woff2',
+  'Satoshi-VariableItalic.woff2',
+  'LICENSE-Satoshi.txt',
+];
+
+function copyFontAssets() {
+  const srcDir = join(projectRoot, 'src', 'fonts');
+  const destDir = join(projectRoot, 'dist', 'fonts');
+  mkdirSync(destDir, { recursive: true });
+  for (const file of FONT_FILES) {
+    const from = join(srcDir, file);
+    if (!existsSync(from)) {
+      throw new Error(`Missing font asset: ${from}`);
+    }
+    copyFileSync(from, join(destDir, file));
+  }
+}
+
 function assertNoStyleImports(css) {
   if (/@import\s+["']\.\/styles\//.test(css)) {
     throw new Error(
       'dist/styles.css still contains @import "./styles/..." — partials must be fully inlined before publish.'
     );
+  }
+}
+
+function assertSatoshiFaces(css) {
+  if (!/@font-face\s*\{[^}]*font-family:\s*["']Satoshi["']/.test(css)) {
+    throw new Error('dist/styles.css is missing Satoshi @font-face — do not strip webfonts in the style pipeline.');
+  }
+  if (!/url\(["']?\.\/fonts\/Satoshi-Variable\.woff2["']?\)/.test(css)) {
+    throw new Error('dist/styles.css must keep url("./fonts/Satoshi-Variable.woff2") relative to dist/styles.css.');
   }
 }
 
@@ -312,8 +339,11 @@ function main() {
 
     const standaloneCss = extractStandaloneCSS();
     assertNoStyleImports(standaloneCss);
+    assertSatoshiFaces(standaloneCss);
+    copyFontAssets();
     writeFileSync(outputPath, standaloneCss, 'utf-8');
     console.log(`✅ Generated ${outputPath}`);
+    console.log(`✅ Copied ${FONT_FILES.length} font assets to dist/fonts/`);
   } catch (error) {
     console.error('❌ Error generating styles.css:', error.message);
     process.exit(1);

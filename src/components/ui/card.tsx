@@ -1,7 +1,6 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { FrostedGlass } from "@/components/ui/frosted-glass"
 import { ScrollArea } from "@/components/custom/enhanced-scroll-area"
 
 // Context to pass stickyHeader state to child components
@@ -11,7 +10,7 @@ const CardContext = React.createContext<{ stickyHeader: boolean }>({
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
-   * Enable sticky header with frosted glass effect
+   * Enable sticky header
    * When true, CardHeader becomes sticky and CardContent becomes scrollable with fade mask
    * @default false
    */
@@ -25,9 +24,6 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         className={cn(
           "nqui-card relative min-w-0 overflow-visible rounded-lg bg-card text-card-foreground",
-          // Do not use overflow-hidden on the root when stickyHeader: Radix ScrollArea needs a non-clipping
-          // flex ancestor to resolve flex-1/min-h-0; overflow-hidden here can kill vertical scroll. Clip in the app
-          // with an outer wrapper (overflow-hidden rounded-*) if FrostedGlass must be boxed in.
           stickyHeader && "flex flex-col",
           className
         )}
@@ -50,19 +46,12 @@ const CardHeader = React.forwardRef<
       className={cn(
         "flex min-w-0 flex-col space-y-1.5 p-6",
         stickyHeader &&
-          "relative sticky top-0 z-[var(--z-sticky-content)] flex-shrink-0 rounded-t-lg",
+          "relative sticky top-0 z-[var(--z-sticky-content)] flex-shrink-0 rounded-t-lg bg-card",
         className
       )}
       {...props}
     >
-      {stickyHeader ? (
-        <>
-          <FrostedGlass blur={16} borderRadius={8} className="z-[var(--z-background)]" />
-          <div className="relative z-[var(--z-content)]">{children}</div>
-        </>
-      ) : (
-        children
-      )}
+      {children}
     </div>
   )
 })

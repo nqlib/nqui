@@ -91,7 +91,7 @@ rename the three components.
 | `orientation: "vertical" \| "horizontal" \| "mixed"` | `orientation: "vertical" \| "horizontal"` | `"mixed"` (2-D grids) is gone — use `GridLayout` from the same entry. |
 | `flatCursor` | same | Suppresses grab/grabbing cursors. |
 | `strategy`, `modifiers`, `collisionDetection`, `sensors`, `accessibility` | — | dnd-kit concepts with no equivalent. Edge detection is hitbox-based and needs no strategy. |
-| `asChild` on the item | — | Not supported: the item owns a `position: relative` layer for its drop indicator. `asChild` remains on the handle. |
+| `asChild` on the item | `asChild` on item **and** list | Table mode: `layout="table"` + `asChild` on list (`tbody`/`tr`) and items (`tr`/`th`); ghosts render as `tr`/`th`. |
 | — | `disableAnimation` | New. Turns off the FLIP settle animation for very long lists. |
 | — | `preview` on the item | New. Custom drag-preview node; defaults to the item's children. |
 

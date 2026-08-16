@@ -43,4 +43,5 @@ import type { DateRange } from "react-day-picker"
 
 - Peer: `react-day-picker` v9+.
 - Enhanced: touch drag selection, hover preview on drag.
+- Range: after `from` and `to` are set, drag either endpoint to resize. A click without moving still starts a new range.
 - Footer slot for custom footer.

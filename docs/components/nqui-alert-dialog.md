@@ -1,6 +1,6 @@
 # nqui AlertDialog
 
-> Confirmation dialog. AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel.
+> Confirmation dialog. Same tray chrome and overlay scrim as Dialog (`bg-overlay` + `backdrop-blur-xs`). AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel.
 
 ## Import
 

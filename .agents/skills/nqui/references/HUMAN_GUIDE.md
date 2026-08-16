@@ -11,8 +11,8 @@ Use this file for **wayfinding** before diving into `README.md` (long) or dozens
 | Route | Purpose |
 |-------|---------|
 | `/nqui` | **Recipes hub** — start here |
+| `/blocks` | Compact composed patterns |
 | `/patterns` | Commerce dashboard recipe |
-| `/recipes/settings` | Settings form recipe |
 | `/catalog` | Component variant catalog |
 | `/design-system` | Tokens |
 

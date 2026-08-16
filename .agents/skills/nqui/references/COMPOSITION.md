@@ -187,7 +187,7 @@ Components: `Dialog`, `Field`, `Input`, `Select`, `Button`.
 
 | Mode | Question it answers | Where in the dev app |
 |------|---------------------|----------------------|
-| **Recipes** | How do I build a real screen? | `/`, `/patterns`, `/recipes/settings` |
+| **Recipes** | How do I build a real screen? | `/blocks`, `/patterns` |
 | **Catalog** | What props/variants exist? | `/catalog` |
 | **Tokens** | What are the colors, radius, type? | `/design-system` |
 
@@ -315,8 +315,9 @@ Scroll: custom main scroll container — see `README.md` → Layout & Scroll Pat
 | Route | Recipe |
 |-------|--------|
 | `/nqui` | Hub — start here |
+| `/blocks` | Compact composed patterns (settings, toolbar, forms) |
 | `/patterns` | Commerce dashboard (dense product UI) |
-| `/recipes/settings` | Workspace settings (forms) |
+| `/recipes/elevation` | Surface / elevation tokens |
 | `/catalog` | Full variant catalog |
 | `/design-system` | Tokens |
 

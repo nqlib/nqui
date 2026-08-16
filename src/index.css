@@ -1,7 +1,23 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
+
+/* Satoshi Variable — Fontshare FFL. Shipped in dist/fonts/ next to styles.css. */
+@font-face {
+  font-family: "Satoshi";
+  src: url("./fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("./fonts/Satoshi-VariableItalic.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 /* Token system — split for clarity. Each file owns one concern.
  * Loaded order matters: base tokens before utilities that may reference them. */
@@ -82,7 +98,7 @@
 @source inline("border-primary ring-ring/30 rounded-full border bg-white shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] hover:ring-4 focus-visible:ring-4");
 
 @theme inline {
-    --font-sans: 'Inter Variable', sans-serif;
+    --font-sans: "Satoshi", system-ui, sans-serif;
 
     /* Motion — wire Tailwind's built-in `transition` / `transition-colors` utilities to the
      * motion.css token scale, so bare transitions (no explicit duration/easing) stay tunable

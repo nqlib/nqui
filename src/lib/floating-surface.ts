@@ -8,6 +8,21 @@ export const floatingSurface =
   "rounded-lg border border-border bg-popover text-popover-foreground shadow-(--shadow-float)"
 
 /**
+ * Overlay tray chrome — muted rim → background stage + hairline.
+ * Lift comes from the scrim, not `--shadow-modal`. Dialog / AlertDialog /
+ * Sheet / Drawer share this. CommandDialog and mobile Sidebar opt out via
+ * `stage={false}`.
+ */
+export const modalTrayOuter = "rounded-xl bg-muted p-1 outline-none"
+
+export const modalTrayStage =
+  "relative min-w-0 rounded-lg border border-border bg-background"
+
+/** Shared overlay scrim — Dialog / AlertDialog / Sheet / Drawer. */
+export const modalOverlayScrim =
+  "bg-overlay duration-[var(--duration-micro)] supports-backdrop-filter:backdrop-blur-xs fixed inset-0 z-[var(--z-modal-backdrop)]"
+
+/**
  * Interactive wash — `--interactive` (light: soft accent tint; dark: solid accent).
  * Prefer these over raw `bg-accent` / `bg-muted/50` for hover + selection.
  */

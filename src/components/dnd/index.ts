@@ -30,8 +30,8 @@ export type {
 } from "./use-drag-monitor";
 
 // Visual + a11y helpers
-export { DropIndicator } from "./drop-indicator";
-export type { DropIndicatorProps } from "./drop-indicator";
+export { DropIndicator, DropGhost } from "./drop-indicator";
+export type { DropIndicatorProps, DropGhostProps } from "./drop-indicator";
 export { useAnnouncer, announceLive, cleanupLiveRegion } from "./announcer";
 export { flashElement, useFlip, usePrefersReducedMotion } from "./use-flip";
 export type { UseFlipOptions } from "./use-flip";
@@ -76,6 +76,7 @@ export {
 export type {
   SortableListItemHandleProps,
   SortableListItemProps,
+  SortableListLayout,
   SortableListMoveEvent,
   SortableListProps,
 } from "./sortable-list";

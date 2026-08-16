@@ -59,6 +59,7 @@ consumer app, `ThemeToggle` / `ThemeAppearanceMenu` exports.
 | ST-006 | Hit-area utilities | done | pre-baseline |
 | ST-007 | Consumer brand override via `init-css` | done | 0.7.2 |
 | ST-008 | Dark mode and theme switching surface | in-progress | pre-baseline |
+| ST-065 | Ship Satoshi as the library default sans | review | 0.7.8 |
 
 ## Implementation references
 

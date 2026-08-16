@@ -1,6 +1,6 @@
 # nqui Drawer
 
-> **Vaul** drawer. **DrawerContent** keeps an **inset rounded card** (`before:bg-card`, `before:inset-2`, `before:rounded-xl`) so the panel does not read as a full-bleed slab—surface follows **`card`** tokens in both themes.
+> **Vaul** drawer. **DrawerContent** uses the same hybrid tray and overlay scrim as Dialog/Sheet (`bg-overlay` + `backdrop-blur-xs`). Default direction is bottom; `direction="right"` is the side-panel cousin of Sheet.
 
 ## Import
 

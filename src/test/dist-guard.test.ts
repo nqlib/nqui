@@ -83,6 +83,15 @@ describe.skipIf(!built)("dist bundle hygiene", () => {
     expect(offenders.map((o) => o.file)).toEqual([])
   })
 
+  it("ships Satoshi webfonts next to styles.css", () => {
+    const styles = readFileSync(join(distDir, "styles.css"), "utf8")
+    expect(styles).toMatch(/font-family:\s*["']Satoshi["']/)
+    expect(styles).toContain("./fonts/Satoshi-Variable.woff2")
+    expect(styles).not.toContain("Inter Variable")
+    expect(existsSync(join(distDir, "fonts", "Satoshi-Variable.woff2"))).toBe(true)
+    expect(existsSync(join(distDir, "fonts", "Satoshi-VariableItalic.woff2"))).toBe(true)
+  })
+
   // The main entry must stay lean: importing `{ Button }` from the package root
   // must not transitively drag in optional peers. Only `cmdk` is allowed (it is
   // a required peer, pulled by the core Combobox). Heavy/optional peers

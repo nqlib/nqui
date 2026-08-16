@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.8] - 2026-08-16
+
+### Added
+
+- **Calendar** — completed ranges can be resized by dragging the start or end
+  day. A click without moving still resets (DayPicker). `mode="range"` only.
+- **Satoshi Variable** — roman + italic woff2 ship in `dist/fonts/` with
+  `@nqlib/nqui/styles`. (ST-065)
+- **DnD `DropGhost`** — exported alongside `DropIndicator`; sortable lists
+  expose a `SortableListLayout` type.
+
+### Changed
+
+- **Typeface** — `--font-sans` is Satoshi Variable (Fontshare FFL). Was an
+  Inter Variable token with no font file in the tarball. Override `--font-sans`
+  after the styles import to use a different face. (ST-065)
+- **Dialog / AlertDialog / Sheet / Drawer** — overlays use hybrid tray chrome
+  (muted rim → background stage + hairline) instead of a flat/`::before` card
+  + `--shadow-modal`. `CommandDialog` and mobile Sidebar opt out via
+  `stage={false}`. The four share one scrim (`bg-overlay` + `backdrop-blur-xs`)
+  and Dialog/Sheet share one close control (ghost icon `Button`).
+- **Card `stickyHeader`** — sticky header is opaque `bg-card`. Frosted glass
+  stays a marketing primitive (`FrostedGlass`), not Card chrome.
+- **DnD drop line** — `DropIndicator` sits at the midpoint of the list gap
+  (kanban / sortable) instead of hugging the item edge.
+- **Rating** — integer steps use a full-star glyph; half mode still pairs
+  halves. Fieldset width is `max-content` so Safari does not clip stars.
+- **Tooltip** — each `Tooltip` mounts its own `TooltipProvider` so Rating and
+  other callers work without an app-level provider (and across duplicate Radix
+  copies).
+
 ## [0.7.7] - 2026-08-13
 
 ### Changed

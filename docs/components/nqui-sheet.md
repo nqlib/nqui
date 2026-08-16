@@ -1,6 +1,6 @@
 # nqui Sheet
 
-> Side panel (Radix **Dialog** pattern). **SheetContent** uses an **inset card** panel: transparent outer shell + `before:bg-card` block inset with **rounded corners** (matches drawer-style “card floating in the viewport”). **No edge borders** on the sheet shell (divider lines removed in favor of the card shape).
+> Side panel (Radix **Dialog** pattern). **SheetContent** uses hybrid tray chrome: muted rim (`p-1`) → background stage + hairline. Lift comes from the shared overlay scrim (`bg-overlay` + `backdrop-blur-xs`), not `--shadow-modal`. Close control matches Dialog (ghost icon `Button`). Default `side="right"`. Mobile **Sidebar** sets `stage={false}` so it can own its own surface.
 
 ## Import
 
@@ -28,7 +28,7 @@ import {
 
 ## Internal dividers — **always inset, never full-width**
 
-`SheetContent`'s rounded panel is a `::before` overlay inset inside a transparent outer shell. Any **full-width `border-b` / `border-t`** on a child element draws across the entire shell — past where the visual rounded edge appears — producing a 1–2px "leak" outside the panel at the corner.
+`SheetContent`'s rounded **stage** sits inside a muted rim. Any **full-width `border-b` / `border-t`** on a child of a `p-0` / `stage={false}` shell can still draw past the visual rounded edge.
 
 **❌ Don't**
 
@@ -62,7 +62,7 @@ Alternative: render a separate inset divider element — `<div className="mx-4 h
 
 ## Custom positioning (floating-panel layout)
 
-When overriding default side positioning (e.g. floating dock with gap from edges), use CSS variables for the inset and let the `::before` panel inherit its rounded shape — don't try to add your own `rounded-xl` to compensate.
+When overriding default side positioning (e.g. floating dock with gap from edges), use CSS variables for the inset — the muted rim + stage already supply the rounded tray.
 
 ```tsx
 <SheetContent

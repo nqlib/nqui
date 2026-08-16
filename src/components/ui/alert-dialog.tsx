@@ -4,6 +4,7 @@ import * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
+import { modalOverlayScrim, modalTrayOuter, modalTrayStage } from "@/lib/floating-surface"
 import { Button } from "@/components/ui/button"
 
 function AlertDialog({
@@ -35,7 +36,7 @@ function AlertDialogOverlay({
   return (
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
-      className={cn("data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 bg-overlay duration-[var(--duration-micro)] supports-backdrop-filter:backdrop-blur-xs fixed inset-0 z-[var(--z-modal-backdrop)]", className)}
+      className={cn("data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0", modalOverlayScrim, className)}
       {...props}
     />
   )
@@ -43,6 +44,7 @@ function AlertDialogOverlay({
 
 function AlertDialogContent({
   className,
+  children,
   size = "default",
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
@@ -55,11 +57,19 @@ function AlertDialogContent({
         data-slot="alert-dialog-content"
         data-size={size}
         className={cn(
-          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 bg-background ring-foreground/10 gap-3 rounded-xl p-4 ring-1 duration-[var(--duration-micro)] data-[size=default]:max-w-xs data-[size=sm]:max-w-64 data-[size=default]:sm:max-w-sm group/alert-dialog-content fixed top-1/2 left-1/2 z-[var(--z-modal)] grid w-full -translate-x-1/2 -translate-y-1/2 outline-none",
+          modalTrayOuter,
+          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 duration-[var(--duration-micro)] data-[size=default]:max-w-xs data-[size=sm]:max-w-64 data-[size=default]:sm:max-w-sm group/alert-dialog-content fixed top-1/2 left-1/2 z-[var(--z-modal)] w-full -translate-x-1/2 -translate-y-1/2",
           className
         )}
         {...props}
-      />
+      >
+        <div
+          data-slot="alert-dialog-stage"
+          className={cn(modalTrayStage, "grid gap-3 p-4")}
+        >
+          {children}
+        </div>
+      </AlertDialogPrimitive.Content>
     </AlertDialogPortal>
   )
 }

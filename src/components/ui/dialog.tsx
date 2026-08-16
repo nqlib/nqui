@@ -5,6 +5,7 @@ import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
+import { modalOverlayScrim, modalTrayOuter, modalTrayStage } from "@/lib/floating-surface"
 import { Button } from "@/components/ui/button"
 
 function Dialog({
@@ -38,7 +39,7 @@ function DialogOverlay({
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
-      className={cn("data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 bg-overlay duration-[var(--duration-micro)] supports-backdrop-filter:backdrop-blur-xs fixed inset-0 isolate z-[var(--z-modal-backdrop)]", className)}
+      className={cn("data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 isolate", modalOverlayScrim, className)}
       {...props}
     />
   )
@@ -48,29 +49,45 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  stage = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  /** Muted rim + background stage. Off for CommandDialog (owns its own surface). */
+  stage?: boolean
 }) {
+  const closeButton = showCloseButton ? (
+    <DialogPrimitive.Close data-slot="dialog-close" asChild>
+      <Button variant="ghost" className="absolute top-2 right-2" size="icon">
+        <IconX strokeWidth={2} />
+        <span className="sr-only">Close</span>
+      </Button>
+    </DialogPrimitive.Close>
+  ) : null
+
   return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 grid max-w-[calc(100%-2rem)] gap-4 rounded-xl p-4 text-xs ring-1 shadow-(--shadow-modal) duration-[var(--duration-micro)] sm:max-w-sm fixed top-1/2 left-1/2 z-[var(--z-modal)] w-full -translate-x-1/2 -translate-y-1/2",
+          modalTrayOuter,
+          "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 max-w-[calc(100%-2rem)] text-sm duration-[var(--duration-micro)] sm:max-w-sm fixed top-1/2 left-1/2 z-[var(--z-modal)] w-full -translate-x-1/2 -translate-y-1/2",
+          !stage && "relative grid gap-4 p-4",
           className
         )}
         {...props}
       >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button variant="ghost" className="absolute top-2 right-2" size="icon">
-              <IconX strokeWidth={2} />
-              <span className="sr-only">Close</span>
-            </Button>
-          </DialogPrimitive.Close>
+        {stage ? (
+          <div data-slot="dialog-stage" className={cn(modalTrayStage, "grid gap-4 p-4")}>
+            {children}
+            {closeButton}
+          </div>
+        ) : (
+          <>
+            {children}
+            {closeButton}
+          </>
         )}
       </DialogPrimitive.Content>
     </DialogPortal>

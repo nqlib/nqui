@@ -299,6 +299,8 @@ function main() {
     { name: '@source inline() directives', pattern: /@source\s+inline\(/g },
     { name: ':root block', pattern: /:root\s*\{/ },
     { name: '.dark block', pattern: /\.dark\s*\{/ },
+    { name: 'Satoshi @font-face', pattern: /@font-face\s*\{[^}]*font-family:\s*["']Satoshi["']/ },
+    { name: 'Satoshi variable woff2 url', pattern: /url\(["']?\.\/fonts\/Satoshi-Variable\.woff2["']?\)/ },
     // Viewport lock (html, body, #root) was intentionally removed from base styles (see CHANGELOG 0.3.3); use AppLayout for opt-in lock.
   ];
   
@@ -342,6 +344,23 @@ function main() {
     hasErrors = true;
   } else {
     console.log(`   ✅ All ${colorVars.length} checked color variables present`);
+  }
+
+  console.log('\n6️⃣d Checking shipped Satoshi webfonts...');
+  if (builtCss.includes('Inter Variable')) {
+    console.error('   ❌ dist/styles.css still names Inter Variable');
+    hasErrors = true;
+  } else {
+    console.log('   ✅ No Inter Variable token in dist/styles.css');
+  }
+  const fontDir = join(projectRoot, 'dist', 'fonts');
+  const fontFiles = ['Satoshi-Variable.woff2', 'Satoshi-VariableItalic.woff2', 'LICENSE-Satoshi.txt'];
+  const missingFonts = fontFiles.filter((file) => !existsSync(join(fontDir, file)));
+  if (missingFonts.length > 0) {
+    console.error(`   ❌ Missing dist/fonts files: ${missingFonts.join(', ')}`);
+    hasErrors = true;
+  } else {
+    console.log(`   ✅ dist/fonts has ${fontFiles.length} Satoshi assets`);
   }
   
   // 7. Check for unwanted patterns that should NOT be present

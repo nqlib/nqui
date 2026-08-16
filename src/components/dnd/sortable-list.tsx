@@ -5,7 +5,7 @@ import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
-import { DropIndicator } from "./drop-indicator";
+import { DropGhost } from "./drop-indicator";
 import { getReorderDestinationIndex, meaningfulEdges, reorder } from "./reorder";
 import type { DragAxis, DragData, Edge } from "./types";
 import { useDraggable } from "./use-draggable";
@@ -21,6 +21,7 @@ const ROOT_NAME = "SortableList";
 const ITEM_NAME = "SortableListItem";
 const ITEM_HANDLE_NAME = "SortableListItemHandle";
 
+export type SortableListLayout = "list" | "table";
 
 /* -------------------------------------------------------------------------- */
 /*  Drag payload                                                                */
@@ -53,6 +54,19 @@ interface SortableListContextValue {
   orientation: "vertical" | "horizontal";
   axis: DragAxis;
   flatCursor: boolean;
+  /**
+   * Measured main-axis size of the item currently being dragged, used by
+   * `DropGhost` so the destination slot matches the floating preview.
+   */
+  activeItemSize: number | null;
+  /**
+   * `list` — flex stack/row with div ghosts (default).
+   * `table` — no flex wrapper styling; ghosts render as `tr`/`th` so they stay
+   * valid table children when items use `asChild` on `<tr>` / `<th>`.
+   */
+  layout: SortableListLayout;
+  /** Colspan for table-row ghosts. */
+  ghostColSpan: number;
 }
 
 const SortableListContext = React.createContext<SortableListContextValue | null>(
@@ -132,6 +146,18 @@ export type SortableListProps<T> = React.ComponentProps<"div"> &
     flatCursor?: boolean;
     /** Disable the FLIP settle animation (worth it for very long lists). */
     disableAnimation?: boolean;
+    /**
+     * Merge props onto the child instead of rendering a wrapping `div`.
+     * Required for HTML tables (`asChild` + `<tbody>` / `<tr>`).
+     */
+    asChild?: boolean;
+    /**
+     * `list` (default) — flex container + div ghosts.
+     * `table` — no flex; table-safe ghosts (`tr`/`th`). Pair with `asChild`.
+     */
+    layout?: SortableListLayout;
+    /** When `layout="table"` and orientation is vertical, colspan for row ghosts. */
+    ghostColSpan?: number;
   };
 
 /**
@@ -152,6 +178,20 @@ export type SortableListProps<T> = React.ComponentProps<"div"> &
  *   ))}
  * </SortableList>
  * ```
+ *
+ * Tables — slot the list onto `tbody` / header `tr`, and items onto `tr` / `th`:
+ *
+ * ```tsx
+ * <SortableList layout="table" asChild value={rows} getItemValue={(r) => r.id} …>
+ *   <tbody>
+ *     {rows.map((row) => (
+ *       <SortableListItem key={row.id} value={row.id} asChild>
+ *         <tr>…</tr>
+ *       </SortableListItem>
+ *     ))}
+ *   </tbody>
+ * </SortableList>
+ * ```
  */
 export function SortableList<T>(props: SortableListProps<T>) {
   const {
@@ -161,6 +201,9 @@ export function SortableList<T>(props: SortableListProps<T>) {
     orientation = "vertical",
     flatCursor = false,
     disableAnimation = false,
+    asChild = false,
+    layout = "list",
+    ghostColSpan = 99,
     getItemValue: getItemValueProp,
     className,
     children,
@@ -194,13 +237,26 @@ export function SortableList<T>(props: SortableListProps<T>) {
     [items],
   );
 
-  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const listRef = React.useRef<HTMLElement | null>(null);
   // Items glide to their new slots instead of teleporting after the commit.
   useFlip(listRef, { enabled: !disableAnimation });
+  const [activeItemSize, setActiveItemSize] = React.useState<number | null>(
+    null,
+  );
 
   useDragMonitor({
     canMonitor: (data) => isItemData(data, listType),
+    onDragStart: ({ source }) => {
+      if (!isItemData(source.data, listType)) {
+        setActiveItemSize(null);
+        return;
+      }
+      const rect = source.element.getBoundingClientRect();
+      const size = axis === "horizontal" ? rect.width : rect.height;
+      setActiveItemSize(size > 0 ? size : null);
+    },
     onDrop: ({ source, location }) => {
+      setActiveItemSize(null);
       if (!isItemData(source.data, listType)) return;
 
       const target = location.current.dropTargets.find((candidate) =>
@@ -234,34 +290,56 @@ export function SortableList<T>(props: SortableListProps<T>) {
   });
 
   const composedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLElement | null) => {
       listRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
+      if (typeof ref === "function") ref(node as HTMLDivElement | null);
+      else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = node;
     },
     [ref],
   );
 
   const contextValue = React.useMemo<SortableListContextValue>(
-    () => ({ listType, indexOf, orientation, axis, flatCursor }),
-    [listType, indexOf, orientation, axis, flatCursor],
+    () => ({
+      listType,
+      indexOf,
+      orientation,
+      axis,
+      flatCursor,
+      activeItemSize,
+      layout,
+      ghostColSpan,
+    }),
+    [
+      listType,
+      indexOf,
+      orientation,
+      axis,
+      flatCursor,
+      activeItemSize,
+      layout,
+      ghostColSpan,
+    ],
   );
+
+  const Primitive = asChild ? Slot : "div";
 
   return (
     <SortableListContext.Provider value={contextValue}>
-      <div
+      <Primitive
         ref={composedRef}
         data-slot="sortable-list"
         data-orientation={orientation}
+        data-layout={layout}
         className={cn(
-          "flex",
-          orientation === "horizontal" ? "flex-row" : "flex-col",
+          layout === "list" && "flex",
+          layout === "list" &&
+            (orientation === "horizontal" ? "flex-row" : "flex-col"),
           className,
         )}
         {...rootProps}
       >
         {children}
-      </div>
+      </Primitive>
     </SortableListContext.Provider>
   );
 }
@@ -296,6 +374,11 @@ export interface SortableListItemProps
   /** Not draggable, not a drop target, visually dimmed. */
   disabled?: boolean;
   /**
+   * Merge props onto the child (e.g. `<tr>`, `<th>`) instead of a wrapping
+   * `div`. Required for HTML table rows/headers.
+   */
+  asChild?: boolean;
+  /**
    * Custom node for the drag preview that follows the pointer. Defaults to the
    * item's own children in a lifted surface.
    */
@@ -304,7 +387,7 @@ export interface SortableListItemProps
 
 /**
  * One entry of a `SortableList`: a draggable *and* a drop target with edge
- * detection, so the insertion line lands where the pointer actually is.
+ * detection, so a dashed ghost slot opens where the pointer actually is.
  *
  * A custom drag preview is always used. The browser's native ghost is a
  * washed-out screenshot and, on an unhandled drop, plays a spring-back-to-origin
@@ -314,6 +397,7 @@ export function SortableListItem({
   value,
   asHandle = false,
   disabled = false,
+  asChild = false,
   preview,
   className,
   children,
@@ -328,6 +412,7 @@ export function SortableListItem({
 
   const id = React.useId();
   const index = context.indexOf(value);
+  const isTable = context.layout === "table";
 
   const data = React.useMemo<SortableItemData>(
     () => ({ type: context.listType, value, index }),
@@ -386,11 +471,11 @@ export function SortableListItem({
   });
 
   const composedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLElement | null) => {
       dragRef(node);
       dropRef(node);
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
+      if (typeof ref === "function") ref(node as HTMLDivElement | null);
+      else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = node;
     },
     [dragRef, dropRef, ref],
   );
@@ -408,9 +493,34 @@ export function SortableListItem({
     [id, setHandle, isDragging, disabled],
   );
 
+  const showGhost = isDraggedOver && closestEdge != null;
+  const ghostBefore =
+    closestEdge === "top" || closestEdge === "left";
+  const ghostSizeProps =
+    context.axis === "horizontal"
+      ? { width: context.activeItemSize }
+      : { height: context.activeItemSize };
+
+  const ghostNode = showGhost ? (
+    <DropGhost
+      {...ghostSizeProps}
+      as={
+        isTable
+          ? context.axis === "horizontal"
+            ? "th"
+            : "tr"
+          : "div"
+      }
+      colSpan={context.ghostColSpan}
+    />
+  ) : null;
+
+  const Primitive = asChild ? Slot : "div";
+
   return (
     <SortableListItemContext.Provider value={itemContext}>
-      <div
+      {ghostBefore ? ghostNode : null}
+      <Primitive
         id={id}
         ref={composedRef}
         data-slot="sortable-list-item"
@@ -427,9 +537,11 @@ export function SortableListItem({
             "cursor-default": context.flatCursor,
             "data-dragging:cursor-grabbing": !context.flatCursor,
             "cursor-grab": !isDragging && asHandle && !context.flatCursor,
-            // The source stays put, dimmed, while the preview follows the
-            // pointer — there is nothing to spring back.
-            "opacity-50": isDragging,
+            // List: lift out of flow. Table: collapse the row/col so the ghost
+            // is the only reserved slot (`absolute` on <tr> is unreliable).
+            "pointer-events-none absolute opacity-0": isDragging && !isTable,
+            "pointer-events-none opacity-0 [visibility:collapse]":
+              isDragging && isTable,
             "pointer-events-none opacity-50": disabled,
           },
           className,
@@ -437,13 +549,15 @@ export function SortableListItem({
         {...itemProps}
       >
         {children}
-        {isDraggedOver && <DropIndicator edge={closestEdge} />}
-      </div>
+      </Primitive>
+      {!ghostBefore ? ghostNode : null}
 
       {previewContainer &&
         createPortal(
-          <div className="rounded-lg border border-border bg-background text-sm shadow-lg">
-            {preview ?? children}
+          <div className="rounded-lg border border-border bg-background px-3 py-2 text-sm shadow-lg">
+            {/* Table rows/headers are invalid (and ugly) inside the preview
+                surface — consumers should pass `preview`. Fall back to the id. */}
+            {preview ?? (isTable ? value : children)}
           </div>,
           previewContainer,
         )}
@@ -495,10 +609,10 @@ export function SortableListItemHandle({
       type="button"
       aria-controls={itemContext.id}
       data-slot="sortable-list-item-handle"
-      data-disabled={isDisabled ? "" : undefined}
       data-dragging={itemContext.isDragging ? "" : undefined}
-      ref={composedRef}
+      data-disabled={isDisabled ? "" : undefined}
       disabled={isDisabled}
+      ref={composedRef}
       className={cn(
         "select-none disabled:pointer-events-none disabled:opacity-50",
         context.flatCursor

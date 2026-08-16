@@ -5,7 +5,22 @@ import { cn } from "@/lib/utils"
 
 const TooltipProvider = TooltipPrimitive.Provider
 
-const Tooltip = TooltipPrimitive.Root
+/**
+ * Self-contained tooltip root. Always mounts a Provider so consumers
+ * (Rating, Tracker, debug panel, etc.) work even when the app shell omits
+ * TooltipProvider — or when a second Radix copy lands in a chunk and cannot
+ * see the app-level provider context.
+ */
+function Tooltip({
+  delayDuration,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>) {
+  return (
+    <TooltipProvider delayDuration={delayDuration}>
+      <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+    </TooltipProvider>
+  )
+}
 
 const TooltipTrigger = TooltipPrimitive.Trigger
 

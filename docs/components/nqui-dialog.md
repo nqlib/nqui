@@ -1,6 +1,6 @@
 # nqui Dialog
 
-> Modal dialog. Core Radix primitive.
+> Modal dialog. Core Radix primitive. Chrome is a hybrid tray: muted rim → background stage + hairline. Overlay family (Dialog / AlertDialog / Sheet / Drawer) shares one scrim (`bg-overlay` + `backdrop-blur-xs`) and one close control (ghost `Button` `size="icon"`). `CommandDialog` sets `stage={false}` to keep the command surface.
 
 ## Import
 

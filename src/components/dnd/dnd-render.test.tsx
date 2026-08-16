@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { DropIndicator } from "./drop-indicator";
+import { DropGhost, DropIndicator } from "./drop-indicator";
 import { GridLayout } from "./grid-layout";
 import { KanbanBoard, KanbanCard, KanbanColumn } from "./kanban";
 
@@ -18,6 +18,14 @@ describe("DropIndicator", () => {
   it("renders a line with the edge data attribute", () => {
     render(<DropIndicator edge="bottom" data-testid="ind" />);
     expect(screen.getByTestId("ind")).toHaveAttribute("data-edge", "bottom");
+  });
+});
+
+describe("DropGhost", () => {
+  it("reserves the given height", () => {
+    const { container } = render(<DropGhost height={48} data-testid="ghost" />);
+    expect(screen.getByTestId("ghost")).toHaveStyle({ height: "48px" });
+    expect(container.querySelector('[data-slot="drop-ghost"]')).not.toBeNull();
   });
 });
 

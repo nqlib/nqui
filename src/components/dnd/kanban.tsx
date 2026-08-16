@@ -6,7 +6,7 @@ import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
-import { DropIndicator } from "./drop-indicator";
+import { DropGhost, DropIndicator } from "./drop-indicator";
 import {
   getInsertionIndex,
   getReorderDestinationIndex,
@@ -78,6 +78,11 @@ interface KanbanBoardContextValue {
   columnOrder: string[];
   registerColumn: (columnId: string, index: number) => () => void;
   requestCardMove: (result: KanbanDropResult) => void;
+  /**
+   * Measured height of the card currently being dragged, used by `DropGhost`
+   * so the destination slot matches the floating preview.
+   */
+  activeCardHeight: number | null;
 }
 
 const KanbanBoardContext = React.createContext<KanbanBoardContextValue | null>(
@@ -127,6 +132,9 @@ export function KanbanBoard({
   // neighbours for keyboard moves without the consumer wiring it up.
   const registry = React.useRef(new Map<string, number>());
   const [columnOrder, setColumnOrder] = React.useState<string[]>([]);
+  const [activeCardHeight, setActiveCardHeight] = React.useState<number | null>(
+    null,
+  );
 
   const syncOrder = React.useCallback(() => {
     const next = [...registry.current.entries()]
@@ -170,14 +178,29 @@ export function KanbanBoard({
   }, []);
 
   const boardContext = React.useMemo<KanbanBoardContextValue>(
-    () => ({ boardId, columnOrder, registerColumn, requestCardMove }),
-    [boardId, columnOrder, registerColumn, requestCardMove],
+    () => ({
+      boardId,
+      columnOrder,
+      registerColumn,
+      requestCardMove,
+      activeCardHeight,
+    }),
+    [boardId, columnOrder, registerColumn, requestCardMove, activeCardHeight],
   );
 
   useDragMonitor({
     canMonitor: (d) =>
       (isCardData(d) || isColumnData(d)) && d.boardId === boardId,
+    onDragStart: ({ source }) => {
+      if (!isCardData(source.data)) {
+        setActiveCardHeight(null);
+        return;
+      }
+      const height = source.element.getBoundingClientRect().height;
+      setActiveCardHeight(height > 0 ? height : null);
+    },
     onDrop: ({ source, location }) => {
+      setActiveCardHeight(null);
       const targets = location.current.dropTargets;
       if (targets.length === 0) return;
 
@@ -394,6 +417,11 @@ export function KanbanColumn({
   );
 
   const ctx = React.useMemo(() => ({ columnId }), [columnId]);
+  const activeCardHeight = board?.activeCardHeight ?? null;
+  // Card append / empty column: no closestEdge (edges omitted for cards).
+  // Column reorder keeps left/right edges and still uses the hairline indicator.
+  const showCardAppendGhost =
+    isDraggedOver && !closestEdge && activeCardHeight != null;
 
   const headerNode =
     header != null ? (
@@ -401,7 +429,7 @@ export function KanbanColumn({
         ref={draggableColumn ? handleRef : undefined}
         data-slot="kanban-column-header"
         className={cn(
-          "shrink-0 border-b border-border px-3 py-2 text-sm font-medium",
+          "shrink-0 px-2 py-1.5 text-sm font-medium",
           draggableColumn && "cursor-grab active:cursor-grabbing select-none",
         )}
       >
@@ -418,8 +446,8 @@ export function KanbanColumn({
         data-dragging={isDragging ? "" : undefined}
         data-dragged-over={isDraggedOver ? "" : undefined}
         className={cn(
-          "relative flex h-full w-72 shrink-0 flex-col rounded-xl border border-border bg-card",
-          "data-dragged-over:border-primary/50 data-dragged-over:bg-accent/30",
+          "relative flex h-full w-72 shrink-0 flex-col rounded-lg bg-muted p-1",
+          "data-dragged-over:bg-muted/80",
           "transition-colors",
           isDragging && "opacity-40",
           className,
@@ -430,9 +458,10 @@ export function KanbanColumn({
         <div
           ref={listRef}
           data-slot="kanban-column-list"
-          className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-2"
+          className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-1"
         >
           {children}
+          {showCardAppendGhost && <DropGhost height={activeCardHeight} />}
         </div>
         {isDraggedOver && closestEdge && <DropIndicator edge={closestEdge} />}
       </div>
@@ -607,9 +636,14 @@ export function KanbanCard({
   );
 
   const Primitive = asChild ? Slot : "div";
+  const activeCardHeight = board?.activeCardHeight ?? null;
+  const showGhost = isDraggedOver && closestEdge != null;
 
   return (
     <>
+      {showGhost && closestEdge === "top" && (
+        <DropGhost height={activeCardHeight} />
+      )}
       <Primitive
         ref={composedRef}
         onKeyDown={onKeyDown}
@@ -618,11 +652,11 @@ export function KanbanCard({
         data-dragging={isDragging ? "" : undefined}
         data-dragged-over={isDraggedOver ? "" : undefined}
         className={cn(
-          "relative select-none rounded-lg border border-border bg-background p-3 text-sm shadow-sm",
+          "relative select-none rounded-md bg-background p-3 text-sm",
           "cursor-grab data-dragging:cursor-grabbing",
-          // The source stays in place, dimmed, while the custom preview follows
-          // the pointer — no ghost to spring back.
-          isDragging && "opacity-40",
+          // Lift the source out of flow while dragging so the DropGhost at the
+          // destination is the only reserved space — reads as the card moving.
+          isDragging && "pointer-events-none absolute opacity-0",
           "focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1",
           disabled && "pointer-events-none opacity-50",
           className,
@@ -635,8 +669,10 @@ export function KanbanCard({
         {...props}
       >
         {children}
-        {isDraggedOver && <DropIndicator edge={closestEdge} />}
       </Primitive>
+      {showGhost && closestEdge === "bottom" && (
+        <DropGhost height={activeCardHeight} />
+      )}
 
       {previewContainer &&
         createPortal(

@@ -73,9 +73,9 @@ Same structure as `packages/nqui/src/components/AppLayout.tsx`:
 
 ## Card with sticky header
 
-**Card** `stickyHeader` wires this pattern for you: `FrostedGlass` with `borderRadius={8}` under **CardHeader**, scrollable **CardContent** below. See nqui-showcase `/catalog` and `src/components/ui/card.tsx`.
+**Card** `stickyHeader` is opaque `bg-card`, not glass. Pair `FrostedGlass` yourself on marketing/page chrome (showcase catalog header is the reference). Do not treat Card as the glass API.
 
-Use `--z-sticky-content` on the sticky region when the glass sits inside a card, not the full page.
+Use `--z-sticky-content` on the sticky region when the glass sits inside a scrolling ancestor, not the full page.
 
 ## Troubleshooting
 
@@ -92,6 +92,6 @@ Consumer apps must import nqui styles **and** add Tailwind `@source` for the lib
 
 ## Related
 
-- **AppLayout** — full app shell with frosted page header.
-- **Card** `stickyHeader` — frosted sticky card header.
+- **AppLayout** — full app shell with frosted page header (showcase operate chrome).
+- **Card** `stickyHeader` — opaque sticky card header (`bg-card`).
 - **Select** — popover row uses the same backdrop layering pattern.

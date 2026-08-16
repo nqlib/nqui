@@ -91,6 +91,22 @@ Change the single base — the scale derives from it:
 
 `--radius-xs/sm/md/lg/xl/2xl` automatically follow. Chrome (`md`), panels (`lg` = the base), and overlays (`xl`) all move together — they are role offsets, not separate brands. `--radius-xs` is capped at `0.375rem` so compact chips never become pills. Circles (Switch, radio disc, Avatar) stay `rounded-full` and do not follow the ladder.
 
+### Typeface
+
+`--font-sans` defaults to **Satoshi** (variable, wght 300–900, roman + italic). `@import "@nqlib/nqui/styles"` loads the woff2 from `dist/fonts/` via `@font-face`. License: Fontshare FFL (`dist/fonts/LICENSE-Satoshi.txt`).
+
+To use a different face, override after the package import:
+
+```css
+@import "@nqlib/nqui/styles";
+
+@theme inline {
+  --font-sans: "Your Face", system-ui, sans-serif;
+}
+```
+
+The Satoshi files still download with styles. Dropping that cost is a follow-up (`@nqlib/nqui/fonts` split) — not required to restyle.
+
 ### Density (compact vs comfortable)
 
 **Don't change the token sizes** (h-6/h-7/h-8 are the design system contract). Instead, **default to a different size globally** via your component wrappers OR pass `size="sm"` as the project convention.

@@ -38,6 +38,8 @@ function verifyTarball() {
     "dist/nqui.cjs.js",
     "dist/index.d.ts",
     "dist/styles.css",
+    "dist/fonts/Satoshi-Variable.woff2",
+    "dist/fonts/Satoshi-VariableItalic.woff2",
     "scripts/templates/colors.css",
   ]
   const missing = required.filter((r) => !files.includes(r))

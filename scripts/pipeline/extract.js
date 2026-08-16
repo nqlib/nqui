@@ -53,7 +53,6 @@ export function extractCSS(root) {
       .replace(/@import\s+["']tailwindcss["'];?\s*\n/g, '')
       .replace(/@import\s+["']tw-animate-css["'];?\s*\n/g, '')
       .replace(/@import\s+["'].*shadcn.*["'];?\s*\n/g, '')
-      .replace(/@import\s+["'].*@fontsource-variable\/inter["'];?\s*\n/g, '')
       .replace(/@import\s+["'].*\/colors\.css["'];?\s*\n/g, '')
       .replace(/\/\*\s*Import enhanced color system\s*\*\//g, '')
       .replace(/@source\s+[^;]+;?\s*\n/g, '')

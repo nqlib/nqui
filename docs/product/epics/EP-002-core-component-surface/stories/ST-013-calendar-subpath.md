@@ -54,6 +54,7 @@ CHANGELOG migration line: *Calendar now imports from `@nqlib/nqui/calendar`; ins
 ## Bugs
 
 - 2026-08-13 — Day cells and range caps use `--cell-radius` (`rounded-md`) instead of a full circle.
+- 2026-08-15 — Drag a completed range's start/end to resize; click-without-move still resets.
 
 ## Out of scope
 
