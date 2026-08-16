@@ -51,8 +51,23 @@ so that the navigation layer of a screen needs no bespoke styling.
   disagrees with the shipped surface is a bug; the docs sweep that closes it is ST-056 (EP-007).
 - `getVisiblePages` owns the ellipsis math so `PaginationAdaptive` stays declarative; the widened
   arrow classes come from the shared `paginationArrowClasses`.
+- `PaginationAdaptive` pans the active number inside `PaginationContent`'s viewport (`scrollLeft`).
+  Do not use `Element.scrollIntoView` — it moves ancestor page scrollers.
 - Breadcrumb is intentionally the only one of the four with no z-index or motion surface — it is
   plain flow content and needs no elevation token.
+
+## Bugs
+
+- 2026-08-16 — `MenubarSubContent` used Radix `sideOffset`/`alignOffset` of 0, so
+  the Share flyout overlapped the first panel. It now matches `DropdownMenu`
+  (`6` / `-4`). `ContextMenuSubContent` got the same defaults (ST-015).
+- 2026-08-16 — `PaginationAdaptive` used `scrollIntoView` to keep the active
+  page in the number strip; that also scrolled ancestor page containers (catalog
+  opened mid-page). Strip now pans via the ScrollArea viewport `scrollLeft` only.
+- 2026-08-16 — Pagination strip used `gap-0` and mixed Button `outline` /
+  `ghost` boxes, so hover/active collapsed the number rhythm and the
+  circled ellipsis sat off the chrome ladder. Cells are now equal `size-7`
+  with `gap-1`; ellipsis uses `IconMoreHorizontal`; focus is inset.
 
 ## Out of scope
 

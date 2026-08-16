@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react"
+import { act, fireEvent, render } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { EnhancedCalendar } from "./enhanced-calendar"
 
@@ -53,6 +53,17 @@ describe("EnhancedCalendar range endpoint drag", () => {
     expect(container.querySelector("[data-range-complete]")).toBeTruthy()
   })
 
+  it("injects calendar CSS once for multiple instances", () => {
+    const { unmount } = render(
+      <EnhancedCalendar mode="range" month={from} selected={{ from, to }} />
+    )
+    render(
+      <EnhancedCalendar mode="range" month={from} selected={{ from, to }} />
+    )
+    expect(document.querySelectorAll("#nqui-enhanced-calendar-styles")).toHaveLength(1)
+    unmount()
+  })
+
   it("resizes the range when dragging the end date", () => {
     const onSelect = vi.fn()
     render(
@@ -92,6 +103,52 @@ describe("EnhancedCalendar range endpoint drag", () => {
     expect(range.to.getDate()).toBe(20)
   })
 
+  it("commits once even when the pointer stays on the same day", () => {
+    const onSelect = vi.fn()
+    render(
+      <EnhancedCalendar
+        mode="range"
+        month={from}
+        selected={{ from, to }}
+        onSelect={onSelect}
+      />
+    )
+    const end = document.querySelector('[data-range-end="true"]')!
+    const later = document.querySelector('[data-iso-date="2026-08-18"]')!
+    act(() => {
+      dispatchPointer(end, "pointerdown", { clientX: 0, clientY: 0 })
+      dispatchPointer(end, "pointermove", { clientX: 12, clientY: 0 })
+      dispatchPointer(later, "pointermove", { clientX: 40, clientY: 0 })
+      dispatchPointer(later, "pointermove", { clientX: 44, clientY: 0 })
+      dispatchPointer(later, "pointermove", { clientX: 48, clientY: 0 })
+      dispatchPointer(later, "pointerup", { clientX: 48, clientY: 0 })
+    })
+    expect(onSelect).toHaveBeenCalledTimes(1)
+    const range = onSelect.mock.calls[0][0] as { from: Date; to: Date }
+    expect(range.to.getDate()).toBe(18)
+  })
+
+  it("resizes across months in a two-month calendar", () => {
+    const onSelect = vi.fn()
+    render(
+      <EnhancedCalendar
+        mode="range"
+        month={from}
+        numberOfMonths={2}
+        selected={{ from, to }}
+        onSelect={onSelect}
+      />
+    )
+    const end = document.querySelector('[data-range-end="true"]')
+    const nextMonth = document.querySelector('[data-iso-date="2026-09-02"]')
+    expect(nextMonth).toBeTruthy()
+    drag(end!, nextMonth!)
+    const range = onSelect.mock.calls[0][0] as { from: Date; to: Date }
+    expect(range.from.getDate()).toBe(10)
+    expect(range.to.getMonth()).toBe(8)
+    expect(range.to.getDate()).toBe(2)
+  })
+
   it("does not commit a resize on a click without moving", () => {
     const onSelect = vi.fn()
     render(
@@ -108,5 +165,24 @@ describe("EnhancedCalendar range endpoint drag", () => {
       dispatchPointer(end, "pointerup", { clientX: 1, clientY: 0 })
     })
     expect(onSelect).not.toHaveBeenCalled()
+  })
+
+  it("lets a click without moving still reset through DayPicker", () => {
+    const onSelect = vi.fn()
+    render(
+      <EnhancedCalendar
+        mode="range"
+        month={from}
+        selected={{ from, to }}
+        onSelect={onSelect}
+      />
+    )
+    const end = document.querySelector('[data-range-end="true"]')!
+    act(() => {
+      dispatchPointer(end, "pointerdown", { clientX: 0, clientY: 0 })
+      dispatchPointer(end, "pointerup", { clientX: 1, clientY: 0 })
+      fireEvent.click(end)
+    })
+    expect(onSelect).toHaveBeenCalled()
   })
 })

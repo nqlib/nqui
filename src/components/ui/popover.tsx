@@ -42,9 +42,34 @@ function PopoverContent({
 }
 
 function PopoverAnchor({
+  asChild: _asChild,
+  className,
+  children,
+  ref,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
+  // Always a real DOM host (`asChild` ignored). Radix starts with
+  // hasCustomAnchor=false, so Trigger also registers as the popper
+  // reference; when the custom Anchor wins, that first node is detached
+  // (0×0 → viewport origin) if Trigger is a sibling. Remount after
+  // layout so the host re-registers.
+  const [anchorGen, setAnchorGen] = React.useState(0)
+
+  React.useLayoutEffect(() => {
+    setAnchorGen(1)
+  }, [])
+
+  return (
+    <PopoverPrimitive.Anchor
+      key={anchorGen}
+      data-slot="popover-anchor"
+      className={cn("inline-flex", className)}
+      {...props}
+      ref={ref}
+    >
+      {children}
+    </PopoverPrimitive.Anchor>
+  )
 }
 
 function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {

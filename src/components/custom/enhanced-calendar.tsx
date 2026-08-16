@@ -2,7 +2,7 @@ import * as React from "react";
 import { DayPicker, type DateRange } from "react-day-picker";
 import { startOfDay, isSameDay, isAfter, isBefore } from "date-fns";
 import { Calendar as CoreCalendar } from "@/components/ui/calendar";
-import { useDetectTouch } from "@/hooks/use-detect-touch";
+import { ensureEnhancedCalendarStyles } from "./enhanced-calendar.styles";
 
 export type EnhancedCalendarProps = React.ComponentProps<typeof DayPicker> & {
   /**
@@ -13,6 +13,7 @@ export type EnhancedCalendarProps = React.ComponentProps<typeof DayPicker> & {
 };
 
 const DRAG_THRESHOLD_PX = 4
+const HIT_INSET_PX = 4
 
 function parseIsoDate(iso: string): Date | null {
   const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/)
@@ -34,30 +35,7 @@ function findDayButton(root: Element, target: EventTarget | null): HTMLElement |
 
 function getDateFromDayButton(element: HTMLElement): Date | null {
   const iso = element.getAttribute("data-iso-date")
-  if (iso) {
-    const parsed = parseIsoDate(iso)
-    if (parsed) return parsed
-  }
-
-  const ariaLabel = element.getAttribute("aria-label")
-  if (ariaLabel) {
-    const dateMatch = ariaLabel.match(/(?:Choose\s+)?\w+,\s+(\w+)\s+(\d+),?\s+(\d{4})/i)
-    if (dateMatch) {
-      const [, monthName, day, year] = dateMatch
-      const tempDate = new Date(`${monthName} 1, ${year}`)
-      if (!Number.isNaN(tempDate.getTime())) {
-        return new Date(Number(year), tempDate.getMonth(), Number(day))
-      }
-    }
-  }
-
-  const nameAttr = element.getAttribute("name")
-  if (nameAttr?.startsWith("day-")) {
-    const parsed = new Date(nameAttr.replace("day-", ""))
-    if (!Number.isNaN(parsed.getTime())) return parsed
-  }
-
-  return null
+  return iso ? parseIsoDate(iso) : null
 }
 
 function endpointKind(button: HTMLElement): "from" | "to" | null {
@@ -71,6 +49,10 @@ function endpointKind(button: HTMLElement): "from" | "to" | null {
 
 function isCompleteRange(range: { from?: Date; to?: Date } | null) {
   return Boolean(range?.from && range?.to && !isSameDay(range.from, range.to))
+}
+
+function isTouchPointer(pointerType: string) {
+  return pointerType === "touch" || pointerType === "pen"
 }
 
 type RangeOnSelect = (
@@ -100,18 +82,18 @@ export function EnhancedCalendar({
   touchDragEnabled = false,
   ...props
 }: EnhancedCalendarProps) {
-  const isTouch = useDetectTouch();
   const calendarRef = React.useRef<HTMLDivElement>(null);
   const rangeRef = React.useRef<{ from?: Date; to?: Date } | null>(null);
   const onSelectRef = React.useRef<RangeOnSelect | undefined>(undefined);
   const dragCurrentRef = React.useRef<Date | null>(null);
+  const isDraggingRef = React.useRef(false);
+  const onDayMouseEnterRef = React.useRef(props.onDayMouseEnter);
+  const onDayMouseLeaveRef = React.useRef(props.onDayMouseLeave);
 
-  // State for hover preview and touch drag
   const [hoveredDate, setHoveredDate] = React.useState<Date | undefined>();
   const [isDragging, setIsDragging] = React.useState(false);
   const [dragStartDate, setDragStartDate] = React.useState<Date | null>(null);
   const [dragCurrentDate, setDragCurrentDate] = React.useState<Date | null>(null);
-
 
   const isRangeMode = props.mode === "range";
   const selectedRange = isRangeMode && props.selected && typeof props.selected === "object" && "from" in props.selected
@@ -122,16 +104,21 @@ export function EnhancedCalendar({
     "onSelect" in props && typeof props.onSelect === "function"
       ? (props.onSelect as RangeOnSelect)
       : undefined;
+  onDayMouseEnterRef.current = props.onDayMouseEnter;
+  onDayMouseLeaveRef.current = props.onDayMouseLeave;
+  isDraggingRef.current = isDragging;
   const rangeComplete = isCompleteRange(selectedRange);
 
-  // Check if from and to are the same date (treat as "only start selected" for preview)
-  const isSameDateRange = selectedRange?.from && selectedRange?.to && isSameDay(selectedRange.from, selectedRange.to);
-  const effectiveSelectedRange = isSameDateRange
-    ? { from: selectedRange.from, to: undefined as Date | undefined }
-    : selectedRange;
+  const isSameDateRange = Boolean(
+    selectedRange?.from && selectedRange?.to && isSameDay(selectedRange.from, selectedRange.to)
+  );
+  const effectiveSelectedRange = React.useMemo(() => {
+    if (isSameDateRange && selectedRange?.from) {
+      return { from: selectedRange.from, to: undefined as Date | undefined };
+    }
+    return selectedRange;
+  }, [isSameDateRange, selectedRange]);
 
-
-  // Touch drag range calculation
   const dragRange = React.useMemo(() => {
     if (!isDragging || !dragStartDate || !dragCurrentDate) return null;
 
@@ -141,30 +128,25 @@ export function EnhancedCalendar({
     return start <= end ? { from: start, to: end } : { from: end, to: start };
   }, [isDragging, dragStartDate, dragCurrentDate]);
 
-  // Preview range calculation for hover and drag
   const displayedStartDate = React.useMemo(() => {
     if (isDragging && dragRange) {
       return dragRange.from;
     }
 
-    // Backward selection: no from, but has to
     if (!effectiveSelectedRange?.from && effectiveSelectedRange?.to && hoveredDate && !isSameDay(hoveredDate, effectiveSelectedRange.to)) {
       return hoveredDate;
     }
 
-    // Backward selection: has from, but hovered is before from
     if (effectiveSelectedRange?.from && !effectiveSelectedRange?.to && hoveredDate && isBefore(hoveredDate, effectiveSelectedRange.from) && !isSameDay(hoveredDate, effectiveSelectedRange.from)) {
       return hoveredDate;
     }
 
-    // Forward selection: has from, hovered is after from - use selected from as start
     if (effectiveSelectedRange?.from && !effectiveSelectedRange?.to && hoveredDate && isAfter(hoveredDate, effectiveSelectedRange.from) && !isSameDay(hoveredDate, effectiveSelectedRange.from)) {
       return startOfDay(effectiveSelectedRange.from);
     }
 
-    // Normal case: return selected from if exists
     return effectiveSelectedRange?.from ? startOfDay(effectiveSelectedRange.from) : undefined;
-  }, [isDragging, dragRange, effectiveSelectedRange, hoveredDate, isSameDateRange]);
+  }, [isDragging, dragRange, effectiveSelectedRange, hoveredDate]);
 
   const displayedEndDate = React.useMemo(() => {
     if (isDragging && dragRange) {
@@ -184,15 +166,10 @@ export function EnhancedCalendar({
     }
 
     return effectiveSelectedRange?.to ? startOfDay(effectiveSelectedRange.to) : undefined;
-  }, [isDragging, dragRange, effectiveSelectedRange, hoveredDate, isSameDateRange]);
+  }, [isDragging, dragRange, effectiveSelectedRange, hoveredDate]);
 
-  // Helper functions for preview range detection.
-  // During endpoint resize, keep DayPicker `selected` stable and paint the
-  // live range with these modifiers so cell geometry does not chase the pointer.
-  const isPreviewStartDate = (date: Date) => {
-    if (!displayedStartDate || !displayedEndDate) {
-      return false;
-    }
+  const isPreviewStartDate = React.useCallback((date: Date) => {
+    if (!displayedStartDate || !displayedEndDate) return false;
     if (isSameDay(displayedStartDate, displayedEndDate)) return false;
 
     const isStart = isSameDay(date, displayedStartDate) && isBefore(date, displayedEndDate);
@@ -203,9 +180,9 @@ export function EnhancedCalendar({
     }
 
     return true;
-  };
+  }, [displayedStartDate, displayedEndDate, isDragging, effectiveSelectedRange]);
 
-  const isPreviewMiddleDate = (date: Date) => {
+  const isPreviewMiddleDate = React.useCallback((date: Date) => {
     if (!displayedStartDate || !displayedEndDate) return false;
 
     if (isAfter(date, displayedStartDate) && isBefore(date, displayedEndDate)) {
@@ -217,9 +194,9 @@ export function EnhancedCalendar({
       return true;
     }
     return false;
-  };
+  }, [displayedStartDate, displayedEndDate, isDragging, effectiveSelectedRange]);
 
-  const isPreviewEndDate = (date: Date) => {
+  const isPreviewEndDate = React.useCallback((date: Date) => {
     if (!displayedEndDate || !displayedStartDate) return false;
     if (isSameDay(displayedStartDate, displayedEndDate)) return false;
 
@@ -231,10 +208,38 @@ export function EnhancedCalendar({
     }
 
     return true;
-  };
+  }, [displayedStartDate, displayedEndDate, isDragging, effectiveSelectedRange]);
 
-  // Grab start/end of a completed range and drag to resize. Click without
-  // moving still falls through to DayPicker (reset / new range).
+  const userModifiers = props.modifiers;
+  const userModifiersClassNames = props.modifiersClassNames;
+
+  const baseModifiers = React.useMemo(
+    () => ({
+      ...(userModifiers || {}),
+      "range-preview-start": isPreviewStartDate,
+      "range-preview-middle": isPreviewMiddleDate,
+      "range-preview-end": isPreviewEndDate,
+    }),
+    [userModifiers, isPreviewStartDate, isPreviewMiddleDate, isPreviewEndDate]
+  );
+
+  const enhancedModifiersClassNames = React.useMemo(
+    () => ({
+      ...(userModifiersClassNames || {}),
+      "range-preview-start": "day-range-preview-start",
+      "range-preview-middle": "day-range-preview-middle",
+      "range-preview-end": "day-range-preview-end",
+    }),
+    [userModifiersClassNames]
+  );
+
+  React.useLayoutEffect(() => {
+    ensureEnhancedCalendarStyles();
+  }, []);
+
+  // Resize a completed range from its endpoints. Touch/pen can also paint a
+  // new range from any day when touchDragEnabled. Click without moving still
+  // falls through to DayPicker (reset / new range).
   React.useEffect(() => {
     if (!isRangeMode) return
     const root = calendarRef.current
@@ -245,7 +250,8 @@ export function EnhancedCalendar({
       startX: number
       startY: number
       anchor: Date
-      resizing: boolean
+      mode: "resize" | "paint"
+      armed: boolean
       lastDay: Date | null
     }
 
@@ -260,21 +266,33 @@ export function EnhancedCalendar({
       }
       const date = getDateFromDayButton(button)
       if (!date) return null
-      // Stay on the last day while the pointer is on a cell edge so adjacent
-      // days cannot fight over hit-testing.
       const rect = button.getBoundingClientRect()
-      const inset = 4
-      if (rect.width > inset * 2 && rect.height > inset * 2) {
+      if (rect.width > HIT_INSET_PX * 2 && rect.height > HIT_INSET_PX * 2) {
         const inside =
-          event.clientX >= rect.left + inset &&
-          event.clientX <= rect.right - inset &&
-          event.clientY >= rect.top + inset &&
-          event.clientY <= rect.bottom - inset
+          event.clientX >= rect.left + HIT_INSET_PX &&
+          event.clientX <= rect.right - HIT_INSET_PX &&
+          event.clientY >= rect.top + HIT_INSET_PX &&
+          event.clientY <= rect.bottom - HIT_INSET_PX
         if (!inside && gesture?.lastDay) {
           return gesture.lastDay
         }
       }
       return date
+    }
+
+    const arm = (event: PointerEvent, next: Gesture) => {
+      next.armed = true
+      dragCurrentRef.current = next.lastDay ?? next.anchor
+      setIsDragging(true)
+      setDragStartDate(next.anchor)
+      setDragCurrentDate(next.lastDay ?? next.anchor)
+      setHoveredDate(undefined)
+      root.setAttribute("data-range-resizing", "")
+      try {
+        root.setPointerCapture(event.pointerId)
+      } catch {
+        // jsdom / older browsers
+      }
     }
 
     const finish = () => {
@@ -298,26 +316,48 @@ export function EnhancedCalendar({
 
     const onPointerDown = (event: PointerEvent) => {
       if ((event.button ?? 0) !== 0) return
-      if (!isCompleteRange(rangeRef.current)) return
       const button = findDayButton(root, event.target)
-      if (!button) return
-      const kind = endpointKind(button)
-      if (!kind) return
-      const range = rangeRef.current
-      const anchor = kind === "from" ? range?.to : range?.from
-      if (!anchor) return
+      if (!button || button.hasAttribute("disabled") || button.classList.contains("day-disabled")) {
+        return
+      }
 
+      const complete = isCompleteRange(rangeRef.current)
+      const kind = endpointKind(button)
+
+      if (complete && kind) {
+        const range = rangeRef.current
+        const anchor = kind === "from" ? range?.to : range?.from
+        if (!anchor) return
+        gesture = {
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          anchor: startOfDay(anchor),
+          mode: "resize",
+          armed: false,
+          lastDay: null,
+        }
+        document.addEventListener("pointermove", onPointerMove)
+        document.addEventListener("pointerup", onPointerUp)
+        document.addEventListener("pointercancel", onPointerUp)
+        return
+      }
+
+      if (!touchDragEnabled || !isTouchPointer(event.pointerType)) return
+      const date = getDateFromDayButton(button)
+      if (!date) return
+      event.preventDefault()
+      const start = startOfDay(date)
       gesture = {
         pointerId: event.pointerId,
         startX: event.clientX,
         startY: event.clientY,
-        anchor: startOfDay(anchor),
-        resizing: false,
-        lastDay: null,
+        anchor: start,
+        mode: "paint",
+        armed: true,
+        lastDay: start,
       }
-      // Keep the endpoint from taking focus so a ring/outline does not stick
-      // on the old (or new) selected day after a pointer drag.
-      event.preventDefault()
+      arm(event, gesture)
       document.addEventListener("pointermove", onPointerMove)
       document.addEventListener("pointerup", onPointerUp)
       document.addEventListener("pointercancel", onPointerUp)
@@ -325,22 +365,12 @@ export function EnhancedCalendar({
 
     const onPointerMove = (event: PointerEvent) => {
       if (!gesture || event.pointerId !== gesture.pointerId) return
-      const dx = event.clientX - gesture.startX
-      const dy = event.clientY - gesture.startY
-      if (!gesture.resizing) {
+      if (!gesture.armed) {
+        const dx = event.clientX - gesture.startX
+        const dy = event.clientY - gesture.startY
         if (Math.hypot(dx, dy) < DRAG_THRESHOLD_PX) return
-        gesture.resizing = true
-        dragCurrentRef.current = gesture.anchor
-        setIsDragging(true)
-        setDragStartDate(gesture.anchor)
-        setDragCurrentDate(gesture.anchor)
-        setHoveredDate(undefined)
-        root.setAttribute("data-range-resizing", "")
-        try {
-          root.setPointerCapture(event.pointerId)
-        } catch {
-          // jsdom / older browsers
-        }
+        event.preventDefault()
+        arm(event, gesture)
       }
 
       event.preventDefault()
@@ -355,12 +385,12 @@ export function EnhancedCalendar({
 
     const onPointerUp = (event: PointerEvent) => {
       if (!gesture || event.pointerId !== gesture.pointerId) return
-      const didResize = gesture.resizing
+      const didDrag = gesture.armed
       const anchor = gesture.anchor
       const current = dragCurrentRef.current ?? anchor
       finish()
 
-      if (!didResize) return
+      if (!didDrag) return
 
       event.preventDefault()
       const start = startOfDay(anchor)
@@ -389,257 +419,51 @@ export function EnhancedCalendar({
       document.removeEventListener("pointerup", onPointerUp)
       document.removeEventListener("pointercancel", onPointerUp)
     }
-  }, [isRangeMode])
+  }, [isRangeMode, touchDragEnabled])
 
-  // Touch drag paints a new range from any day. Endpoint drags are owned above.
-  React.useEffect(() => {
-    if (!isRangeMode || !touchDragEnabled || !isTouch || !calendarRef.current) return;
-
-    const calendarElement = calendarRef.current;
-    let touchStartDate: Date | null = null;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      const button = findDayButton(calendarElement, e.target);
-      if (!button || button.classList.contains('day-disabled') || button.hasAttribute('disabled')) {
-        return;
+  const onDayMouseEnter = React.useCallback(
+    (
+      date: Date,
+      modifiers: Parameters<NonNullable<EnhancedCalendarProps["onDayMouseEnter"]>>[1],
+      e: Parameters<NonNullable<EnhancedCalendarProps["onDayMouseEnter"]>>[2]
+    ) => {
+      if (isRangeMode && !isDraggingRef.current) {
+        setHoveredDate(date);
       }
+      onDayMouseEnterRef.current?.(date, modifiers, e);
+    },
+    [isRangeMode]
+  );
 
-      if (isCompleteRange(rangeRef.current) && endpointKind(button)) {
-        return;
+  const onDayMouseLeave = React.useCallback(
+    (
+      date: Date,
+      modifiers: Parameters<NonNullable<EnhancedCalendarProps["onDayMouseLeave"]>>[1],
+      e: Parameters<NonNullable<EnhancedCalendarProps["onDayMouseLeave"]>>[2]
+    ) => {
+      if (isRangeMode && !isDraggingRef.current) {
+        setHoveredDate(undefined);
       }
-
-      const date = getDateFromDayButton(button);
-      if (!date) return;
-
-      touchStartDate = date;
-      dragCurrentRef.current = date;
-      setIsDragging(true);
-      setDragStartDate(date);
-      setDragCurrentDate(date);
-      setHoveredDate(undefined);
-
-      e.preventDefault();
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!touchStartDate) return;
-
-      const touch = e.touches[0];
-      if (!touch) return;
-
-      const elementUnderTouch = elementAtPoint(touch.clientX, touch.clientY);
-      const button = findDayButton(calendarElement, elementUnderTouch);
-
-      if (button) {
-        const date = getDateFromDayButton(button);
-        if (date) {
-          dragCurrentRef.current = date;
-          setDragCurrentDate(date);
-        }
-      }
-
-      e.preventDefault();
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (!touchStartDate) {
-        setIsDragging(false);
-        setDragStartDate(null);
-        setDragCurrentDate(null);
-        touchStartDate = null;
-        return;
-      }
-
-      const touch = e.changedTouches[0];
-      const elementUnderTouch = touch
-        ? elementAtPoint(touch.clientX, touch.clientY)
-        : null;
-      const button = findDayButton(calendarElement, elementUnderTouch);
-
-      let endDate = dragCurrentRef.current || touchStartDate;
-
-      if (button) {
-        const date = getDateFromDayButton(button);
-        if (date) endDate = date;
-      }
-
-      if (touchStartDate && endDate) {
-        const start = startOfDay(touchStartDate);
-        const end = startOfDay(endDate);
-        const finalRange = start <= end ? { from: start, to: end } : { from: end, to: start };
-        commitRange(onSelectRef.current, finalRange, finalRange.from ?? endDate);
-      }
-
-      dragCurrentRef.current = null;
-      setIsDragging(false);
-      setDragStartDate(null);
-      setDragCurrentDate(null);
-      touchStartDate = null;
-    };
-
-    calendarElement.addEventListener('touchstart', handleTouchStart as EventListener, { passive: false });
-    calendarElement.addEventListener('touchmove', handleTouchMove as EventListener, { passive: false });
-    calendarElement.addEventListener('touchend', handleTouchEnd as EventListener, { passive: true });
-    calendarElement.addEventListener('touchcancel', handleTouchEnd as EventListener, { passive: true });
-
-    return () => {
-      calendarElement.removeEventListener('touchstart', handleTouchStart as EventListener);
-      calendarElement.removeEventListener('touchmove', handleTouchMove as EventListener);
-      calendarElement.removeEventListener('touchend', handleTouchEnd as EventListener);
-      calendarElement.removeEventListener('touchcancel', handleTouchEnd as EventListener);
-    };
-  }, [isRangeMode, touchDragEnabled, isTouch]);
-
-  // Base modifiers plus preview modifiers
-  const baseModifiers: Record<string, (date: Date) => boolean> = {
-    ...(props.modifiers || {}),
-    'range-preview-start': isPreviewStartDate,
-    'range-preview-middle': isPreviewMiddleDate,
-    'range-preview-end': isPreviewEndDate,
-  };
-
-
-  // Base classNames plus preview classNames for modifiers
-  const enhancedModifiersClassNames = {
-    ...(props.modifiersClassNames || {}),
-    'range-preview-start': "day-range-preview-start",
-    'range-preview-middle': "day-range-preview-middle",
-    'range-preview-end': "day-range-preview-end",
-  };
+      onDayMouseLeaveRef.current?.(date, modifiers, e);
+    },
+    [isRangeMode]
+  );
 
   return (
-    <>
-      <style>{`
-        /* Remove muted background from range_start when only "from" is selected (no "to" yet) */
-        /* The subtle square gray background appears because range_start has bg-muted on the cell */
-        /* Note: react-day-picker uses rdp- prefix for modifier classes */
-        /* When only "from" is selected, react-day-picker applies both rdp-range_start and rdp-range_end to the same cell */
-        /* The square on the left half is from the range_end class's ::after pseudo-element */
-        /* So we target cells that have both range_start AND range_end on the same cell (single date selection) */
-        .rdp-day.rdp-range_start.rdp-range_end:not(.rdp-range_middle) {
-          background-color: transparent !important;
-        }
-
-        /* Hide the ::after pseudo-element from range_end when only "from" is selected */
-        /* The range_end class creates a ::after with after:left-0 that shows as a square on the left */
-        .rdp-day.rdp-range_start.rdp-range_end:not(.rdp-range_middle)::after {
-          display: none !important;
-        }
-
-        /* Alternative selector - also target without rdp- prefix in case classes are applied both ways */
-        .rdp-day.range_start.range_end:not(.range_middle) {
-          background-color: transparent !important;
-        }
-        .rdp-day.range_start.range_end:not(.range_middle)::after {
-          display: none !important;
-        }
-
-        /* Ensure entire day cell is hoverable - prevent pointer events on children from blocking hover */
-        /* Make all children inside the button non-interactive so hover works on entire button area */
-        .rdp-day button * {
-          pointer-events: none;
-        }
-        /* Ensure button itself captures all pointer events */
-        .rdp-day button {
-          pointer-events: auto;
-        }
-
-        /* Preview range styling - 50% opacity for preview backgrounds */
-        /* Target the button element directly (not ::before) */
-        .rdp-day.day-range-preview-start:not([data-selected-single="true"]):not([data-range-start="true"]):not([data-range-end="true"]):not([data-range-middle="true"]) button {
-          background-color: color-mix(in oklch, var(--primary) 50%, transparent) !important;
-          color: var(--primary-foreground) !important;
-          border-top-right-radius: 0 !important;
-          border-bottom-right-radius: 0 !important;
-          border-top-left-radius: var(--radius-md) !important;
-          border-bottom-left-radius: var(--radius-md) !important;
-        }
-
-        .rdp-day.day-range-preview-end:not([data-selected-single="true"]):not([data-range-start="true"]):not([data-range-end="true"]):not([data-range-middle="true"]) button {
-          background-color: color-mix(in oklch, var(--primary) 50%, transparent) !important;
-          color: var(--primary-foreground) !important;
-          border-top-left-radius: 0 !important;
-          border-bottom-left-radius: 0 !important;
-          border-top-right-radius: var(--radius-md) !important;
-          border-bottom-right-radius: var(--radius-md) !important;
-        }
-
-        .rdp-day.day-range-preview-middle:not([data-selected-single="true"]):not([data-range-start="true"]):not([data-range-end="true"]):not([data-range-middle="true"]) button {
-          background-color: color-mix(in oklch, var(--primary) 50%, transparent) !important;
-          color: var(--primary-foreground) !important;
-          border-radius: 0 !important;
-        }
-
-        [data-range-complete] [data-range-start="true"],
-        [data-range-complete] [data-range-end="true"] {
-          cursor: ew-resize;
-          touch-action: none;
-        }
-        [data-range-resizing] {
-          user-select: none;
-        }
-        /* DayPicker keeps a "focused" day after pointer interaction. The 2px
-           ring reads as a stray outline on the selected date after resize. */
-        .rdp-day button:not(:focus-visible) {
-          box-shadow: none;
-        }
-        /* Keep committed DayPicker range visually off while the live preview paints. */
-        [data-range-resizing] .rdp-range_start::before,
-        [data-range-resizing] .rdp-range_start::after,
-        [data-range-resizing] .rdp-range_end::before,
-        [data-range-resizing] .rdp-range_end::after,
-        [data-range-resizing] .rdp-range_middle::before,
-        [data-range-resizing] .rdp-range_middle::after {
-          display: none !important;
-        }
-        [data-range-resizing] [data-range-start="true"],
-        [data-range-resizing] [data-range-end="true"],
-        [data-range-resizing] [data-range-middle="true"] {
-          background-color: transparent !important;
-          color: inherit !important;
-        }
-        [data-range-resizing] .rdp-day.day-range-preview-start button,
-        [data-range-resizing] .rdp-day.day-range-preview-middle button,
-        [data-range-resizing] .rdp-day.day-range-preview-end button {
-          background-color: var(--primary) !important;
-          color: var(--primary-foreground) !important;
-        }
-        [data-range-resizing] .rdp-day.day-range-preview-start button {
-          border-top-right-radius: 0 !important;
-          border-bottom-right-radius: 0 !important;
-          border-top-left-radius: var(--radius-md) !important;
-          border-bottom-left-radius: var(--radius-md) !important;
-        }
-        [data-range-resizing] .rdp-day.day-range-preview-middle button {
-          border-radius: 0 !important;
-        }
-        [data-range-resizing] .rdp-day.day-range-preview-end button {
-          border-top-left-radius: 0 !important;
-          border-bottom-left-radius: 0 !important;
-          border-top-right-radius: var(--radius-md) !important;
-          border-bottom-right-radius: var(--radius-md) !important;
-        }
-      `}</style>
-      <div ref={calendarRef} {...(rangeComplete ? { "data-range-complete": "" } : {})}>
-        <CoreCalendar
-          {...props}
-          modifiers={baseModifiers}
-          modifiersClassNames={enhancedModifiersClassNames}
-          onDayMouseEnter={(date, ...args) => {
-            if (isRangeMode) {
-              setHoveredDate(date);
-            }
-            props.onDayMouseEnter?.(date, ...args);
-          }}
-          onDayMouseLeave={(date, ...args) => {
-            if (isRangeMode) {
-              setHoveredDate(undefined);
-            }
-            props.onDayMouseLeave?.(date, ...args);
-          }}
-        />
-      </div>
-    </>
+    <div
+      ref={calendarRef}
+      className="nqui-enhanced-calendar"
+      {...(rangeComplete ? { "data-range-complete": "" } : {})}
+      {...(touchDragEnabled ? { "data-touch-drag": "" } : {})}
+    >
+      <CoreCalendar
+        {...props}
+        modifiers={baseModifiers}
+        modifiersClassNames={enhancedModifiersClassNames}
+        onDayMouseEnter={onDayMouseEnter}
+        onDayMouseLeave={onDayMouseLeave}
+      />
+    </div>
   );
 }
 

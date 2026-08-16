@@ -56,3 +56,14 @@ so that overlays in the same app don't disagree about elevation, blur or radius.
 - `Command` / `CommandDialog` / `CommandPalette` — ST-017 (cmdk, subpath).
 - `Toaster` — ST-018 (sonner, subpath).
 - `NavigationMenu`, `Sidebar` — navigation shells, EP-003.
+
+## Bugs
+
+- 2026-08-16 — `DialogContent` / `SheetContent` `stage={false}` added `relative`,
+  which twMerge dropped over `fixed`. CommandDialog (and mobile Sidebar) opened
+  in document flow and sat half off the bottom of the viewport. CommandDialog
+  now also pins to `top-[12vh]` so a tall list grows down inside the viewport.
+- 2026-08-16 — `PopoverAnchor` with a sibling trigger left floating-ui with a
+  detached 0×0 reference (`translate(0px, 4px)`). Nested trigger-in-anchor
+  (catalog) happened to stay measurable. Anchor now wraps a real host and
+  re-registers after layout (`asChild` ignored).

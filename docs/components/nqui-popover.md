@@ -31,4 +31,6 @@ Position relative to anchor, not trigger:
 
 ## Notes
 
-- PopoverAnchor: content positions by anchor, not trigger.
+- PopoverAnchor: content positions by the anchor, not the trigger. `asChild`
+  is ignored; nqui always mounts a measurable host and re-registers it after
+  layout so a sibling trigger does not leave floating-ui with a 0×0 reference.

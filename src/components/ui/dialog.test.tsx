@@ -50,6 +50,9 @@ describe("Dialog", () => {
 
     expect(document.querySelector('[data-slot="dialog-stage"]')).toBeNull()
     expect(screen.getByText("Palette")).toBeInTheDocument()
+    const content = document.querySelector('[data-slot="dialog-content"]')
+    expect(content).toHaveClass("fixed")
+    expect(content).not.toHaveClass("relative")
   })
 })
 
@@ -107,6 +110,9 @@ describe("Sheet", () => {
 
     expect(document.querySelector('[data-slot="sheet-stage"]')).toBeNull()
     expect(screen.getByText("Sidebar")).toBeInTheDocument()
+    const content = document.querySelector('[data-slot="sheet-content"]')
+    expect(content).toHaveClass("fixed")
+    expect(content).not.toHaveClass("relative")
   })
 })
 

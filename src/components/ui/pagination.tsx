@@ -1,28 +1,39 @@
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconMoreHorizontalCircle,
+  IconMoreHorizontal,
 } from "@/components/icons"
 import * as React from "react"
+import type { VariantProps } from "class-variance-authority"
 
 import { ScrollArea } from "@/components/custom/enhanced-scroll-area"
 import type { EnhancedScrollAreaProps } from "@/components/custom/enhanced-scroll-area"
 import { useComposedRefs } from "@/lib/compose-refs"
 import { cn } from "@/lib/utils"
-import { actionFocusClasses } from "@/lib/focus-styles"
 import { buttonVariants } from "@/components/ui/button"
+
+/** `size-7` cell + `gap-1` — 4px grid, and the ResizeObserver divisor. */
+const PAGINATION_STRIDE_PX = 32
+
+const paginationCellFocus =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/30"
+
+/** Every mark in the strip occupies the same 28px chrome cell. */
+const paginationCellClasses = cn(
+  "inline-flex size-7 shrink-0 items-center justify-center rounded-md text-sm tabular-nums",
+  "transition-colors duration-[var(--duration-quick)]",
+  paginationCellFocus
+)
 
 // Prev/Next arrows are hover-revealed on pointer devices, but must also appear
 // on keyboard focus and on touch (no hover) so they stay reachable everywhere.
 const paginationArrowClasses = cn(
-  "z-10 inline-flex size-7 shrink-0 items-center justify-center rounded-md",
-  "opacity-0 pointer-events-none transition-[opacity,color] duration-[var(--duration-quick)]",
+  paginationCellClasses,
+  "z-10 opacity-0 pointer-events-none",
   "group-hover/pagination:pointer-events-auto group-hover/pagination:opacity-70",
   "focus-visible:pointer-events-auto focus-visible:opacity-100",
-  "[@media(hover:none)]:pointer-events-auto [@media(hover:none)]:opacity-70",
-  actionFocusClasses
+  "[@media(hover:none)]:pointer-events-auto [@media(hover:none)]:opacity-70"
 )
-import type { VariantProps } from "class-variance-authority"
 
 // ─── Context ─────────────────────────────────────────────────────────────────
 
@@ -119,7 +130,6 @@ const PaginationContent = React.forwardRef<HTMLDivElement, PaginationContentProp
         fadeMask={fadeMask}
         viewportRef={viewportRef}
         viewportStyle={{
-          scrollPaddingInline: "0.25rem",
           ...(typeof style === "object" && style ? style : {}),
           ...(viewportStyle ?? {}),
         }}
@@ -127,7 +137,7 @@ const PaginationContent = React.forwardRef<HTMLDivElement, PaginationContentProp
       >
         <ul
           data-slot="pagination-content"
-          className="flex w-max min-w-full items-center justify-center gap-0 px-0.5"
+          className="flex w-max min-w-full items-center justify-center gap-1"
         >
           {children}
         </ul>
@@ -150,13 +160,10 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span"
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn(
-        "size-7 shrink-0 items-center justify-center [&_svg:not([class*='size-'])]:size-3.5 flex",
-        className
-      )}
+      className={cn(paginationCellClasses, "text-muted-foreground", className)}
       {...props}
     >
-      <IconMoreHorizontalCircle strokeWidth={2} />
+      <IconMoreHorizontal strokeWidth={2} className="size-4" />
       <span className="sr-only">More pages</span>
     </span>
   )
@@ -170,13 +177,13 @@ type PaginationLinkProps = VariantProps<typeof buttonVariants> &
   }
 
 const PaginationLink = React.forwardRef<HTMLAnchorElement, PaginationLinkProps>(
-  ({ className, isActive, size = "icon", onClick, ...props }, ref) => {
+  ({ className, isActive, size: _size = "icon", onClick, ...props }, ref) => {
     return (
       <a
         ref={ref}
         className={cn(
-          buttonVariants({ variant: isActive ? "outline" : "ghost", size }),
-          "shrink-0",
+          paginationCellClasses,
+          isActive ? "bg-muted text-foreground" : "hover:bg-interactive",
           className
         )}
         aria-current={isActive ? "page" : undefined}
@@ -236,6 +243,60 @@ function PaginationNext({ className, ...props }: React.ComponentProps<"a">) {
   )
 }
 
+// ─── Strip scroll (adaptive) ─────────────────────────────────────────────────
+
+type StripAlign = "start" | "center" | "end"
+
+function stripScrollBehavior(): ScrollBehavior {
+  if (typeof window.matchMedia !== "function") return "smooth"
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+}
+
+function parseScrollPadding(value: string): number {
+  const n = Number.parseFloat(value)
+  return Number.isFinite(n) ? n : 0
+}
+
+/**
+ * Pan the active page number inside the strip viewport only.
+ * `Element.scrollIntoView` also moves ancestor page scrollers (catalog, long lists).
+ */
+function scrollActivePageInStrip(
+  viewport: HTMLElement,
+  active: HTMLElement,
+  align: StripAlign,
+  behavior: ScrollBehavior = stripScrollBehavior()
+) {
+  if (viewport.scrollWidth <= viewport.clientWidth) return
+
+  const viewRect = viewport.getBoundingClientRect()
+  const activeRect = active.getBoundingClientRect()
+  const style = getComputedStyle(viewport)
+  const padStart = parseScrollPadding(
+    style.scrollPaddingInlineStart || style.scrollPaddingLeft
+  )
+  const padEnd = parseScrollPadding(
+    style.scrollPaddingInlineEnd || style.scrollPaddingRight
+  )
+
+  let delta = 0
+  if (align === "start") {
+    delta = activeRect.left - viewRect.left - padStart
+  } else if (align === "end") {
+    delta = activeRect.right - viewRect.right + padEnd
+  } else {
+    const activeCenter = activeRect.left + activeRect.width / 2
+    const viewCenter = viewRect.left + viewRect.width / 2
+    delta = activeCenter - viewCenter
+  }
+
+  if (Math.abs(delta) < 1) return
+
+  const max = Math.max(0, viewport.scrollWidth - viewport.clientWidth)
+  const next = Math.max(0, Math.min(max, viewport.scrollLeft + delta))
+  viewport.scrollTo({ left: next, behavior })
+}
+
 // ─── Adaptive Pagination ──────────────────────────────────────────────────────
 
 type PaginationAdaptiveProps = React.ComponentProps<"nav"> & {
@@ -262,10 +323,12 @@ function PaginationAdaptive({
   )
 
   React.useEffect(() => {
-    const active = contentRef.current?.querySelector("[data-active='true']")
-    const inline: ScrollIntoViewOptions["inline"] =
+    const viewport = contentRef.current
+    const active = viewport?.querySelector<HTMLElement>("[data-active='true']")
+    if (!viewport || !active) return
+    const align: StripAlign =
       page <= 1 ? "start" : page >= totalPages ? "end" : "center"
-    active?.scrollIntoView({ behavior: "smooth", block: "nearest", inline })
+    scrollActivePageInStrip(viewport, active, align)
   }, [pages, page, totalPages])
 
   React.useEffect(() => {
@@ -275,7 +338,7 @@ function PaginationAdaptive({
       for (const entry of entries) {
         /* Viewport is only the number strip (arrows sit outside ScrollArea). */
         const available = entry.contentRect.width
-        const count = Math.max(3, Math.floor(available / 32))
+        const count = Math.max(3, Math.floor(available / PAGINATION_STRIDE_PX))
         setVisibleCount(count)
       }
     })
@@ -354,3 +417,6 @@ export {
   PaginationScroller,
   PaginationAdaptive,
 }
+
+/** @internal Test helper — not part of the public `@nqlib/nqui` entry. */
+export { scrollActivePageInStrip }

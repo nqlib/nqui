@@ -128,7 +128,7 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         data-side={side}
-        className={cn(sheetVariants({ side }), !stage && "relative", className)}
+        className={cn(sheetVariants({ side }), className)}
         {...props}
       >
         {stage ? (

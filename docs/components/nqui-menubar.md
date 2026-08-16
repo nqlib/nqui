@@ -20,3 +20,17 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem } fro
   </MenubarMenu>
 </Menubar>
 ```
+
+## Submenu
+
+Same placement as `DropdownMenu` — the flyout sits to the right of the trigger
+row with a 6px gap (`sideOffset={6}`, `alignOffset={-4}`):
+
+```tsx
+<MenubarSub>
+  <MenubarSubTrigger>Share</MenubarSubTrigger>
+  <MenubarSubContent>
+    <MenubarItem>Copy link</MenubarItem>
+  </MenubarSubContent>
+</MenubarSub>
+```

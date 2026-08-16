@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.9] - 2026-08-16
+
+### Fixed
+
+- **CommandDialog** — `stage={false}` no longer replaces `fixed` with
+  `relative`, and the palette pins to `top-[12vh]` instead of
+  `top-1/2`, so it stays on screen instead of hanging off the bottom.
+  Same `relative` fix for mobile Sidebar's Sheet.
+- **PopoverAnchor** — always wraps in Radix's own measurable host (`asChild`
+  ignored) and re-registers after layout. A sibling trigger used to leave
+  floating-ui with a detached 0×0 reference, so the panel sat at the
+  viewport origin (Stock snapshot on `/patterns`).
+- **PaginationAdaptive** — keeps the active page in the number strip by
+  scrolling that viewport only. `scrollIntoView` was also moving page
+  scrollers (catalog, or any list where pagination starts below the fold).
+- **Pagination** — number strip uses equal `size-7` cells and `gap-1` (32px
+  stride) so hover/active fills don't collapse the rhythm. Ellipsis is the
+  same cell with `IconMoreHorizontal`, not a circled glyph. Focus ring is
+  inset so it stays inside the cell.
+- **Menubar / ContextMenu submenus** — flyouts use the same `sideOffset={6}` /
+  `alignOffset={-4}` as `DropdownMenu`, so the second panel sits beside the
+  trigger row with a gap instead of overlapping the first panel.
+- **Calendar** — focusing a day uses `preventScroll` so the page scroller
+  does not jump; `data-day` is an ISO date.
+
 ## [0.7.8] - 2026-08-16
 
 ### Added

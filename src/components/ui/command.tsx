@@ -64,6 +64,9 @@ function CommandDialog({
       <DialogContent
         className={cn(
           "border-0 bg-transparent p-0 shadow-none ring-0 rounded-lg! overflow-hidden",
+          // Hang from the upper viewport (Spotlight-style). Dialog's
+          // top-1/2 + -translate-y-1/2 would put a tall list under the fold.
+          "top-[12vh] translate-y-0 h-auto max-h-[calc(100dvh-2rem)]",
           className
         )}
         showCloseButton={showCloseButton}

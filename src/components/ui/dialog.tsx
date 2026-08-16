@@ -73,7 +73,9 @@ function DialogContent({
         className={cn(
           modalTrayOuter,
           "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 max-w-[calc(100%-2rem)] text-sm duration-[var(--duration-micro)] sm:max-w-sm fixed top-1/2 left-1/2 z-[var(--z-modal)] w-full -translate-x-1/2 -translate-y-1/2",
-          !stage && "relative grid gap-4 p-4",
+          // Do not add `relative` here — twMerge would drop `fixed` and
+          // CommandDialog would sit in document flow (half off the viewport).
+          !stage && "grid gap-4 p-4",
           className
         )}
         {...props}
