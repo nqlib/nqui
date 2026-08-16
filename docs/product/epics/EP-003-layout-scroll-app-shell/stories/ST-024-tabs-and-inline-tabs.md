@@ -59,6 +59,9 @@ so that switching a tab never jumps the reader's position or reflows the panel.
 
 ## Bugs
 
+- 2026-08-16 — `variant="line"` measured the trigger border-box, so the 2px bar
+  sat below a `border-b` on `TabsList`. It now pins to the list padding-box edge
+  and overlaps the hairline.
 - 2026-08-16 — Triggers sized with `flex-1 min-w-0` plus `wrapInlineLabelTextNodes`
   (`truncate`), so inactive labels ellipsized (`Ta…`) while the active tab looked
   full. Default is now `shrink-0` and the raw label — no ellipsis.

@@ -31,8 +31,14 @@ function useSlidingTabIndicator(
     }
     const lr = list.getBoundingClientRect()
     const ar = active.getBoundingClientRect()
-    const left = ar.left - lr.left + list.scrollLeft
-    const top = ar.top - lr.top + list.scrollTop
+    const cs = getComputedStyle(list)
+    const borderLeft = list.clientLeft
+    const borderTop = list.clientTop
+    const borderRight = Number.parseFloat(cs.borderRightWidth) || 0
+    const borderBottom = Number.parseFloat(cs.borderBottomWidth) || 0
+    /* Absolute left/top are padding-box; getBoundingClientRect is border-box. */
+    const left = ar.left - lr.left - borderLeft + list.scrollLeft
+    const top = ar.top - lr.top - borderTop + list.scrollTop
     if (kind === "line") {
       const vertical =
         list.closest('[data-slot="tabs"]')?.getAttribute("data-orientation") ===
@@ -40,7 +46,12 @@ function useSlidingTabIndicator(
       setPill(
         vertical
           ? {
-              left: ar.right - lr.left + list.scrollLeft - LINE_THICKNESS,
+              /* Pin to the list's inner end, overlapping border-r. */
+              left:
+                list.scrollLeft +
+                list.clientWidth -
+                LINE_THICKNESS +
+                borderRight,
               top,
               width: LINE_THICKNESS,
               height: ar.height,
@@ -48,7 +59,12 @@ function useSlidingTabIndicator(
             }
           : {
               left,
-              top: ar.bottom - lr.top + list.scrollTop - LINE_THICKNESS,
+              /* Pin to the list's inner bottom, overlapping border-b. */
+              top:
+                list.scrollTop +
+                list.clientHeight -
+                LINE_THICKNESS +
+                borderBottom,
               width: ar.width,
               height: LINE_THICKNESS,
               visible: true,
@@ -192,7 +208,7 @@ const TabsTrigger = React.forwardRef<
         /* Inactive: ghost-like (matches PaginationLink ghost); active: outline (matches PaginationLink isActive) */
         /* text-sm + icon size-4 match default Button */
         /* Size to the label (no flex-1 / min-w-0 / truncate). Overflowing rows use InlineTabsList. */
-        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] w-auto shrink-0 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-[variant=line]/tabs-list:h-full group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] w-auto shrink-0 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent",
         /* default: sliding pill — active chip is transparent; pill layer supplies fill */
         "group-data-[variant=default]/tabs-list:data-[state=active]:border-transparent group-data-[variant=default]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=default]/tabs-list:data-[state=active]:shadow-none",

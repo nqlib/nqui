@@ -42,6 +42,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tabs labels** — triggers size to the full name by default (no `flex-1` /
   truncate ellipsis). Overflowing rows still use `InlineTabsList`.
 
+### Fixed
+
+- **Tabs `variant="line"`** — underline pins to the list padding-box edge and
+  overlaps a `border-b` / `border-r` hairline, instead of sitting on the trigger
+  box (which placed the bar below a list border).
+
 ## [0.7.7] - 2026-08-13
 
 ### Changed

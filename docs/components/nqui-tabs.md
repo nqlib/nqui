@@ -76,7 +76,13 @@ Do not reimplement scroll preservation in app code — use these exports from `@
 Override in increasing order of effort:
 
 1. **Built-in variant** — `<TabsList variant="line">` swaps the pill capsule for
-   a **sliding underline** (same indicator motion as default, 2px bar).
+   a **sliding underline** (same indicator motion as default, 2px bar). The bar
+   pins to the list's inner bottom edge (inner end when vertical) and overlaps a
+   `border-b` / `border-r` hairline instead of sitting below it:
+
+   ```tsx
+   <TabsList variant="line" className="w-full justify-start border-b">
+   ```
 
 2. **`className` on any part** — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`
    all accept `className`, merged last via `tailwind-merge`, so your class wins.
