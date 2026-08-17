@@ -98,11 +98,15 @@ describe("EnhancedTabs", () => {
   })
 })
 
-/** Compile-time: public list props must include children (0.7.8 `.d.ts` regression). */
-function _tabsListAcceptsChildren(
+/** Compile-time: public list props must include children, className, and variant. */
+function _tabsListConsumerProps(
   props: ComponentProps<typeof EnhancedTabsList>,
 ) {
   const children: ReactNode | undefined = props.children
+  const className: string | undefined = props.className
+  const variant: "default" | "line" | null | undefined = props.variant
   void children
+  void className
+  void variant
 }
-void _tabsListAcceptsChildren
+void _tabsListConsumerProps

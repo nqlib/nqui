@@ -3,6 +3,7 @@
  * Pre-publish gate for @nqlib/nqui (repo root is the package).
  */
 import { spawnSync } from "node:child_process"
+import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { dirname, join } from "node:path"
 
@@ -55,9 +56,28 @@ function verifyTarball() {
   console.log(`verify:publish — tarball OK (${meta.entryCount} files, README + dist present)`)
 }
 
+function verifyTabsListDts() {
+  const dtsPath = join(pkgDir, "dist/components/custom/enhanced-tabs.d.ts")
+  const dts = readFileSync(dtsPath, "utf8")
+  if (dts.includes("typeof CoreTabsList")) {
+    console.error(
+      "verify:publish — EnhancedTabsListProps must not wrap CoreTabsList (drops className/variant/children for consumers)",
+    )
+    process.exit(1)
+  }
+  if (!dts.includes("TabsPrimitive.List")) {
+    console.error(
+      "verify:publish — EnhancedTabsListProps must extend Radix TabsPrimitive.List",
+    )
+    process.exit(1)
+  }
+  console.log("verify:publish — TabsList public types extend Radix List (not CoreTabsList)")
+}
+
 console.log("verify:publish — running pre-publish checks\n")
 
 run("npm", ["run", "build:lib"])
+verifyTabsListDts()
 run("npm", ["run", "lint"])
 run("npm", ["test"])
 verifyTarball()

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.10] - 2026-08-16
+
+### Fixed
+
+- **TabsList types** — public props extend Radix `List` plus `variant` again
+  (`className`, `aria-label`, `children`, `variant="line"`). 0.7.9 only
+  restored `children`; wrapping `CoreTabsList` in the `.d.ts` still dropped
+  the rest. Do not type the public list off `ComponentProps<typeof CoreTabsList>`.
+  (ST-024)
+
 ## [0.7.9] - 2026-08-16
 
 ### Fixed
