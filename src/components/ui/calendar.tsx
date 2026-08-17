@@ -182,6 +182,7 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  style,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames()
@@ -213,6 +214,19 @@ function CalendarDayButton({
         className
       )}
       {...props}
+      style={
+        {
+          ...style,
+          // Button ships hit-area-2 (~8px ::before). Adjacent day cells are
+          // 24px with no gap, so the next day's later stacking context stole
+          // hover on this cell's right edge. Pin the pointer target to the
+          // painted square.
+          "--hit-area-t": "0px",
+          "--hit-area-r": "0px",
+          "--hit-area-b": "0px",
+          "--hit-area-l": "0px",
+        } as React.CSSProperties
+      }
     />
   )
 }

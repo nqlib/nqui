@@ -1,6 +1,6 @@
 {
   "name": "@nqlib/nqui",
-  "version": "0.7.10",
+  "version": "0.8.0",
   "description": "A React component library with enhanced UI components and developer tools",
   "type": "module",
   "main": "./dist/nqui.cjs.js",
@@ -47,6 +47,11 @@
       "import": "./dist/drawer.es.js",
       "require": "./dist/drawer.cjs.js"
     },
+    "./toc": {
+      "types": "./dist/entries/toc.d.ts",
+      "import": "./dist/toc.es.js",
+      "require": "./dist/toc.cjs.js"
+    },
     "./styles": {
       "import": "./dist/styles.css",
       "require": "./dist/styles.css",
@@ -62,7 +67,8 @@
   "files": [
     "dist",
     "scripts",
-    "docs",
+    "docs/nqui-skills",
+    "docs/components",
     "README.md",
     "INSTALLATION.md"
   ],

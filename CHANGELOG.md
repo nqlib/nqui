@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-08-16
+
+### Changed
+
+- **Subpaths (ST-067)** — `TableOfContents` lives at `@nqlib/nqui/toc`.
+  `DebugPanel`, `Magnifier`, `Crosshair`, and `UITester` are only on
+  `@nqlib/nqui/debug`. The main entry no longer statically imports the
+  debug-panel chunk (~270 KB).
+- **npm pack (ST-067)** — the tarball ships `docs/nqui-skills` and
+  `docs/components` only. Product epics, a leftover `docs/package-lock.json`,
+  and a duplicate `dist/.well-known` skills copy are out. Library Vite sets
+  `publicDir: false`.
+
+### Fixed
+
+- **Calendar** — day cells pin `--hit-area-*` to `0px` so Button's `hit-area-2`
+  overlay no longer steals hover from the date on the left (ST-013).
+
+### Migration
+
+| Before | After |
+|---|---|
+| `import { TableOfContents } from "@nqlib/nqui"` | `from "@nqlib/nqui/toc"` |
+| `import { DebugPanel } from "@nqlib/nqui"` | `from "@nqlib/nqui/debug"` |
+
 ## [0.7.10] - 2026-08-16
 
 ### Fixed

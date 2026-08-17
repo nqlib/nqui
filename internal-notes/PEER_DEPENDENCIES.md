@@ -36,6 +36,8 @@ Use subpath imports when you only need specific component groups. This keeps con
 | `@nqlib/nqui/calendar` | Calendar | react-day-picker, date-fns |
 | `@nqlib/nqui/sonner` | Toaster, Sonner | sonner |
 | `@nqlib/nqui/drawer` | Drawer | vaul |
+| `@nqlib/nqui/toc` | TableOfContents | — |
+| `@nqlib/nqui/debug` | DebugPanel, Magnifier, Crosshair, UITester | — |
 
 Example:
 

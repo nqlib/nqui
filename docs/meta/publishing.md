@@ -43,7 +43,7 @@ make prove-showcase
 
 ## What ships in npm
 
-`files` in `package.json`: `dist`, `scripts`, `docs`, `README.md`, `INSTALLATION.md`
+`files` in `package.json`: `dist`, `scripts`, `docs/nqui-skills`, `docs/components`, `README.md`, `INSTALLATION.md`
 
 - `docs/components/` — component API markdown
 - `docs/nqui-skills/` — full skill bundle (synced from consumer SOT)

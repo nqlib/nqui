@@ -31,13 +31,12 @@ so that `react-day-picker` and `date-fns` are not installed or bundled for my ap
 - [x] `touchDragEnabled` only applies when `mode="range"`; hover preview for range selection is
       enabled on non-touch pointers without opting in.
 - [x] CHANGELOG 0.7.0 lists the root-import break with the before/after import line.
-- [ ] `docs/components/nqui-calendar.md` shows the subpath import.
+- [x] `docs/components/nqui-calendar.md` shows the subpath import.
 
 ## Technical notes
 
-- The doc page still opens with `import { Calendar } from "@nqlib/nqui"` and never mentions
-  `@nqlib/nqui/calendar`. That contradicts the shipped surface and is a §6 violation — the page
-  must be corrected, not the export. Same defect class as ST-015/ST-016/ST-017 doc pages.
+- The doc page import is `@nqlib/nqui/calendar` (corrected in 0.8.0). Same defect class as
+  ST-015/ST-016/ST-017 doc pages.
 - The subpath predates 0.7.0; 0.7.0 is the release that *removed* the root re-export, which is what
   makes this story breaking.
 - `breaking: true` — migration is one line: `from "@nqlib/nqui"` → `from "@nqlib/nqui/calendar"`.
@@ -55,6 +54,7 @@ CHANGELOG migration line: *Calendar now imports from `@nqlib/nqui/calendar`; ins
 
 - 2026-08-13 — Day cells and range caps use `--cell-radius` (`rounded-md`) instead of a full circle.
 - 2026-08-15 — Drag a completed range's start/end to resize; click-without-move still resets.
+- 2026-08-16 — Day buttons inherit Button `hit-area-2`; the next day's overlay stole hover on the right edge of the previous date. Pin `--hit-area-*` to 0px on `CalendarDayButton`.
 
 ## Out of scope
 

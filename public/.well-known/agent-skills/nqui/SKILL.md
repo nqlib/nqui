@@ -62,6 +62,7 @@ Install nqui → init-css → init-skills → pick component doc → implement �
 - **Read before code** — open the component doc; don't infer props
 - **One doc at a time** — don't bulk-read the skills folder
 - **CSS required** — styles won't load without `@import "@nqlib/nqui/styles"`
+- **Subpath imports** — `TableOfContents` from `@nqlib/nqui/toc`; `DebugPanel` from `@nqlib/nqui/debug`. Calendar, command, drawer, and other heavy groups also have subpaths (`nqui-bundle-size-best-practices`)
 
 ## Minimal sample
 

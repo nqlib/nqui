@@ -21,15 +21,16 @@ const dist = resolve(root, "dist");
 // Gzipped KB budgets per entry. Set with ~15% headroom over current sizes so
 // normal churn passes but a heavy dep sneaking in trips the check.
 const BUDGETS = {
-  "nqui.es.js": 95,
+  "nqui.es.js": 80,
   "command.es.js": 5,
   "sonner.es.js": 5,
   "drawer.es.js": 5,
   "carousel.es.js": 5,
-  "calendar.es.js": 5,
+  "calendar.es.js": 6,
   "sortable.es.js": 5,
   "dnd.es.js": 25,
-  "debug.es.js": 5,
+  "toc.es.js": 15,
+  "debug.es.js": 25,
 };
 
 const printOnly = process.argv.includes("--print");

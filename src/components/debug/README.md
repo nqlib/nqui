@@ -51,7 +51,7 @@ The package requires these peer dependencies:
 The panel only activates after the user opens it; no environment check required:
 
 ```tsx
-import { DebugPanel } from "@nqlib/nqui"
+import { DebugPanel } from "@nqlib/nqui/debug"
 
 function App() {
   return (
@@ -76,7 +76,7 @@ import { DebugPanel } from "@nqlib/nqui/debug"
 **Option C: Optional `NODE_ENV` / `import.meta.env.DEV` guard**
 
 ```tsx
-import { DebugPanel } from "@nqlib/nqui"
+import { DebugPanel } from "@nqlib/nqui/debug"
 
 function App() {
   return (
@@ -91,7 +91,7 @@ function App() {
 **Option D: Feature flag (e.g. Vite)**
 
 ```tsx
-import { DebugPanel } from "@nqlib/nqui"
+import { DebugPanel } from "@nqlib/nqui/debug"
 
 function App() {
   const showDebugTools = import.meta.env.VITE_ENABLE_DEBUG_TOOLS === "true"
@@ -148,7 +148,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'  // Your design system CSS
 
-import { DebugPanel } from "@nqlib/nqui"
+import { DebugPanel } from "@nqlib/nqui/debug"
 
 function Root() {
   return (

@@ -9,6 +9,21 @@ When upgrading nqui, scan the latest version section for breaking changes BEFORE
 
 ---
 
+## v0.8.0 — Lean package (ST-067)
+
+`TableOfContents` and debug tools left the main barrel so a `Button`-only import no longer pulls the debug-panel chunk (~270 KB) or TOC variants.
+
+**Migration:**
+
+```tsx
+import { TableOfContents } from "@nqlib/nqui/toc"
+import { DebugPanel } from "@nqlib/nqui/debug"
+```
+
+The npm tarball ships `docs/nqui-skills` and `docs/components` only — not `docs/product` or a duplicate `dist/.well-known` skills copy.
+
+---
+
 ## v0.6 (current) — Design system rebuild
 
 This release applies the **2+1 elevation rule** to the token system, fixes several real bugs in color tokens, and tightens motion. Most changes are visual — runtime behavior is unchanged.
