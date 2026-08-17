@@ -59,6 +59,12 @@ so that switching a tab never jumps the reader's position or reflows the panel.
 
 ## Bugs
 
+- 2026-08-16 — Published `TabsList` types omitted `children`. Cause: `dc53825`
+  (`variant="line"`) changed `EnhancedTabsListProps` from
+  `ComponentProps<typeof TabsPrimitive.List>` to
+  `ComponentProps<typeof CoreTabsList>`. The extra `forwardRef` wrap dropped
+  children in the `.d.ts`. Fix: `ComponentPropsWithoutRef` + explicit
+  `children?: React.ReactNode` on core and enhanced list props.
 - 2026-08-16 — `variant="line"` measured the trigger border-box, so the 2px bar
   sat below a `border-b` on `TabsList`. It now pins to the list padding-box edge
   and overlaps the hairline.

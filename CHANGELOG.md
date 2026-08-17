@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.9] - 2026-08-16
+
+### Fixed
+
+- **TabsList types** — `children` is declared on `TabsList` again. 0.7.8
+  switched `EnhancedTabsListProps` from `TabsPrimitive.List` to
+  `ComponentProps<typeof CoreTabsList>` so `variant="line"` could pass
+  through (`dc53825`). That double `forwardRef` wrap dropped `children`
+  from the published `.d.ts`. Runtime never changed. (ST-024)
+
 ## [0.7.8] - 2026-08-16
 
 ### Added

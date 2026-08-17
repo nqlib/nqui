@@ -110,6 +110,7 @@ Override in increasing order of effort:
 
 ## Notes
 
+- **Children:** `TabsList` is the slot for `TabsTrigger`s. Always pass triggers as children — the host is not childless.
 - **Sliding indicator:** Handled on `TabsList` (position relative).
 - **Labels:** Triggers size to the full name (`shrink-0`, no ellipsis). Stretch equally with `className="flex-1"` on each trigger (and `w-full` on the list) if you want a filled strip.
 - **Responsive:** `InlineTabsList` scrolls horizontally via nqui **ScrollArea** (hidden thumb); swipe or trackpad when labels overflow.

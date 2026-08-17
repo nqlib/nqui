@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest"
 import { render, screen, fireEvent } from "@testing-library/react"
+import type { ComponentProps, ReactNode } from "react"
 import {
   EnhancedTabs,
   EnhancedTabsList,
@@ -19,7 +20,7 @@ function selectTab(el: HTMLElement) {
 // cover the controlled/uncontrolled switching contract that the enhanced
 // wrapper adds on top of Radix.
 
-function renderTabs(props?: React.ComponentProps<typeof EnhancedTabs>) {
+function renderTabs(props?: ComponentProps<typeof EnhancedTabs>) {
   return render(
     <EnhancedTabs defaultValue="one" {...props}>
       <EnhancedTabsList>
@@ -83,4 +84,25 @@ describe("EnhancedTabs", () => {
     ).toThrow(/must be used within EnhancedTabs/)
     spy.mockRestore()
   })
+
+  it("accepts trigger children on the list (types + runtime)", () => {
+    const { container } = render(
+      <EnhancedTabs defaultValue="one">
+        <EnhancedTabsList>
+          <EnhancedTabsTrigger value="one">One</EnhancedTabsTrigger>
+        </EnhancedTabsList>
+        <EnhancedTabsContent value="one">Panel</EnhancedTabsContent>
+      </EnhancedTabs>
+    )
+    expect(container.querySelector('[role="tab"]')).toHaveTextContent("One")
+  })
 })
+
+/** Compile-time: public list props must include children (0.7.8 `.d.ts` regression). */
+function _tabsListAcceptsChildren(
+  props: ComponentProps<typeof EnhancedTabsList>,
+) {
+  const children: ReactNode | undefined = props.children
+  void children
+}
+void _tabsListAcceptsChildren

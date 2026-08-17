@@ -51,8 +51,9 @@ const EnhancedTabs = React.forwardRef<HTMLDivElement, EnhancedTabsProps>(
 EnhancedTabs.displayName = "EnhancedTabs"
 
 export interface EnhancedTabsListProps
-  extends React.ComponentProps<typeof CoreTabsList> {
+  extends React.ComponentPropsWithoutRef<typeof CoreTabsList> {
   orientation?: "horizontal" | "vertical"
+  children?: React.ReactNode
 }
 
 /** Wraps core TabsList + context orientation. Default tab list uses a sliding pill (h-7 strip, aligned with default controls). `variant="line"` uses the same motion on a 2px underline. */

@@ -153,7 +153,10 @@ const tabsListVariants = cva(
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentProps<typeof TabsPrimitive.List> & VariantProps<typeof tabsListVariants>
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> &
+    VariantProps<typeof tabsListVariants> & {
+      children?: React.ReactNode
+    }
 >(({ className, variant = "default", children, ...props }, ref) => {
   const listRef = React.useRef<HTMLDivElement>(null)
   const composedRef = useComposedRefs(ref, listRef)
