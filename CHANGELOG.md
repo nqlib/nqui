@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-08-17
+
+### Fixed
+
+- **Checkbox motion (ST-003)** — `Checkbox` / `EnhancedCheckbox` transitions were written with
+  Tailwind arbitrary-value syntax inside raw CSS (`var(--ease-[var(--ease-in-out)])`), which is
+  not a valid easing function. Every `transition` declaration in the component failed to parse
+  and was dropped, so hover and checked state changes and the checkmark scale-in snapped instead
+  of easing over 150ms. Now `var(--ease-in-out)`.
+- **Toast motion (ST-003)** — same defect in the injected toast stylesheet
+  (`ease-[var(--ease-in-out)]` → `var(--ease-in-out)`), restoring the 200ms transition on
+  `.cn-toast`.
+
 ## [0.8.0] - 2026-08-16
 
 ### Changed

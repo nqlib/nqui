@@ -45,6 +45,19 @@ so that timing is tunable from one file and no component hard-codes `duration-15
   state changes. Elastic / bounce curves are deliberately absent.
 - Shipped as "motion defaults wired to tokens" in 0.7.2 (`967d145`).
 
+## Bugs
+
+- 2026-08-17 — Raw CSS in `checkbox.tsx` (10×) and `sonner.tsx` (1×) used Tailwind
+  arbitrary-value syntax for the easing token — `var(--ease-[var(--ease-in-out)])` and
+  `ease-[var(--ease-in-out)]`. Neither is a valid CSS `<easing-function>`, so each whole
+  `transition` declaration failed to parse and was dropped. Verified in-browser: the shipped
+  0.8.0 rule computed to `transition-property: all; duration: 0s; timing: ease` — i.e. no
+  transition at all. `EnhancedCheckbox` hover/checked color changes and the checkmark scale-in
+  snapped instead of easing; the `checkbox-pulse` keyframe still fired, which masked it. Fixed
+  to `var(--ease-in-out)` in 0.8.1. The token contract itself was never wrong — only these
+  consumption sites. Tailwind `ease-[var(--…)]` inside `className` / `cva` strings is correct
+  and was left alone.
+
 ## Out of scope
 
 - Per-component animation choreography (Radix accordion / toast keyframes live with their
