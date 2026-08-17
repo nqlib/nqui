@@ -47,6 +47,11 @@
       "import": "./dist/drawer.es.js",
       "require": "./dist/drawer.cjs.js"
     },
+    "./toc": {
+      "types": "./dist/entries/toc.d.ts",
+      "import": "./dist/toc.es.js",
+      "require": "./dist/toc.cjs.js"
+    },
     "./styles": {
       "import": "./dist/styles.css",
       "require": "./dist/styles.css",
@@ -62,7 +67,8 @@
   "files": [
     "dist",
     "scripts",
-    "docs",
+    "docs/nqui-skills",
+    "docs/components",
     "README.md",
     "INSTALLATION.md"
   ],

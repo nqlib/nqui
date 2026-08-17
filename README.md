@@ -34,14 +34,15 @@ entries so you install a peer **only if you use that component**:
 
 | Entry | gzip | Required peer to install |
 | --- | --- | --- |
-| `@nqlib/nqui` (main) | ~79 KB | `cmdk` |
-| `@nqlib/nqui/command` | ~0.6 KB | `cmdk` |
-| `@nqlib/nqui/sonner` | ~1.3 KB | `sonner` |
+| `@nqlib/nqui` (main) | ~69 KB | `cmdk` |
+| `@nqlib/nqui/command` | ~0.7 KB | `cmdk` |
+| `@nqlib/nqui/sonner` | ~1.4 KB | `sonner` |
 | `@nqlib/nqui/drawer` | ~1.0 KB | `vaul` |
 | `@nqlib/nqui/carousel` | ~1.5 KB | `embla-carousel-react` |
-| `@nqlib/nqui/calendar` | ~4.3 KB | `react-day-picker`, `date-fns` |
+| `@nqlib/nqui/calendar` | ~5.2 KB | `react-day-picker`, `date-fns` |
 | `@nqlib/nqui/sortable` | ~3.0 KB | `@dnd-kit/*` |
-| `@nqlib/nqui/debug` | ~0.1 KB | — |
+| `@nqlib/nqui/toc` | ~6.2 KB | — |
+| `@nqlib/nqui/debug` | ~19 KB | — |
 
 ```tsx
 import { Button, Card, Combobox } from "@nqlib/nqui"   // main — needs cmdk
@@ -239,7 +240,7 @@ npx @nqlib/nqui init-debug-css
 ```
 
 ```tsx
-import { DebugPanel } from '@nqlib/nqui';
+import { DebugPanel } from '@nqlib/nqui/debug';
 import '@nqlib/nqui/debug.css';
 
 function App() {
@@ -287,7 +288,8 @@ function MyComponent() {
 ```
 
 ```tsx
-import { ColorPicker, Rating, TableOfContents } from '@nqlib/nqui';
+import { ColorPicker, Rating } from '@nqlib/nqui';
+import { TableOfContents } from '@nqlib/nqui/toc';
 
 function MyApp() {
   return (

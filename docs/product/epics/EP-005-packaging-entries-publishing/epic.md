@@ -23,8 +23,8 @@ operation rather than a remembered ritual.
 
 ## Scope — In
 
-- Subpath exports (`./carousel ./command ./sortable ./dnd ./calendar ./sonner ./drawer ./styles
-  ./debug ./debug.css`) and the entries that back them.
+- Subpath exports (`./carousel ./command ./sortable ./dnd ./calendar ./sonner ./drawer ./toc
+  ./styles ./debug ./debug.css`) and the entries that back them.
 - `peerDependencies` / `peerDependenciesMeta.optional` policy; the main entry never importing an
   optional peer; `dist-guard.test.ts` as the invariant.
 - Per-entry gzip budgets (`scripts/check-bundle-size.js`).
@@ -67,6 +67,7 @@ operation rather than a remembered ritual.
 | ST-046 | Release automation | backlog | unset |
 | ST-047 | Split `next-themes` out of the sonner chunk | backlog | unset |
 | ST-066 | Prove packed types before public latest | review | 0.7.10 |
+| ST-067 | Lean package — debug/TOC off main entry, slim tarball | review | unset |
 
 ## Implementation references
 

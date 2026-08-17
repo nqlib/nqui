@@ -11,6 +11,7 @@ Single npm package `@nqlib/nqui` at repo root (not a monorepo).
 | `dist/` | Library build output (`build:lib`) |
 | `docs/components/` | Per-component API markdown — **public**, shipped in npm |
 | `docs/nqui-skills/` | Full skill bundle — **public**, shipped in npm |
+| `docs/product/` | Epics and stories — **not** shipped in npm |
 | `skills/consumer/nqui/` | Consumer skill SOT — edit here, sync everywhere |
 | `scripts/` | CLI, build, publish, skill sync |
 | `internal-notes/` | Legacy maintainer notes |
@@ -27,7 +28,7 @@ npm run dev         → prints pointer to nqui-showcase catalog (no app server)
 
 ## Consumer install surfaces
 
-1. **npm package** — `docs/` ships in tarball; agents read `node_modules/@nqlib/nqui/docs/`
+1. **npm package** — `docs/nqui-skills` and `docs/components` ship in the tarball; agents read `node_modules/@nqlib/nqui/docs/`
 2. **CLI** — `npx @nqlib/nqui init-skills` copies to `.cursor/nqui-skills/`
 3. **Live catalog** — sibling nqui-showcase (`/catalog`, `/recipes/*`, …)
 

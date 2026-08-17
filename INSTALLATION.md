@@ -190,7 +190,7 @@ npx @nqlib/nqui init-debug-css
 Then in your app:
 
 ```tsx
-import { DebugPanel } from "@nqlib/nqui";
+import { DebugPanel } from "@nqlib/nqui/debug";
 import "./nqui-debug.css"; // or path from init-debug-css
 
 // In your root/layout: render when NODE_ENV === 'development'

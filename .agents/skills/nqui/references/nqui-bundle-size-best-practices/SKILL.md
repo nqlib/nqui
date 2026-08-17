@@ -61,6 +61,8 @@ Consumers can import from subpaths for smaller bundles when using only specific 
 - `@nqlib/nqui/calendar` — Calendar
 - `@nqlib/nqui/sonner` — Toaster, Sonner
 - `@nqlib/nqui/drawer` — Drawer
+- `@nqlib/nqui/toc` — TableOfContents
+- `@nqlib/nqui/debug` — DebugPanel
 
 See `internal-notes/PEER_DEPENDENCIES.md` for peer requirements per subpath.
 

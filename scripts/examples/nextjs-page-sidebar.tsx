@@ -7,12 +7,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  TableOfContents,
   Input,
   Label,
   Checkbox,
   Separator,
 } from "@nqlib/nqui";
+import { TableOfContents } from "@nqlib/nqui/toc";
 
 export default function Home() {
   return (

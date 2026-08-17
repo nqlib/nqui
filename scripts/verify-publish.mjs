@@ -41,16 +41,32 @@ function verifyTarball() {
     "dist/styles.css",
     "dist/fonts/Satoshi-Variable.woff2",
     "dist/fonts/Satoshi-VariableItalic.woff2",
+    "dist/toc.es.js",
+    "dist/entries/toc.d.ts",
+    "docs/nqui-skills/SKILL.md",
+    "docs/components/nqui-table-of-contents.md",
     "scripts/templates/colors.css",
   ]
   const missing = required.filter((r) => !files.includes(r))
   const leaked = files.filter((f) => f.includes(".."))
+  const packedProduct = files.filter(
+    (f) =>
+      f.startsWith("docs/product/") ||
+      f === "docs/package-lock.json" ||
+      f.startsWith("dist/.well-known/")
+  )
   if (missing.length) {
     console.error(`verify:publish — tarball missing required files: ${missing.join(", ")}`)
     process.exit(1)
   }
   if (leaked.length) {
     console.error(`verify:publish — tarball references paths outside package root: ${leaked.join(", ")}`)
+    process.exit(1)
+  }
+  if (packedProduct.length) {
+    console.error(
+      `verify:publish — tarball includes maintainer-only or duplicated paths: ${packedProduct.join(", ")}`
+    )
     process.exit(1)
   }
   console.log(`verify:publish — tarball OK (${meta.entryCount} files, README + dist present)`)

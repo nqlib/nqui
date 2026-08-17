@@ -136,4 +136,17 @@ describe.skipIf(!built)("dist bundle hygiene", () => {
       "optional peers must not be reachable from the main entry"
     ).toEqual([])
   })
+
+  it("main entry does not pull debug-panel or TableOfContents", () => {
+    const src = readFileSync(join(distDir, "nqui.es.js"), "utf8")
+    expect(src).not.toMatch(/debug-panel/)
+    expect(src).not.toContain("On this page")
+    expect(existsSync(join(distDir, "toc.es.js"))).toBe(true)
+    expect(existsSync(join(distDir, "debug.es.js"))).toBe(true)
+  })
+
+  it("library dist does not copy public/ into the tarball tree", () => {
+    expect(existsSync(join(distDir, ".well-known"))).toBe(false)
+    expect(existsSync(join(distDir, "llms.txt"))).toBe(false)
+  })
 })

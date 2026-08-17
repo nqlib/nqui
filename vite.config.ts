@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
           "@codesandbox/sandpack-react",
         ],
       },
+      // public/ is HTTP skill discovery for a hosted site, not the library
+      // tarball. Nested under `build` this option is ignored — Vite reads it here.
+      publicDir: false,
       build: {
         lib: {
           entry: {
@@ -35,6 +38,7 @@ export default defineConfig(({ mode }) => {
             calendar: path.resolve(__dirname, "src/entries/calendar.ts"),
             sonner: path.resolve(__dirname, "src/entries/sonner.ts"),
             drawer: path.resolve(__dirname, "src/entries/drawer.ts"),
+            toc: path.resolve(__dirname, "src/entries/toc.ts"),
             debug: path.resolve(__dirname, "src/entries/debug.ts"),
           },
           fileName: (format, entryName) =>

@@ -10,9 +10,9 @@ import {
   SidebarInset,
   SidebarTrigger,
   Separator,
-  TableOfContents,
   NquiLogo,
 } from "@nqlib/nqui";
+import { TableOfContents } from "@nqlib/nqui/toc";
 import { HomeIcon, SettingsIcon, MailIcon, FileIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "react-router-dom";

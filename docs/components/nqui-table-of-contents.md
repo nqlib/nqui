@@ -5,7 +5,7 @@
 ## Import
 
 ```tsx
-import { TableOfContents } from "@nqlib/nqui"
+import { TableOfContents } from "@nqlib/nqui/toc"
 ```
 
 ## Auto-detect
@@ -33,5 +33,6 @@ import { TableOfContents } from "@nqlib/nqui"
 ## Notes
 
 - Headings need `id` for anchor links.
+- Import from `@nqlib/nqui/toc` (not the main barrel).
 - container: scoped scroll container. Omit for full page.
 - variant: "normal" | "clerk" | "circuit".

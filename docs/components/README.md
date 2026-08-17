@@ -350,7 +350,7 @@ Use these rules to choose the right component. **Selection** = user picks from o
 | Pagination | [nqui-pagination.md](./nqui-pagination.md) | Page 1, 2, 3... navigation. |
 | Command | [nqui-command.md](./nqui-command.md) | Searchable command list. |
 | CommandPalette | [nqui-command-palette.md](./nqui-command-palette.md) | Full Cmd+K palette. |
-| TableOfContents | [nqui-table-of-contents.md](./nqui-table-of-contents.md) | Doc section links from headings. |
+| TableOfContents | [nqui-table-of-contents.md](./nqui-table-of-contents.md) | Doc section links. Import from `@nqlib/nqui/toc`. |
 
 **Cmd+K / cmdk row highlight (React 19):** Fixed in **nqui ≥ 0.6.1** (`aria-selected:bg-accent` in `floatingListItemInteractive`). If every row still looks selected on an older version, see [nqui-command-palette.md](./nqui-command-palette.md).
 

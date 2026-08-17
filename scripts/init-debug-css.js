@@ -114,8 +114,7 @@ function main() {
   console.log('   1. Import the CSS in your app entry point:');
   console.log(`      import './${finalTargetPath.replace(process.cwd() + '/', '')}'`);
   console.log('   2. Use DebugPanel in your app:');
-  console.log('      import { DebugPanel } from "@nqlib/nqui"');
-  console.log('      // Or tree-shake debug out of production: import { DebugPanel } from "@nqlib/nqui/debug"');
+  console.log('      import { DebugPanel } from "@nqlib/nqui/debug"');
   console.log('   3. Add <DebugPanel /> to your root layout (panel is inactive until the user opens it).');
   console.log('      Wrapping in process.env.NODE_ENV or import.meta.env.DEV is optional.');
   console.log('\n✨ Done!');

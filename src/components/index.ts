@@ -128,9 +128,9 @@ export {
   SelectScrollDownButton,
 } from "./ui/select"
 
-// Table of Contents
-export { TableOfContents } from "./custom/table-of-contents"
-export type { TOCItem, TableOfContentsProps } from "./custom/table-of-contents"
+// Table of Contents — moved to the "@nqlib/nqui/toc" subpath so the main
+// entry does not ship circuit/clerk geometry. See MIGRATION note.
+//   import { TableOfContents } from "@nqlib/nqui/toc"
 
 // Nqui Logo - Theme-aware logo component
 export { NquiLogo } from "./custom/nqui-logo"
@@ -491,10 +491,10 @@ export { ThemeAppearanceMenu } from "./theme-appearance-menu"
 export type { ThemeAppearanceMenuProps } from "./theme-appearance-menu"
 
 // ============================================================================
-// Debug Tools
-// ============================================================================
-export { DebugPanel, Magnifier, Crosshair, UITester } from "./debug"
-export type { DebugPanelProps, MagnifierProps, CrosshairProps, UITesterProps } from "./debug"
+// Debug Tools — moved to the "@nqlib/nqui/debug" subpath so the main entry
+// does not pull Magnifier / DebugPanel. See MIGRATION note.
+//   import { DebugPanel } from "@nqlib/nqui/debug"
+//   import "@nqlib/nqui/debug.css"
 
 // ============================================================================
 // Utility Components

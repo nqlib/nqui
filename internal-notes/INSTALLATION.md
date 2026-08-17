@@ -138,7 +138,7 @@ Custom path: `npx @nqlib/nqui init-debug-css app/styles/debug.css`
 ```tsx
 'use client'; // Required for Next.js App Router
 
-import { DebugPanel } from "@nqlib/nqui";
+import { DebugPanel } from "@nqlib/nqui/debug";
 import "./nqui-debug.css"; // Path from init-debug-css
 
 export function App() {
@@ -198,7 +198,7 @@ See [PEER_DEPENDENCIES.md](./PEER_DEPENDENCIES.md) for the full mapping.
 // app/layout.tsx
 'use client';
 
-import { DebugPanel } from "@nqlib/nqui";
+import { DebugPanel } from "@nqlib/nqui/debug";
 import "../../node_modules/@nqlib/nqui/dist/nqui.css"; // Direct path if package import fails
 
 export function DebugPanelClient() {
@@ -214,7 +214,7 @@ export function DebugPanelClient() {
 
 ```tsx
 // src/main.tsx
-import { DebugPanel } from "@nqlib/nqui";
+import { DebugPanel } from "@nqlib/nqui/debug";
 import "./nqui-debug.css";
 
 function App() {
@@ -231,7 +231,7 @@ function App() {
 
 ```tsx
 // app/root.tsx
-import { DebugPanel } from "@nqlib/nqui";
+import { DebugPanel } from "@nqlib/nqui/debug";
 import "./nqui-debug.css";
 
 export default function Root() {
