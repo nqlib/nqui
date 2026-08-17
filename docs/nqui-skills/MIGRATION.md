@@ -9,7 +9,7 @@ When upgrading nqui, scan the latest version section for breaking changes BEFORE
 
 ---
 
-## Unreleased — Lean package (ST-067)
+## v0.8.0 — Lean package (ST-067)
 
 `TableOfContents` and debug tools left the main barrel so a `Button`-only import no longer pulls the debug-panel chunk (~270 KB) or TOC variants.
 

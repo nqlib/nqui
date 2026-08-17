@@ -1,6 +1,6 @@
 {
   "name": "@nqlib/nqui",
-  "version": "0.7.10",
+  "version": "0.8.0",
   "description": "A React component library with enhanced UI components and developer tools",
   "type": "module",
   "main": "./dist/nqui.cjs.js",

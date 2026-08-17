@@ -4,7 +4,7 @@ epic: EP-005
 title: Lean package — debug and TOC off the main entry, slim tarball
 status: review
 priority: should
-release: unset
+release: 0.8.0
 breaking: true
 scope: [src/entries/toc.ts, src/components/index.ts, vite.config.ts, package.json, scripts/check-bundle-size.js, src/test/dist-guard.test.ts, scripts/verify-publish.mjs, docs]
 api: docs/architecture/overview.md

@@ -67,7 +67,7 @@ operation rather than a remembered ritual.
 | ST-046 | Release automation | backlog | unset |
 | ST-047 | Split `next-themes` out of the sonner chunk | backlog | unset |
 | ST-066 | Prove packed types before public latest | review | 0.7.10 |
-| ST-067 | Lean package — debug/TOC off main entry, slim tarball | review | unset |
+| ST-067 | Lean package — debug/TOC off main entry, slim tarball | review | 0.8.0 |
 
 ## Implementation references
 

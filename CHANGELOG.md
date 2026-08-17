@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-08-16
+
 ### Changed
 
 - **Subpaths (ST-067)** — `TableOfContents` lives at `@nqlib/nqui/toc`.
@@ -21,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Calendar** — day cells pin `--hit-area-*` to `0px` so Button's `hit-area-2`
-  overlay no longer steals hover from the date on the left.
+  overlay no longer steals hover from the date on the left (ST-013).
 
 ### Migration
 
