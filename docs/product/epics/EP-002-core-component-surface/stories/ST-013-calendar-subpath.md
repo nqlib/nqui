@@ -55,6 +55,7 @@ CHANGELOG migration line: *Calendar now imports from `@nqlib/nqui/calendar`; ins
 
 - 2026-08-13 — Day cells and range caps use `--cell-radius` (`rounded-md`) instead of a full circle.
 - 2026-08-15 — Drag a completed range's start/end to resize; click-without-move still resets.
+- 2026-08-16 — Day buttons inherit Button `hit-area-2`; the next day's overlay stole hover on the right edge of the previous date. Pin `--hit-area-*` to 0px on `CalendarDayButton`.
 
 ## Out of scope
 

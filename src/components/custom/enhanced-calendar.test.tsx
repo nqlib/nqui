@@ -186,3 +186,15 @@ describe("EnhancedCalendar range endpoint drag", () => {
     expect(onSelect).toHaveBeenCalled()
   })
 })
+
+describe("CalendarDayButton hit area", () => {
+  it("pins day-button hit area to the painted cell", () => {
+    render(<EnhancedCalendar mode="single" month={from} />)
+    const day = document.querySelector<HTMLElement>('button[data-iso-date="2026-08-10"]')
+    expect(day).toBeTruthy()
+    expect(day?.style.getPropertyValue("--hit-area-t")).toBe("0px")
+    expect(day?.style.getPropertyValue("--hit-area-r")).toBe("0px")
+    expect(day?.style.getPropertyValue("--hit-area-b")).toBe("0px")
+    expect(day?.style.getPropertyValue("--hit-area-l")).toBe("0px")
+  })
+})
