@@ -10,6 +10,7 @@ Read this first when working in **nqui** (`@nqlib/nqui`).
 |------|--------|
 | Live `/catalog`, `/patterns`, `/recipes/*`, `/design-system` | Sibling **nqui-showcase** (`../nqui-showcase/src/components/showcase/`) |
 | Pre-publish visual QA | `cd ../nqui-showcase && pnpm nqui:local && pnpm dev` |
+| Pre-publish **types** QA | `make prove-showcase` (packed tarball → showcase `tsc -b`). `nqui:local` is not this gate. |
 | Library API / components | `src/components/`, `src/entries/` |
 | Consumer skills | `skills/consumer/nqui/` then `npm run sync:skills` |
 

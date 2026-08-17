@@ -12,6 +12,7 @@ export default defineConfig([
     'src/App.tsx',
     'src/components/debug/**',
     'scripts/examples/**',
+    'scripts/fixtures/**',
   ]),
   {
     files: ['**/*.{ts,tsx}'],

@@ -30,7 +30,8 @@ Checklist for changes to **this repository**. External app integration is covere
 ## Publish
 
 - [ ] Version bumped appropriately
-- [ ] `npm run verify:publish` passes
+- [ ] `pnpm run verify:publish` passes (includes packed consumer types)
+- [ ] `make prove-showcase` passes against sibling nqui-showcase
 - [ ] Dual-registry publish tested if changing publish scripts
 
 ## Verification commands

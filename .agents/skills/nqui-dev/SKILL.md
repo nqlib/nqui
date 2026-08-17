@@ -63,10 +63,15 @@ Same as [`docs/product/ai-contract.md`](../../docs/product/ai-contract.md) — L
 ## Verification
 
 ```bash
-npm run sync:skills && npm run skill:validate
-npm run lint && npm run test && npm run build:lib
-npm run verify:publish   # before release
+pnpm run sync:skills && pnpm run skill:validate
+pnpm run lint && pnpm run test && pnpm run build:lib
+pnpm run verify:publish   # build + packed consumer tsc + lint + test + tarball
+pnpm run prove:showcase   # required before latest: sibling nqui-showcase tsc against the tarball
 ```
+
+Do not treat `pnpm nqui:local` in the showcase as a publish gate. That path typechecks
+**source** / linked dist. Vercel typechecks the **packed `.d.ts`**. `verify:consumer-types`
+and `prove:showcase` are the consumer-shaped checks.
 
 ## Key paths
 

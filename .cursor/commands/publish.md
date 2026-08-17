@@ -21,18 +21,25 @@ Repo root **is** the published package (`@nqlib/nqui`). Do not publish from a su
    make login
    ```
 
-3. Optional full gate (publish runs this via `prepublishOnly` too):
+3. Prove packed types (required — in-repo tests are not this gate):
    ```bash
    make verify
+   make prove-showcase
    ```
 
-4. Publish:
+4. Publish **latest** only after prove-showcase passes:
    ```bash
    make publish
    ```
    If publish fails with `EOTP`, retry with authenticator code:
    ```bash
    make publish OTP=CODE
+   ```
+
+   Optional canary (still public; `^` ranges will install it):
+   ```bash
+   make publish-next
+   make promote          # after showcase pnpm build against that exact version
    ```
 
 5. Confirm:
@@ -50,11 +57,13 @@ Repo root **is** the published package (`@nqlib/nqui`). Do not publish from a su
 
 ## Do not
 
-- Skip `verify:publish` / `prepublishOnly`
+- Skip `verify:publish` / `prepublishOnly` / `prove-showcase`
+- Treat `pnpm nqui:local` in nqui-showcase as a publish gate
 - Commit temporary `.npmrc` changes from `publish-npmjs.js` (script restores automatically)
 
 ## Reference
 
-- Gate: `scripts/verify-publish.mjs`
+- Gate: `scripts/verify-publish.mjs` + `scripts/verify-consumer-types.mjs`
+- Showcase prove: `scripts/prove-showcase.mjs`
 - npm publish wrapper: `scripts/publish-npmjs.js`
-- Checklist: `internal-notes/PUBLISHING.md`
+- Checklist: `docs/meta/publishing.md`

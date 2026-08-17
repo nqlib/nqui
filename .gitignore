@@ -11,3 +11,4 @@ dist-ssr
 test-results
 .cursor/nqui-skills/
 .cursor/nqui-skills.backup/
+*.tgz

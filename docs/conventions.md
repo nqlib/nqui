@@ -58,11 +58,13 @@ lists them: `(ST-030..ST-033)` or `(ST-041, ST-042)`.
 1. On `dev`: bump `version` in `package.json`, write the `CHANGELOG.md` section naming the stories
    the release closes (`- Kanban board primitives (ST-031)`), and any **Migration** lines for
    `breaking: true` stories.
-2. `pnpm run verify:publish` (runs build, lint, test, and asserts the tarball).
-3. Merge `dev` → `main`, tag `vX.Y.Z` on `main`, push the tag.
-4. Publish from `main` (`make publish` / `make publish-both`, see
-   [`internal-notes/PUBLISHING.md`](../internal-notes/PUBLISHING.md)).
-5. Set the shipped stories to `done` and update their epics' tables.
+2. `pnpm run verify:publish` (build, packed consumer types, lint, test, tarball).
+3. `make prove-showcase` — installs the tarball into sibling nqui-showcase and runs `tsc -b`.
+   Do not skip this. In-repo tests do not see the published `.d.ts`.
+4. Merge `dev` → `main`, tag `vX.Y.Z` on `main`, push the tag.
+5. Publish from `main` (`make publish` already runs prove-showcase when the sibling exists).
+   `make publish-next` is a canary tag only; it does not hide the version from `^` ranges.
+6. Set the shipped stories to `done` and update their epics' tables.
 
 > Releases 0.7.0–0.7.3 predate this convention: they were committed straight onto `main` and only
 > `v0.6.3` is tagged. Tag retroactively if the history is ever needed.

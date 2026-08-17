@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`className`, `aria-label`, `children`, `variant="line"`). 0.7.9 only
   restored `children`; wrapping `CoreTabsList` in the `.d.ts` still dropped
   the rest. Do not type the public list off `ComponentProps<typeof CoreTabsList>`.
-  (ST-024)
+  Packed consumer `tsc` and `make prove-showcase` now run before `latest` (ST-024, ST-066).
 
 ## [0.7.9] - 2026-08-16
 

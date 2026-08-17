@@ -104,7 +104,7 @@ function _tabsListConsumerProps(
 ) {
   const children: ReactNode | undefined = props.children
   const className: string | undefined = props.className
-  const variant: "default" | "line" | null | undefined = props.variant
+  const variant: "default" | "line" | undefined = props.variant
   void children
   void className
   void variant

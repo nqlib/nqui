@@ -20,7 +20,7 @@ The backlog and the capability record for `@nqlib/nqui`, following
 | [EP-006](epics/EP-006-quality-baseline/epic.md) | Quality baseline | **in-progress** |
 | [EP-007](epics/EP-007-docs-vault-agent-skills/epic.md) | Docs vault & agent skills | **in-progress** |
 
-**Next IDs: `EP-008` / `ST-066`.** Bump this counter in the same PR that mints an ID.
+**Next IDs: `EP-008` / `ST-067`.** Bump this counter in the same PR that mints an ID.
 
 ## About this baseline (2026-07-19)
 

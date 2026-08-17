@@ -13,6 +13,7 @@ project context: [`memory/INDEX.md`](memory/INDEX.md).
 |---------|--------|
 | Live catalog (`/catalog`), recipes, patterns, design-system | Sibling **`nqui-showcase`** → `src/components/showcase/` |
 | Pre-publish visual QA | `cd ../nqui-showcase && pnpm nqui:local && pnpm dev` |
+| Pre-publish **types** QA | `make prove-showcase` (packed tarball → showcase `tsc -b`). `nqui:local` is not this gate. |
 | Library source | `src/components/`, `src/entries/`, `npm run build:lib` |
 
 `npm run dev` in this repo only prints that pointer — it does not start a Vite catalog.

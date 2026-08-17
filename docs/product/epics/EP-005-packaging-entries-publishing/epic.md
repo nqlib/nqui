@@ -66,6 +66,7 @@ operation rather than a remembered ritual.
 | ST-045 | Style build and dist CSS verification | done | pre-baseline |
 | ST-046 | Release automation | backlog | unset |
 | ST-047 | Split `next-themes` out of the sonner chunk | backlog | unset |
+| ST-066 | Prove packed types before public latest | review | 0.7.10 |
 
 ## Implementation references
 

@@ -1,13 +1,11 @@
 import * as React from "react"
 import { useState, createContext, useContext } from "react"
-import { type VariantProps } from "class-variance-authority"
 import { Tabs as TabsPrimitive } from "radix-ui"
 import {
   Tabs as CoreTabs,
   TabsList as CoreTabsList,
   TabsTrigger as CoreTabsTrigger,
   TabsContent as CoreTabsContent,
-  tabsListVariants,
 } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
@@ -53,15 +51,14 @@ const EnhancedTabs = React.forwardRef<HTMLDivElement, EnhancedTabsProps>(
 EnhancedTabs.displayName = "EnhancedTabs"
 
 /**
- * Public list props must extend Radix `List` + `tabsListVariants`, never
- * `ComponentProps<typeof CoreTabsList>`. Wrapping the core `forwardRef` in the
- * published `.d.ts` drops `className` / `variant` / `children` for consumers
- * (0.7.8–0.7.9). 0.7.7 used `TabsPrimitive.List` and kept those props.
+ * Public list props must extend Radix List (not the core TabsList wrap).
+ * Wrapping our own forwardRef drops className / variant / children in the
+ * published declaration file (0.7.8–0.7.9).
  */
 export interface EnhancedTabsListProps
-  extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>,
-    VariantProps<typeof tabsListVariants> {
+  extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> {
   orientation?: "horizontal" | "vertical"
+  variant?: "default" | "line"
 }
 
 /** Wraps core TabsList + context orientation. Default tab list uses a sliding pill (h-7 strip, aligned with default controls). `variant="line"` uses the same motion on a 2px underline. */

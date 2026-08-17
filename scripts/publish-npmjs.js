@@ -124,11 +124,20 @@ async function main() {
       Math.max(1, parseInt(process.env.NPM_PUBLISH_RETRIES || '3', 10) || 3)
     );
 
+    const distTag = (process.env.NPM_DIST_TAG || '').trim();
+    const publishArgs = ['publish', '--registry=https://registry.npmjs.com', '--access', 'public'];
+    if (distTag) {
+      publishArgs.push('--tag', distTag);
+      console.log(`📌 Publishing with dist-tag "${distTag}" (not latest unless tag is latest)`);
+    } else {
+      console.log('📌 Publishing with default dist-tag "latest"');
+    }
+
     const runPublish = () =>
       new Promise((resolve, reject) => {
         const child = spawn(
           'npm',
-          ['publish', '--registry=https://registry.npmjs.com', '--access', 'public'],
+          publishArgs,
           { stdio: 'inherit', cwd: rootDir, env: publishEnv, shell: false }
         );
         child.on('error', reject);
