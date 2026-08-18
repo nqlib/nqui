@@ -36,6 +36,19 @@ describe("PROBE: gap handling", () => {
     expect(rg.style.gap).toBe("1rem")
     expect(rg.style.color).toBe("red")
   })
+  it("consumer gap-* className beats the numeric gap inline style", () => {
+    // Regression: the inline style introduced for numeric gap silently won over
+    // a consumer's `className="gap-4"`, which used to win via cn()/twMerge.
+    render(
+      <EnhancedRadioGroup className="flex gap-4" data-testid="rg-cls">
+        <EnhancedRadioGroupItem value="a">a</EnhancedRadioGroupItem>
+      </EnhancedRadioGroup>
+    )
+    const rg = screen.getByTestId("rg-cls")
+    expect(rg.className).toMatch(/\bgap-4\b/)
+    expect(rg.style.gap).toBe("")
+  })
+
   it("radio-group sliding variant ignores gap style", () => {
     render(
       <EnhancedRadioGroup variant="sliding" gap={4} data-testid="rg2">

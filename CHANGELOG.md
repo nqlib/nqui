@@ -37,6 +37,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   targeting `.checkbox-animated-*`, `.rating-wrapper` or `.progress-block`
   keep working. A reported accessible-name leak was investigated and
   disproven — `<style>` is `display:none` and AccName skips it.
+- **RadioGroup gap override** — a `gap-*` utility passed via `className` beats a
+  numeric `gap` again. The inline style introduced above had silently won over
+  it; `cn`'s twMerge used to let the consumer's class through.
+- **Radio selection motion** — the radio pulse now matches the checkbox
+  (`0.5s`, `--ring` at 35%) and its fill/border ease over `--duration-quick`
+  instead of snapping. The two controls diverged only because the checkbox's
+  transitions were being parse-dropped before this release.
+- **Toast styles** — `TOAST_STYLE_ID` bumped to `v3` so the corrected sheet is
+  not blocked by a stale `v2` injected by another copy of nqui on the page.
+
+### Upgrade notes
+
+- **Import `@nqlib/nqui/styles`.** `Checkbox`, `Rating` and `Progress` used to
+  carry a per-instance `<style>` element, so an app that skipped the stylesheet
+  import still got partially-structured controls. They now rely on
+  `dist/styles.css` like every other component; without that import they render
+  unstyled. The import has always been documented as required setup, which is
+  why this ships as a patch.
+- **Spacing may shift where `gap-N` was previously dead.** Numeric `gap` on
+  `Checkbox` / `RadioGroup` generated no CSS unless that exact `gap-N` literal
+  happened to appear elsewhere in the bundle. Layouts that silently rendered
+  with no gap now get the documented spacing (default `gap={3}` → 12px).
 
 ## [0.8.0] - 2026-08-16
 

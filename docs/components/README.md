@@ -42,7 +42,7 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 - **Enhanced vs Core:** Default exports (`Button`, `Badge`, `Checkbox`, `Select`, etc.) are the polished/3D variants. Implementations live in **`packages/nqui/src/components/ui/*.tsx`** (single file per concern). Use `CoreButton`, `CoreBadge`, `CoreCheckbox`, etc. for base Radix/shadcn-style behavior. Separator: single component with `variant` prop (no CoreSeparator).
 - **Grouped controls:** ButtonGroup, ToggleGroup share border; outer container uses **`rounded-md`**. ToggleGroup uses item dividers (`border-foreground/20`) or `ToggleGroupSeparator`.
 - **Toolbar context:** Always show Toggle/ToggleGroup in realistic context (document toolbar, chart settings, etc.). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup.
-- **Style injection:** Some components inject `<style>` once at mount (e.g. **Combobox** input chrome in `ui/combobox.tsx`) → safe for SSR if the component is client-only (`"use client"`).
+- **Style injection:** Component CSS ships in `dist/styles.css` (`@import "@nqlib/nqui/styles"`). Two components still inject a single shared `<style>` once at mount — **Toaster** (`ui/sonner.tsx`) and **Calendar** (`custom/enhanced-calendar.styles.ts`) — both client-only (`"use client"`), so they are safe for SSR.
 - **OKLCH:** ColorPicker expects OKLCH strings (`oklch(0.5 0.15 240)`), not hex.
 - **SidebarProvider:** Must wrap entire layout (sidebar + content).
 - **Z-index:** Use CSS vars from `styles/elevation.css` (e.g. `z-[var(--z-modal)]`). Never hardcode `z-10`, `z-50`, etc.
@@ -415,6 +415,8 @@ Use these rules to choose the right component. **Selection** = user picks from o
 3. **Size** – Use `sm`/`default`/`lg` per design system. No custom heights.
 4. **Enhanced vs Core** – Prefer default (enhanced); use `Core*` when plain style needed.
 5. **Toolbar/context** – Place Toggle/ToggleGroup in realistic context (document toolbar, chart panel). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup.
-6. **SSR** – Wrap style-injecting components (Checkbox, Rating, Combobox) in client boundary if SSR.
+6. **SSR** – Checkbox, Rating and Progress no longer inject styles (0.8.1); their CSS ships in
+   `dist/styles.css` (`@import "@nqlib/nqui/styles"`). Toaster and Calendar still inject once at
+   mount and are already `"use client"`.
 7. **Z-index** – Use `var(--z-modal)`, `var(--z-popover)`, etc.
 8. **Keyboard** – Use `shouldIgnoreKeyboardShortcut` for global listeners.

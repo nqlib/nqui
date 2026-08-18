@@ -131,11 +131,11 @@ function extractStandaloneCSS() {
   // Component rules (checkbox / rating / progress). These used to ship as a
   // per-instance <style> element inside each component; they are plain
   // unlayered rules, so they are appended verbatim rather than extracted.
-  const componentsCssPath = join(stylesDir, 'components.css');
-  let componentsCss = '';
-  if (existsSync(componentsCssPath)) {
-    componentsCss = readFileSync(componentsCssPath, 'utf-8').trimEnd();
-  }
+  //
+  // Required, not optional: these components have no other source of styling,
+  // so a missing file must fail the build rather than silently publish bare
+  // unstyled controls. readPartial throws when the file is absent.
+  const componentsCss = readPartial('components.css').trimEnd();
 
   let indexCss = readFileSync(indexCssPath, 'utf-8');
 

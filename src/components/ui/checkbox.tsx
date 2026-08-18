@@ -9,7 +9,7 @@ import { Checkbox as RadixCheckbox } from "radix-ui"
 import { cva, type VariantProps } from "class-variance-authority"
 import { useId } from "react"
 
-import { cn } from "@/lib/utils"
+import { cn, gapStyle } from "@/lib/utils"
 
 const checkboxVariants = cva("", {
   variants: {
@@ -29,12 +29,8 @@ const Checkbox = React.forwardRef<
 >(({ className, children, id, gap = 3, ...props }, ref) => {
   const stableId = useId()
   const inputId = id || stableId
-  // Numeric gap renders as an inline style (N × 0.25rem, the Tailwind spacing
-  // scale). A constructed gap-N utility class is invisible to the consumer's
-  // Tailwind scanner, so it only styled values that happened to appear
-  // literally elsewhere in the bundle.
   const gapIsNumber = typeof gap === "number"
-  const gapStyle = gapIsNumber ? { gap: `${gap * 0.25}rem` } : undefined
+  const labelGapStyle = gapStyle(gap)
 
   const checkboxElement = (
     <CheckboxPrimitive.Root
@@ -61,7 +57,7 @@ const Checkbox = React.forwardRef<
         "flex items-center cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
         !gapIsNumber && gap
       )}
-      style={gapStyle}
+      style={labelGapStyle}
     >
       {checkboxElement}
       {children}

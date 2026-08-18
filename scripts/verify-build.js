@@ -273,6 +273,30 @@ function main() {
     console.log(`   ✅ All ${classComparison.sourceCount} custom classes preserved`);
   }
   
+  // 4b. Check hoisted component rules (src/styles/components.css)
+  //
+  // Checkbox / Rating / Progress have NO other source of styling since the
+  // per-instance <style> injection was removed, so if this partial fails to
+  // reach dist the package publishes bare unstyled controls while every other
+  // gate stays green. That exact near-miss is why this check exists.
+  console.log('\n4️⃣b Checking hoisted component rules...');
+  const COMPONENT_SELECTORS = [
+    '.checkbox-animated-label',
+    '.checkbox-animated-input',
+    '.checkbox-round-input',
+    '.rating-wrapper',
+    '.progress-block',
+    '@keyframes checkbox-pulse',
+  ];
+  const missingComponentRules = COMPONENT_SELECTORS.filter(sel => !builtCss.includes(sel));
+  if (missingComponentRules.length > 0) {
+    console.error(`   ❌ Missing ${missingComponentRules.length} component rule(s) — src/styles/components.css did not reach dist:`);
+    missingComponentRules.forEach(sel => console.error(`      - ${sel}`));
+    hasErrors = true;
+  } else {
+    console.log(`   ✅ All ${COMPONENT_SELECTORS.length} component rule groups present`);
+  }
+
   // 5. Check utility classes from @source inline()
   console.log('\n5️⃣  Checking utility classes in @source inline()...');
   const utilitiesSource = extractUtilities(indexCss);

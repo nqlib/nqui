@@ -60,7 +60,13 @@ Control the gap between radio items with the `gap` prop on RadioGroup:
 <RadioGroup gap={2}>Compact (8px)</RadioGroup>
 <RadioGroup gap={3}>Default (12px)</RadioGroup>
 <RadioGroup gap={4}>Loose (16px)</RadioGroup>
+<RadioGroup gap={7}>Any number works (28px)</RadioGroup>
+<RadioGroup gap="gap-6">Or a Tailwind class</RadioGroup>
 ```
+
+Numbers follow the Tailwind spacing scale (N × 4px) and render as an inline `style`, so any value
+works — not just 0–4. A `gap-*` utility passed through `className` takes precedence over a numeric
+`gap`. `variant="sliding"` ignores `gap` entirely; its items sit flush inside the pill.
 
 Control the gap between radio button and label with the `spacing` prop on RadioGroupItem:
 

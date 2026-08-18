@@ -6,7 +6,7 @@ import {
 import * as React from "react"
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
 import { createContext, useContext, useId } from "react"
-import { cn } from "@/lib/utils"
+import { cn, gapStyle } from "@/lib/utils"
 
 // Context for variant and state propagation
 interface RadioGroupContextValue {
@@ -34,12 +34,16 @@ export interface EnhancedRadioGroupProps
    */
   disabled?: boolean
   /**
-   * Gap between radio items. Can be a number (Tailwind spacing scale, N × 4px, rendered as an inline style) or a Tailwind gap class string.
+   * Gap between radio items. Can be a number (Tailwind spacing scale, N × 4px, rendered as an inline
+   * style) or a Tailwind gap class string. Any number works, not just the examples below.
    * - `0` or `"gap-0"`: No gap
    * - `1` or `"gap-1"` (4px)
    * - `2` or `"gap-2"` (8px) - compact
    * - `3` or `"gap-3"` (12px) - default
    * - `4` or `"gap-4"` (16px)
+   *
+   * Ignored by `variant="sliding"`, which packs its items flush inside the pill.
+   * A `gap-*` utility in `className` takes precedence over a numeric gap.
    *
    * @default 3
    */
@@ -262,12 +266,13 @@ const EnhancedRadioGroup = React.forwardRef<
     }
   }, [variant, updateIndicatorPosition, currentValue, children])
 
-  // Container className based on variant. Numeric gap renders as an inline
-  // style (N × 0.25rem) — a constructed gap-N utility class is invisible to
-  // the consumer's Tailwind scanner. String gap stays a class passthrough.
+  // Container className based on variant. The sliding variant packs its items
+  // flush (gap-0) and ignores `gap` entirely. Otherwise numeric gap resolves to
+  // an inline style — but `className` is passed so an explicit `gap-*` utility
+  // from the consumer still wins, as it did when gap was a class.
   const gapIsNumber = typeof gap === "number"
-  const mergedStyle =
-    variant !== "sliding" && gapIsNumber ? { gap: `${gap * 0.25}rem`, ...style } : style
+  const resolvedGap = variant === "sliding" ? undefined : gapStyle(gap, className)
+  const mergedStyle = resolvedGap ? { ...resolvedGap, ...style } : style
   const containerClassName = cn(
     variant === "sliding"
       ? /* Inset padding matches TabsList. Outer --radio-pill-radius; inner
@@ -412,9 +417,9 @@ const EnhancedRadioGroupItem = React.forwardRef<
           ref={ref}
           data-slot="radio-group-item"
           className={cn(
-            "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-transparent flex size-4 rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-transparent flex size-4 rounded-full transition-[background-color,border-color] duration-[var(--duration-quick)] ease-[var(--ease-in-out)] focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
             // Pulse animation on selection
-            "data-[state=checked]:animate-[radio-pulse_0.7s_forwards]",
+            "data-[state=checked]:animate-[radio-pulse_0.5s_forwards]",
             className
           )}
           disabled={isDisabled}
@@ -506,7 +511,7 @@ const EnhancedRadioGroupItem = React.forwardRef<
         ref={ref}
         data-slot="radio-group-item"
         className={cn(
-          "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-transparent flex size-4 rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "border-input text-primary dark:data-[state=unchecked]:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-[state=checked]:bg-primary dark:data-[state=checked]:bg-primary data-[state=checked]:border-transparent flex size-4 rounded-full transition-[background-color,border-color] duration-[var(--duration-quick)] ease-[var(--ease-in-out)] focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         disabled={isDisabled}

@@ -1,6 +1,6 @@
 # nqui Rating
 
-> Star rating. Half-star, maxRating, tooltipContent. Injects style.
+> Star rating. Half-star, maxRating, tooltipContent.
 
 ## Import
 
@@ -32,4 +32,6 @@ import { Rating } from "@nqlib/nqui"
 
 ## Notes
 
-- Injects inline style for SVG mask. Client-only in SSR.
+- Styles (including the SVG star mask) ship in `dist/styles.css` — import `@nqlib/nqui/styles`.
+  (Before 0.8.1 the component injected a `<style>` element per instance; it no longer does, so no
+  SSR guard is needed.)

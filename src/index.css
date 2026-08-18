@@ -248,15 +248,19 @@
 }
 
 @layer utilities {
+  /* Selection pulse. Kept in lockstep with @keyframes checkbox-pulse in
+   * styles/components.css — same --ring source and 35% start alpha, and callers
+   * use the same 0.5s duration, so a radio and a checkbox in one form read as
+   * one motion vocabulary. */
   @keyframes radio-pulse {
     0% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 40%, transparent);
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--ring) 35%, transparent);
     }
     70% {
-      box-shadow: 0 0 0 8px color-mix(in oklch, var(--primary) 0%, transparent);
+      box-shadow: 0 0 0 8px color-mix(in oklch, var(--ring) 0%, transparent);
     }
     100% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--primary) 0%, transparent);
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--ring) 0%, transparent);
     }
   }
 

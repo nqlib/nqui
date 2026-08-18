@@ -11,7 +11,11 @@ import * as React from "react"
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
-const TOAST_STYLE_ID = "nqui-toast-styles-v2"
+// Bump this whenever the injected CSS below changes. The id guard makes the
+// first injector win, so a stale copy of nqui on the page (duplicate install,
+// microfrontend shell + remote) would otherwise pin its outdated sheet and the
+// newer copy's fix would never apply. v3: easing token fix (0.8.1).
+const TOAST_STYLE_ID = "nqui-toast-styles-v3"
 
 function injectToastStylesOnce() {
   if (typeof document === "undefined") return
