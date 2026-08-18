@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest"
 import { render, screen } from "@testing-library/react"
 import { Checkbox, EnhancedCheckbox } from "./checkbox"
+import { Rating } from "../custom/rating"
+import { EnhancedProgress } from "../custom/enhanced-progress"
 import { EnhancedRadioGroup, EnhancedRadioGroupItem } from "../custom/enhanced-radio-group"
 
 describe("PROBE: gap handling", () => {
@@ -41,5 +43,46 @@ describe("PROBE: gap handling", () => {
       </EnhancedRadioGroup>
     )
     expect(screen.getByTestId("rg2").style.gap).toBe("")
+  })
+})
+
+describe("no per-instance <style> injection", () => {
+  // Regression: these components each rendered a full stylesheet per instance.
+  // 50 checkboxes meant 50 <style> tags (~239 KB of duplicate CSS) and the CSS
+  // text leaked into textContent, breaking getByText / toHaveTextContent.
+  // The rules now ship in dist/styles.css (src/styles/components.css).
+  it("checkbox renders no <style> and has clean textContent", () => {
+    const { container } = render(<EnhancedCheckbox>Accept terms</EnhancedCheckbox>)
+    expect(container.querySelectorAll("style")).toHaveLength(0)
+    expect(container.textContent).toBe("Accept terms")
+  })
+
+  it("many checkboxes render no <style> at all", () => {
+    const { container } = render(
+      <div>
+        {Array.from({ length: 20 }, (_, i) => (
+          <EnhancedCheckbox key={i}>Row {i}</EnhancedCheckbox>
+        ))}
+      </div>
+    )
+    expect(container.querySelectorAll("style")).toHaveLength(0)
+    expect(container.textContent).not.toMatch(/box-sizing|checkbox-pulse/)
+  })
+
+  it("checkbox without children renders no <style>", () => {
+    const { container } = render(<EnhancedCheckbox />)
+    expect(container.querySelectorAll("style")).toHaveLength(0)
+  })
+
+  it("rating renders no <style> and has clean textContent", () => {
+    const { container } = render(<Rating value={3} />)
+    expect(container.querySelectorAll("style")).toHaveLength(0)
+    expect(container.textContent).not.toMatch(/rating-wrapper|mask:/)
+  })
+
+  it("progress renders no <style> and has clean textContent", () => {
+    const { container } = render(<EnhancedProgress value={40} />)
+    expect(container.querySelectorAll("style")).toHaveLength(0)
+    expect(container.textContent).not.toMatch(/progress-block/)
   })
 })

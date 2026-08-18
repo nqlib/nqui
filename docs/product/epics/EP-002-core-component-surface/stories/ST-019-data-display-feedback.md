@@ -56,6 +56,11 @@ so that a dashboard or settings page composes without reaching outside nqui.
 
 ## Bugs
 
+- 2026-08-17 — `Progress` / `EnhancedProgress` rendered a `<style>` element per instance (both
+  return paths), folding its CSS text into the containing element's `textContent`. Rules moved
+  verbatim to `src/styles/components.css`; class names unchanged. Guarded by
+  `src/test/css-sanity.test.ts`. Fixed in 0.8.1.
+
 - 2026-08-13 — Pagination arrows, Carousel prev/next, and enhanced Progress tracks use `rounded-md`
   instead of `rounded-full`.
 

@@ -13,6 +13,7 @@ an executor needs no context beyond the plan file itself.
 | 003 | [Test + lint baseline](003-test-and-lint-baseline.md) — lint `scripts/`, CLI temp-dir tests, component smoke tests | #5, #9 (partial) | M | low | — | TODO |
 | 004 | [CI hardening](004-ci-hardening.md) — full typecheck (fixes the DataTable `TableMeta` error), validate-exports in CI, Node 20+22 matrix, vitest CVE bump | #6, #7 | S | low | — | TODO |
 | 005 | [Optional-peer entry restructure](005-optional-peer-entry-restructure.md) — main entry stops importing optional peers; optional peers leave `dependencies`; v0.7.0 breaking | #2 | L | medium | 003, 004 | TODO (BLOCKED) |
+| 006 | [Style hoist](006-style-hoist.md) — move per-instance `<style>` injection (Checkbox, Rating, Progress) into `dist/styles.css`; fixes DOM duplication + `textContent` pollution | 2026-08-17 sweep | M | medium | 0.8.1 fix branch | DONE (0.8.1) |
 
 Recommended sequence: **001 → 002 → 003 → 004 → 005**. 001/002/004 are independent and can land in
 any order; 003 and 004 are hard prerequisites for 005. Plan 005 deliberately undoes part of plan
@@ -40,7 +41,7 @@ pnpm run verify:exports
   only measures the violation count; re-enabling is a separate decision for the maintainer.
 - **Deferred discovery from plan 005:** `next-themes` is bundled into the sonner chunk, so
   Toaster's theme auto-detection likely cannot see a consumer's own next-themes provider
-  (different module instance). Needs investigation → candidate plan 006.
+  (different module instance). Needs investigation → candidate plan 007 (006 is taken by the style hoist).
 
 ## Direction options surfaced (maintainer's call, not ranked against bugs)
 

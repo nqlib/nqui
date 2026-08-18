@@ -11,180 +11,6 @@ import { useId } from "react"
 
 import { cn } from "@/lib/utils"
 
-const checkboxStyles = `
-  .checkbox-animated-label {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-  }
-
-  .checkbox-animated-label::before {
-    position: absolute;
-    content: "";
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 45px;
-    z-index: -1;
-    /* Click feedback should feel immediate: quick (150ms) + symmetric curve,
-     * not the 200ms ease-out deceleration (slow tail reads as lag). Scoped to
-     * the properties that actually change instead of "all". */
-    transition:
-      background-color var(--duration-quick) var(--ease-in-out),
-      border-color var(--duration-quick) var(--ease-in-out),
-      height var(--duration-quick) var(--ease-in-out),
-      opacity var(--duration-quick) var(--ease-in-out);
-    border-radius: 10px;
-    border: 1px solid transparent;
-    background-color: transparent;
-  }
-
-  .checkbox-animated-label:hover::before {
-    background-color: var(--muted);
-  }
-
-  .checkbox-animated-label:has([data-state="checked"])::before {
-    background-color: var(--card);
-    border-color: var(--primary);
-    height: 50px;
-  }
-
-  .checkbox-animated-label:has([data-disabled])::before {
-    opacity: 0.5;
-  }
-
-  .checkbox-animated-input {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 17px;
-    height: 17px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--card);
-    border: 1px solid color-mix(in oklch, var(--foreground) 50%, var(--border));
-    position: relative;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 0;
-    transition:
-      background-color var(--duration-quick) var(--ease-in-out),
-      border-color var(--duration-quick) var(--ease-in-out);
-  }
-
-  .checkbox-animated-input:hover:not([data-state="checked"]):not([data-disabled]) {
-    border-color: color-mix(in oklch, var(--foreground) 70%, var(--border));
-  }
-
-  .checkbox-animated-input[data-state="checked"] {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    animation: checkbox-pulse 0.5s forwards;
-  }
-
-  .checkbox-animated-input[data-disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* Checkmark uses ::after so ::before stays free for hit-area-* on the same root */
-  .checkbox-animated-input::after {
-    content: "";
-    width: 5px;
-    height: 8px;
-    border: 1.5px solid var(--primary-foreground);
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg) scale(0);
-    transition: transform var(--duration-quick) var(--ease-in-out);
-    position: absolute;
-    margin-top: -2px;
-    z-index: var(--z-content);
-  }
-
-  .checkbox-animated-input[data-state="checked"]::after {
-    transform: rotate(45deg) scale(1);
-  }
-
-  .checkbox-animated-input:focus-visible,
-  .checkbox-round-input:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent);
-  }
-
-  @keyframes checkbox-pulse {
-    0% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--ring) 35%, transparent);
-    }
-    70% {
-      box-shadow: 0 0 0 8px color-mix(in oklch, var(--ring) 0%, transparent);
-    }
-    100% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--ring) 0%, transparent);
-    }
-  }
-
-  .checkbox-animated-text {
-    color: var(--foreground);
-    user-select: none;
-  }
-
-  .checkbox-round-input {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--card);
-    border: 1px solid color-mix(in oklch, var(--foreground) 50%, var(--border));
-    position: relative;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 0;
-    transition:
-      background-color var(--duration-quick) var(--ease-in-out),
-      border-color var(--duration-quick) var(--ease-in-out);
-  }
-
-  .checkbox-round-input:hover:not([data-state="checked"]):not([data-disabled]) {
-    border-color: color-mix(in oklch, var(--foreground) 70%, var(--border));
-  }
-
-  .checkbox-round-input[data-state="checked"] {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    animation: checkbox-pulse 0.5s forwards;
-  }
-
-  .checkbox-round-input[data-disabled] {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .checkbox-round-input::after {
-    content: "";
-    width: 5px;
-    height: 8px;
-    border: 1.5px solid var(--primary-foreground);
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg) scale(0);
-    transition: transform var(--duration-quick) var(--ease-in-out);
-    position: absolute;
-    margin-top: -2px;
-    z-index: var(--z-content);
-  }
-
-  .checkbox-round-input[data-state="checked"]::after {
-    transform: rotate(45deg) scale(1);
-  }
-`
-
 const checkboxVariants = cva("", {
   variants: {
     variant: {
@@ -275,35 +101,25 @@ const EnhancedCheckbox = React.forwardRef<
     </RadixCheckbox.Root>
   )
 
-  if (!children) {
-    return (
-      <>
-        <style>{checkboxStyles}</style>
-        {checkboxEl}
-      </>
-    )
-  }
+  if (!children) return checkboxEl
 
   return (
-    <>
-      <style>{checkboxStyles}</style>
-      <label
-        htmlFor={inputId}
-        className={cn(
-          "checkbox-animated-label",
-          "flex items-center",
-          typeof gap !== "number" && gap,
-          "cursor-pointer",
-          "relative",
-          disabled && "cursor-not-allowed opacity-50"
-        )}
-        style={typeof gap === "number" ? { gap: `${gap * 0.25}rem` } : undefined}
-        data-disabled={disabled ? "true" : undefined}
-      >
-        {checkboxEl}
-        <span className="checkbox-animated-text text-foreground">{children}</span>
-      </label>
-    </>
+    <label
+      htmlFor={inputId}
+      className={cn(
+        "checkbox-animated-label",
+        "flex items-center",
+        typeof gap !== "number" && gap,
+        "cursor-pointer",
+        "relative",
+        disabled && "cursor-not-allowed opacity-50"
+      )}
+      style={typeof gap === "number" ? { gap: `${gap * 0.25}rem` } : undefined}
+      data-disabled={disabled ? "true" : undefined}
+    >
+      {checkboxEl}
+      <span className="checkbox-animated-text text-foreground">{children}</span>
+    </label>
   )
 })
 

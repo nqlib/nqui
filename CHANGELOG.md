@@ -26,6 +26,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   inline style (`N × 0.25rem`, same values); string gap still passes through
   as a class. A new source-level test (`css-sanity.test.ts`) guards both this
   and the invalid-easing bug class.
+- **Per-instance `<style>` injection (ST-011, ST-014, ST-019)** — `Checkbox`,
+  `Rating` and `Progress` each rendered their full stylesheet as a `<style>`
+  element *per component instance*: 50 checkboxes produced 50 copies and
+  ~239 KB of duplicate CSS in the DOM, and the CSS text folded into the
+  containing element's `textContent`, breaking `getByText`,
+  `toHaveTextContent` and DOM scraping. The rules moved verbatim to
+  `src/styles/components.css` and now ship in `dist/styles.css` via
+  `@nqlib/nqui/styles`. Class names are unchanged, so consumer overrides
+  targeting `.checkbox-animated-*`, `.rating-wrapper` or `.progress-block`
+  keep working. A reported accessible-name leak was investigated and
+  disproven — `<style>` is `display:none` and AccName skips it.
 
 ## [0.8.0] - 2026-08-16
 

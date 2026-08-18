@@ -26,6 +26,7 @@
 @import "./styles/shadows.css";   /* overlay shadow tokens (tooltip / float / modal) */
 @import "./styles/z-index.css";   /* stacking only — not surface depth */
 @import "./styles/hit-area.css";  /* expanded pointer targets */
+@import "./styles/components.css"; /* component rules that consume the tokens above */
 
 /* Custom dark mode variant - matches when .dark class is on element or ancestor */
 @custom-variant dark (&:where(.dark, .dark *));

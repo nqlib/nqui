@@ -66,6 +66,7 @@ nqui ships [Bazza **hit-area** utilities](https://bazza.dev/craft/2026/hit-area)
 ## Notes
 
 - Implementation: **`packages/nqui/src/components/ui/checkbox.tsx`** (enhanced + core in one module).
-- Injects `<style>` at mount. Use client-only guard for SSR.
+- Styles ship in `dist/styles.css` — import `@nqlib/nqui/styles`. (Before 0.8.1 the component
+  injected a `<style>` element per instance; it no longer does, so no SSR guard is needed.)
 - Square and round share the same animation (pulse + checkmark scale); round has no SVG filters.
 - Use `CoreCheckbox` for plain Radix checkbox.

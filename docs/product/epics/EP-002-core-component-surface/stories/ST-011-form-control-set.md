@@ -53,6 +53,16 @@ so that a form does not mix three component vocabularies.
 
 ## Bugs
 
+- 2026-08-17 — `Checkbox` / `EnhancedCheckbox` rendered a ~4.9 KB `<style>` element **per instance**
+  (both return paths). 50 checkboxes meant 50 stylesheets and ~239 KB of duplicate CSS in the DOM,
+  and the CSS text folded into the containing element's `textContent`, breaking `getByText`,
+  `toHaveTextContent` and DOM scraping (`innerText` was unaffected). nqgrid's row-selection column
+  uses this component, so it was live in every grid with a select column. Rules moved verbatim to
+  `src/styles/components.css`, shipped via `@nqlib/nqui/styles`; class names unchanged. A reported
+  accessible-name leak was investigated and **disproven** — `<style>` is `display:none` and AccName
+  skips it (verified via Chromium a11y tree, `dom-accessibility-api`, and testing-library).
+  Guarded by `src/test/css-sanity.test.ts` + `checkbox.test.tsx`. Fixed in 0.8.1.
+
 - 2026-08-17 — `Checkbox` / `EnhancedCheckbox` / `RadioGroup` numeric `gap` built the class at
   runtime (template-interpolated `gap-` + N). The consumer's Tailwind scanner only sees literal
   strings in dist, so the class generated CSS only for values that happened to appear literally

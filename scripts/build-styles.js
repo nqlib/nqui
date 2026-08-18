@@ -128,6 +128,15 @@ function extractStandaloneCSS() {
     hitAreaCss = readFileSync(hitAreaCssPath, 'utf-8').trimEnd();
   }
 
+  // Component rules (checkbox / rating / progress). These used to ship as a
+  // per-instance <style> element inside each component; they are plain
+  // unlayered rules, so they are appended verbatim rather than extracted.
+  const componentsCssPath = join(stylesDir, 'components.css');
+  let componentsCss = '';
+  if (existsSync(componentsCssPath)) {
+    componentsCss = readFileSync(componentsCssPath, 'utf-8').trimEnd();
+  }
+
   let indexCss = readFileSync(indexCssPath, 'utf-8');
 
   const partialRoots = ROOT_PARTIALS.map((file) => {
@@ -257,6 +266,10 @@ function extractStandaloneCSS() {
       '\n}\n';
   }
 
+  if (componentsCss) {
+    combinedCss += '\n\n' + componentsCss + '\n';
+  }
+
   combinedCss = combinedCss.replace(/\n{4,}/g, '\n\n\n');
 
   const header = `/* nqui Design System CSS
@@ -275,6 +288,7 @@ function extractStandaloneCSS() {
  * - Base layer styles
  * - Utility animations
  * - Hit-area @utility blocks (inlined from src/styles/hit-area.css)
+ * - Component rules for Checkbox / Rating / Progress (from src/styles/components.css)
  * - @source inline() directives for zero-config Tailwind utility generation
  * - .nqui-card / .nqui-elevated component classes
  *

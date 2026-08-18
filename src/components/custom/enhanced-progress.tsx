@@ -6,19 +6,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
-// Progress Component Styles - CSS-only approach for block spacing and rounded corners
-const progressStyles = `
-  .progress-block {
-    width: 100%;
-    height: 100%;
-    border-radius: 1px;
-    transition: opacity 0.2s ease;
-  }
-
-  .progress-block-hover:hover {
-    opacity: 0.5;
-  }
-`
 
 // Block calculation constants
 const DEFAULT_BLOCKS = 50
@@ -368,26 +355,18 @@ const EnhancedProgress = React.forwardRef<HTMLDivElement, EnhancedProgressProps>
     // Wrap with tooltip if enabled
     if (showTooltip) {
       return (
-        <>
-          <style>{progressStyles}</style>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {progressBar}
-            </TooltipTrigger>
-            <TooltipContent side="top" sideOffset={10} align="center">
-              {Math.round(percentage)}%
-            </TooltipContent>
-          </Tooltip>
-        </>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {progressBar}
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={10} align="center">
+            {Math.round(percentage)}%
+          </TooltipContent>
+        </Tooltip>
       )
     }
 
-    return (
-      <>
-        <style>{progressStyles}</style>
-        {progressBar}
-      </>
-    )
+    return progressBar
   }
 )
 

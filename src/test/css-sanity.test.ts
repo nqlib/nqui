@@ -8,7 +8,12 @@
  *    Tailwind scanner only sees literal strings, so `gap-<n>` built at
  *    runtime generates no CSS unless the literal happens to exist elsewhere.
  *
- * Both fail silently in every toolchain gate (tsc, vite, vitest, tailwind),
+ * 3. Per-instance <style> injection in shipping components — duplicates a whole
+ *    stylesheet per rendered instance and folds the CSS text into the
+ *    containing element's textContent. Component CSS belongs in
+ *    src/styles/*.css, which ships via "@nqlib/nqui/styles".
+ *
+ * All fail silently in every toolchain gate (tsc, vite, vitest, tailwind),
  * which is why they must be caught here at the source level.
  */
 import { describe, it, expect } from "vitest"
@@ -64,5 +69,21 @@ describe("css sanity", () => {
       })
     }
     expect(bad, `runtime-constructed utility classes are invisible to the consumer's Tailwind scanner (use an inline style or a static class map):\n${bad.join("\n")}`).toEqual([])
+  })
+
+  it("no per-instance <style> injection in shipping components", () => {
+    // sonner.tsx is exempt: it uses the correct ID-guarded singleton
+    // (injectToastStylesOnce) because it must restyle a third-party portal.
+    // debug/ is exempt: dev-only subpath with genuinely dynamic CSS.
+    const EXEMPT = /(\/ui\/sonner\.tsx|\/debug\/)/
+    const bad: string[] = []
+    for (const f of files) {
+      if (f.endsWith(".css") || EXEMPT.test(f)) continue
+      const src = fs.readFileSync(f, "utf8")
+      src.split("\n").forEach((ln, i) => {
+        if (/<style[\s>]/.test(ln)) bad.push(`${path.relative(SRC, f)}:${i + 1}  ${ln.trim()}`)
+      })
+    }
+    expect(bad, `component CSS belongs in src/styles/*.css (shipped via @nqlib/nqui/styles); a per-instance <style> duplicates the sheet per instance and pollutes textContent:\n${bad.join("\n")}`).toEqual([])
   })
 })

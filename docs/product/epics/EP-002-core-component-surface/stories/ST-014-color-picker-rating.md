@@ -50,6 +50,14 @@ so that these two specialised inputs don't come from a third-party design system
 - `Rating` is derived from the meccs-ui slider rating variant, per the comment in
   `src/components/index.ts`.
 
+## Bugs
+
+- 2026-08-17 — `Rating` rendered a ~4.5 KB `<style>` element per instance (both return paths),
+  duplicating the stylesheet per rating and folding its CSS text into the containing element's
+  `textContent`. Rules moved verbatim to `src/styles/components.css` (the three star-mask
+  `url('data:image/svg+xml,…')` constants are now inlined literals); class names unchanged.
+  Guarded by `src/test/css-sanity.test.ts`. Fixed in 0.8.1.
+
 ## Out of scope
 
 - Alpha / opacity editing in `ColorPicker` — the value contract is three-channel OKLCH.
