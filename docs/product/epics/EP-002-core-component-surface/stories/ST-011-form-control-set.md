@@ -53,6 +53,13 @@ so that a form does not mix three component vocabularies.
 
 ## Bugs
 
+- 2026-08-17 — `Checkbox` / `EnhancedCheckbox` / `RadioGroup` numeric `gap` built the class at
+  runtime (template-interpolated `gap-` + N). The consumer's Tailwind scanner only sees literal
+  strings in dist, so the class generated CSS only for values that happened to appear literally
+  elsewhere in the bundle (0–4, 6); `gap={5}` etc. silently rendered with no gap. Numeric gap now
+  renders as an inline style (`N × 0.25rem`, identical values); string gap still passes through as
+  a class. Guarded by `src/test/css-sanity.test.ts`. Fixed in 0.8.1.
+
 - 2026-08-13 — Sliding `RadioGroup` default `--radio-pill-radius` is `var(--radius-md)` (matches
   Tabs / Button) instead of a full capsule. Inner chip uses `outer − 3px` inset. Circular radio
   discs stay `rounded-full`.

@@ -34,7 +34,7 @@ export interface EnhancedRadioGroupProps
    */
   disabled?: boolean
   /**
-   * Gap between radio items. Can be a number (gap in pixels) or a Tailwind gap class.
+   * Gap between radio items. Can be a number (Tailwind spacing scale, N × 4px, rendered as an inline style) or a Tailwind gap class string.
    * - `0` or `"gap-0"`: No gap
    * - `1` or `"gap-1"` (4px)
    * - `2` or `"gap-2"` (8px) - compact
@@ -79,7 +79,7 @@ export interface EnhancedRadioGroupProps
 const EnhancedRadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   EnhancedRadioGroupProps
->(({ className, variant = "animated", disabled, gap = 3, children, ...props }, ref) => {
+>(({ className, variant = "animated", disabled, gap = 3, style, children, ...props }, ref) => {
   const groupRef = React.useRef<HTMLDivElement | null>(null)
   const [indicatorStyle, setIndicatorStyle] = React.useState<React.CSSProperties>({})
   const [showIndicatorElement, setShowIndicatorElement] = React.useState(false)
@@ -262,8 +262,12 @@ const EnhancedRadioGroup = React.forwardRef<
     }
   }, [variant, updateIndicatorPosition, currentValue, children])
 
-  // Container className based on variant
-  const gapClass = typeof gap === "number" ? `gap-${gap}` : gap
+  // Container className based on variant. Numeric gap renders as an inline
+  // style (N × 0.25rem) — a constructed gap-N utility class is invisible to
+  // the consumer's Tailwind scanner. String gap stays a class passthrough.
+  const gapIsNumber = typeof gap === "number"
+  const mergedStyle =
+    variant !== "sliding" && gapIsNumber ? { gap: `${gap * 0.25}rem`, ...style } : style
   const containerClassName = cn(
     variant === "sliding"
       ? /* Inset padding matches TabsList. Outer --radio-pill-radius; inner
@@ -271,7 +275,7 @@ const EnhancedRadioGroup = React.forwardRef<
          * the pad stays concentric. Override --radio-pill-radius (e.g. 9999px)
          * and both layers follow. Default matches Button / Tabs (radius-md). */
         "sliding-indicator-container isolate flex flex-row items-center gap-0 [--radio-pill-radius:var(--radius-md)] [--radio-pill-inset:3px] [--radio-pill-inner-radius:max(0px,calc(var(--radio-pill-radius)-var(--radio-pill-inset)))] rounded-(--radio-pill-radius) bg-muted p-[var(--radio-pill-inset)] box-border overflow-x-auto min-h-7 min-w-0"
-      : `grid ${gapClass} w-full`, // animated (default)
+      : cn("grid w-full", !gapIsNumber && gap), // animated (default)
     className
   )
 
@@ -281,6 +285,7 @@ const EnhancedRadioGroup = React.forwardRef<
         ref={combinedRef}
         data-slot="radio-group"
         className={containerClassName}
+        style={mergedStyle}
         disabled={disabled}
         value={props.value}
         defaultValue={props.defaultValue}

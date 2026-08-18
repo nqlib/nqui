@@ -203,7 +203,12 @@ const Checkbox = React.forwardRef<
 >(({ className, children, id, gap = 3, ...props }, ref) => {
   const stableId = useId()
   const inputId = id || stableId
-  const gapClass = typeof gap === "number" ? `gap-${gap}` : gap
+  // Numeric gap renders as an inline style (N × 0.25rem, the Tailwind spacing
+  // scale). A constructed gap-N utility class is invisible to the consumer's
+  // Tailwind scanner, so it only styled values that happened to appear
+  // literally elsewhere in the bundle.
+  const gapIsNumber = typeof gap === "number"
+  const gapStyle = gapIsNumber ? { gap: `${gap * 0.25}rem` } : undefined
 
   const checkboxElement = (
     <CheckboxPrimitive.Root
@@ -228,8 +233,9 @@ const Checkbox = React.forwardRef<
       htmlFor={inputId}
       className={cn(
         "flex items-center cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-        gapClass
+        !gapIsNumber && gap
       )}
+      style={gapStyle}
     >
       {checkboxElement}
       {children}
@@ -285,11 +291,13 @@ const EnhancedCheckbox = React.forwardRef<
         htmlFor={inputId}
         className={cn(
           "checkbox-animated-label",
-          typeof gap === "number" ? `flex items-center gap-${gap}` : `flex items-center ${gap}`,
+          "flex items-center",
+          typeof gap !== "number" && gap,
           "cursor-pointer",
           "relative",
           disabled && "cursor-not-allowed opacity-50"
         )}
+        style={typeof gap === "number" ? { gap: `${gap * 0.25}rem` } : undefined}
         data-disabled={disabled ? "true" : undefined}
       >
         {checkboxEl}

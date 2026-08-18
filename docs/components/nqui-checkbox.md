@@ -34,7 +34,7 @@ Control the gap between checkbox and label:
 <Checkbox gap={4}>Loose gap (16px)</Checkbox>
 ```
 
-Options: `0`, `1`, `2`, `3`, `4` (maps to Tailwind gap-0 through gap-4).
+Any number works (Tailwind spacing scale, N × 4px, rendered as an inline style); strings pass through as a class (e.g. `gap="gap-6"`).
 
 ## Variants
 

@@ -19,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Toast motion (ST-003)** — same defect in the injected toast stylesheet
   (`ease-[var(--ease-in-out)]` → `var(--ease-in-out)`), restoring the 200ms transition on
   `.cn-toast`.
+- **Checkbox / RadioGroup gap (ST-011)** — numeric `gap` was emitted as a
+  runtime-constructed `gap-N` class, which the consumer's Tailwind scanner
+  cannot see; values without a literal `gap-N` elsewhere in the bundle
+  (anything but 0–4, 6) silently rendered with no gap. Numeric gap is now an
+  inline style (`N × 0.25rem`, same values); string gap still passes through
+  as a class. A new source-level test (`css-sanity.test.ts`) guards both this
+  and the invalid-easing bug class.
 
 ## [0.8.0] - 2026-08-16
 
