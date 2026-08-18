@@ -49,12 +49,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Upgrade notes
 
+**Why this is a patch and not a minor.** `agentic-coding-guideline.md` sends any
+breaking public-surface change to a minor bump while pre-1.0. This release was
+weighed against that rule and deliberately kept at patch: no export, prop, type
+or peer dependency changed, and the one behavior that shifted (below) only
+affects apps that were already ignoring documented required setup. Consumers who
+follow the install instructions see bug fixes only.
+
 - **Import `@nqlib/nqui/styles`.** `Checkbox`, `Rating` and `Progress` used to
   carry a per-instance `<style>` element, so an app that skipped the stylesheet
   import still got partially-structured controls. They now rely on
   `dist/styles.css` like every other component; without that import they render
-  unstyled. The import has always been documented as required setup, which is
-  why this ships as a patch.
+  unstyled. That import has been required setup since the package began shipping
+  tokens — every other component already depended on it, and these three only
+  appeared to work without it by accident.
 - **Spacing may shift where `gap-N` was previously dead.** Numeric `gap` on
   `Checkbox` / `RadioGroup` generated no CSS unless that exact `gap-N` literal
   happened to appear elsewhere in the bundle. Layouts that silently rendered

@@ -143,6 +143,16 @@ Landed as specified. Notes for the record:
 - `dist/nqui.es.js` no longer contains any of the CSS text or the star-mask data URIs.
 - Visual QA done against the built `dist/styles.css` in both themes.
 - Cascade risk did not materialize; no `!important` was added.
+- **Semver: kept at patch (0.8.1), deliberately.** A pre-publish review flagged
+  that removing self-injected styles changes the failure mode for an app that
+  never imports `@nqlib/nqui/styles` — it goes from degraded-but-structured to
+  fully unstyled — and that `agentic-coding-guideline.md` §"breaking" routes any
+  breaking public-surface change to a minor bump while pre-1.0. Maintainer call:
+  stay at patch. Nothing in the public surface moved (no export, prop, type or
+  peer dependency), the styles import has always been documented as required
+  setup, and the three components only appeared to work without it by accident.
+  Recorded in the CHANGELOG's "Upgrade notes" so the reasoning travels with the
+  release rather than living only in review history.
 
 ## Definition of done
 
