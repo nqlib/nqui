@@ -61,7 +61,7 @@ subpaths; `docs/components/nqui-*.md`.
 | ST-009 | Enhanced / Core aliasing convention | done | pre-baseline |
 | ST-010 | Action and content primitives | done | pre-baseline |
 | ST-011 | Form control set | done | pre-baseline |
-| ST-012 | Combobox with single and multi select | done | 0.7.1 |
+| ST-012 | Combobox with single and multi select | review | 0.7.1 |
 | ST-013 | Calendar behind `./calendar` | done | 0.7.0 |
 | ST-014 | Color picker, color slider and rating | done | pre-baseline |
 | ST-015 | Overlay set — dialog, sheet, popover, menus, tooltip | done | pre-baseline |

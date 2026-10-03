@@ -2,7 +2,7 @@
 id: ST-012
 epic: EP-002
 title: Combobox with single and multi select
-status: done
+status: review
 priority: must
 release: 0.7.1
 breaking: false
@@ -37,6 +37,16 @@ so that I don't hand-roll filtering on top of `Select`.
       no longer double-fires against the `onMouseDown` toggle (fixed in 0.7.1, `ff351e6`).
 - [x] `docs/components/nqui-combobox.md` documents `multiple`, keyword matching, and the
       Combobox-vs-Select choice.
+- [x] `ComboboxContent` accepts `inline?: boolean` (default `false`). When true, the Command
+      panel mounts in place with no Popover portal so a searchable list can live inside a
+      menu submenu. Documented under “Inside a menu submenu”; panel search stops keydown
+      bubbling to menu typeahead.
+- [x] Opening the panel pins the current selection to the top (`pinSelected`, default `true`)
+      and keeps that order until close. `pinSelected={false}` leaves source order.
+      `ComboboxItem` `pinned="start"` stays above those rows. `ComboboxContent` `showSelected`
+      shows removable chips above the search and leaves the list in source order.
+- [x] `onCreate` shows a create row when the trimmed search is not already an option. Choosing
+      it calls `onCreate` with that text and selects it. Documented under “Create a missing search”.
 
 ## Technical notes
 

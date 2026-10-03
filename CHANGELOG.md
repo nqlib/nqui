@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-10-03
+
+### Added
+
+- **Combobox (ST-012)** pins the current selection to the top of the list when the panel opens, then keeps that order until the panel closes. `pinSelected={false}` leaves the source order. `ComboboxItem` `pinned="start"` holds a sentinel row (such as "All") above the selected rows. `ComboboxContent` `showSelected` is the other option: removable chips above the search, and the list stays in source order.
+- **Combobox (ST-012)** `ComboboxContent` `inline` renders the panel in place (no Popover portal) so a searchable list can live inside a menu submenu without a second floating layer.
+- **Combobox (ST-012)** `onCreate` shows a create row when the search text is not already an option. Choosing it selects that text. Add the value to `items` in the callback so the next open lists it.
+
 ## [0.8.1] - 2026-08-17
 
 ### Fixed

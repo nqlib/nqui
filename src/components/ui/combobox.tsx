@@ -3,6 +3,7 @@
 import {
   IconChevronDown,
   IconChevronsUpDown,
+  IconPlus,
   IconX,
 } from "@/components/icons"
 
@@ -22,6 +23,7 @@ import { floatingSurface } from "@/lib/floating-surface"
 import { wrapInlineLabelTextNodes } from "@/lib/wrap-inline-label-text"
 import { EnhancedBadge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { defaultFilter } from "cmdk"
 import {
   Command,
   CommandEmpty,
@@ -86,6 +88,19 @@ type ComboboxContextValue = {
   /** cmdk overwrites `Command.List` `id` with its internal id — we mirror the real DOM id here for aria-controls. */
   listboxIdAria: string | undefined
   setListboxIdAria: (id: string | undefined) => void
+  /**
+   * Values that were selected at the moment the panel opened.
+   * Row order uses this set, not the live value, so a click cannot move a row while the panel stays open.
+   */
+  pinnedValues: ReadonlySet<string>
+  pinSelected: boolean
+  /**
+   * Called with the trimmed search when the user creates a value that is not already an option.
+   * Absent means the create row is not shown.
+   */
+  onCreate?: (value: string) => void
+  /** True when `query` already matches an item value or registered label, ignoring case. */
+  hasExactOption: (query: string) => boolean
 }
 
 type ComboboxProps = Omit<React.ComponentProps<typeof PopoverPrimitive.Root>, "children"> & {
@@ -103,6 +118,17 @@ type ComboboxProps = Omit<React.ComponentProps<typeof PopoverPrimitive.Root>, "c
    * No effect in production builds.
    */
   debug?: boolean
+  /**
+   * On open, render the selected rows first and keep that order until the panel closes.
+   * `false` leaves the list in the order the caller wrote.
+   * @default true
+   */
+  pinSelected?: boolean
+  /**
+   * When the search text is not already an option, the panel shows a create row.
+   * Add the value to `items` here; the combobox also selects it.
+   */
+  onCreate?: (value: string) => void
 }
 
 function getTextFromNode(node: React.ReactNode): string {
@@ -141,6 +167,9 @@ function getComboboxItemLabel(node: React.ReactNode): string {
 
 const ComboboxContext = React.createContext<ComboboxContextValue | null>(null)
 
+/** Panel chrome. `true` when this content shows the selected-chip strip. */
+const ComboboxPanelContext = React.createContext(false)
+
 function useComboboxContext() {
   const ctx = React.useContext(ComboboxContext)
   if (!ctx) {
@@ -162,6 +191,8 @@ function Combobox({
   onOpenChange,
   modal = false,
   debug = false,
+  pinSelected = true,
+  onCreate,
   children,
   ...popoverProps
 }: ComboboxProps) {
@@ -194,6 +225,16 @@ function Combobox({
   )
 
   const [search, setSearch] = React.useState("")
+
+  // Snapshot selection when the panel opens. Later value changes must not reshuffle rows.
+  const [wasOpen, setWasOpen] = React.useState(open)
+  const [pinnedValues, setPinnedValues] = React.useState<ReadonlySet<string>>(() =>
+    open && pinSelected ? selectedValueSet(value) : EMPTY_SELECTED
+  )
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    setPinnedValues(open && pinSelected ? selectedValueSet(value) : EMPTY_SELECTED)
+  }
 
   const [labelByValue, setLabelByValue] = React.useState<Record<string, string>>({})
   const registerLabel = React.useCallback((itemValue: string, label: string) => {
@@ -262,6 +303,19 @@ function Combobox({
 
   const shouldFilter = items == null
 
+  const hasExactOption = React.useCallback(
+    (query: string) => {
+      const q = query.trim().toLowerCase()
+      if (!q) return true
+      if (items?.some((item) => String(item).trim().toLowerCase() === q)) return true
+      for (const [itemValue, label] of Object.entries(labelByValue)) {
+        if (itemValue.trim().toLowerCase() === q || label.trim().toLowerCase() === q) return true
+      }
+      return selectedValueList(value).some((itemValue) => itemValue.trim().toLowerCase() === q)
+    },
+    [items, labelByValue, value]
+  )
+
   const ctx: ComboboxContextValue = {
     open,
     setOpen,
@@ -282,6 +336,10 @@ function Combobox({
     filterItems,
     listboxIdAria,
     setListboxIdAria,
+    pinnedValues,
+    pinSelected,
+    onCreate,
+    hasExactOption,
   }
 
   React.useEffect(() => {
@@ -564,12 +622,24 @@ function ComboboxInput({
 export type ComboboxContentProps = React.ComponentProps<typeof PopoverPrimitive.Content> & {
   /** When true, the cmdk search field is visible in the panel (typical for multi-select badge trigger). */
   showPanelSearch?: boolean
+  /**
+   * Show the current selection as removable chips above the search.
+   * The list stays in the order the caller wrote. `pinSelected` still applies when this is off.
+   * @default false
+   */
+  showSelected?: boolean
+  /**
+   * Render the panel in place (no Popover portal). Use inside a menu submenu whose
+   * content already positions the flyout — a second popover would steal focus.
+   * @default false
+   */
+  inline?: boolean
 }
 
 /**
  * Panel content mirrors `CommandPalette`’s inner tree: `Command` → `CommandInput` → list (`children`).
- * We use Popover + Anchor instead of CommandDialog so the field stays inline. The cmdk search input must
- * remain mounted and not `display:none` (see `sr-only` branch) so cmdk’s internal state matches palette behavior.
+ * Default: Popover + Anchor. With `inline`, the same Command tree mounts in place (menu submenus).
+ * The cmdk search input must remain mounted and not `display:none` (see `sr-only` branch).
  */
 function ComboboxContent({
   className,
@@ -582,11 +652,15 @@ function ComboboxContent({
   onPointerDownOutside,
   onFocusOutside,
   showPanelSearch = false,
+  showSelected = false,
+  inline = false,
   children,
   onPointerDownCapture: userPointerDownCapture,
   ...props
 }: ComboboxContentProps) {
-  const { shouldFilter, search, setSearch, setOpen, disabled, searchPlaceholder } = useComboboxContext()
+  const { shouldFilter, search, setSearch, setOpen, disabled, searchPlaceholder, pinSelected } =
+    useComboboxContext()
+  const preserveListOrder = pinSelected || showSelected
 
   const searchInput = (
     <CommandInput
@@ -599,8 +673,54 @@ function ComboboxContent({
       disabled={disabled}
       tabIndex={showPanelSearch ? 0 : -1}
       className="pointer-events-auto"
+      onKeyDown={
+        inline
+          ? (e) => {
+              // Keep menu typeahead from eating characters typed in the panel search.
+              e.stopPropagation()
+            }
+          : undefined
+      }
     />
   )
+
+  const panel = (
+    <ComboboxPanelContext.Provider value={showSelected}>
+      <Command
+        className={cn(
+          "group/cmdk relative flex !h-auto min-h-0 w-full max-w-full flex-col overflow-hidden rounded-none! border-0 bg-transparent p-1 shadow-none",
+          inline
+            ? "max-h-[min(24rem,70vh)]"
+            : "max-h-[min(24rem,var(--radix-popover-content-available-height,24rem))]"
+        )}
+        shouldFilter={shouldFilter}
+        filter={preserveListOrder ? comboboxOrderPreservingFilter : undefined}
+        disablePointerSelection={false}
+        loop
+      >
+        {showSelected ? <ComboboxSelectedSummary /> : null}
+        {showPanelSearch ? (
+          searchInput
+        ) : (
+          <div className="sr-only pointer-events-none">{searchInput}</div>
+        )}
+        <ComboboxCreateOption />
+        {children}
+      </Command>
+    </ComboboxPanelContext.Provider>
+  )
+
+  if (inline) {
+    return (
+      <div
+        data-slot="combobox-content"
+        data-inline=""
+        className={cn("w-full min-w-0 overflow-hidden p-0 outline-hidden", className)}
+      >
+        {panel}
+      </div>
+    )
+  }
 
   return (
     <PopoverPrimitive.Portal>
@@ -634,21 +754,7 @@ function ComboboxContent({
         onPointerDownCapture={userPointerDownCapture}
         {...props}
       >
-        <Command
-          className="group/cmdk relative flex !h-auto min-h-0 w-full max-w-full flex-col overflow-hidden rounded-none! border-0 bg-transparent p-1 shadow-none max-h-[min(24rem,var(--radix-popover-content-available-height,24rem))]"
-          shouldFilter={shouldFilter}
-          disablePointerSelection={false}
-          loop
-        >
-          {showPanelSearch ? (
-            searchInput
-          ) : (
-            <div className="sr-only pointer-events-none">
-              {searchInput}
-            </div>
-          )}
-          {children}
-        </Command>
+        {panel}
       </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   )
@@ -773,6 +879,277 @@ function ComboboxBadgeTrigger({
   )
 }
 
+const EMPTY_SELECTED: ReadonlySet<string> = new Set()
+
+function selectedValueList(value: string | string[] | undefined): string[] {
+  if (typeof value === "string") return value.length > 0 ? [value] : []
+  if (Array.isArray(value)) return value.filter((entry) => entry.length > 0)
+  return []
+}
+
+/** Shown only when `onCreate` is set and the trimmed search is not already an option. */
+function ComboboxCreateOption() {
+  const { search, onCreate, hasExactOption, registerLabel, onItemSelect, setSearch, disabled } =
+    useComboboxContext()
+  const query = search.trim()
+  if (!onCreate || disabled || !query || hasExactOption(query)) return null
+
+  const create = () => {
+    onCreate(query)
+    registerLabel(query, query)
+    onItemSelect(query, query)
+    setSearch("")
+  }
+
+  return (
+    <button
+      type="button"
+      data-slot="combobox-create"
+      className="mx-1 mt-0.5 flex min-h-8 w-auto cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-sm text-foreground outline-none hover:bg-interactive focus-visible:bg-interactive"
+      onMouseDown={(e) => {
+        e.preventDefault()
+      }}
+      onClick={create}
+    >
+      <IconPlus strokeWidth={2} className="size-3.5 shrink-0" aria-hidden />
+      <span className="min-w-0 truncate">Create “{query}”</span>
+    </button>
+  )
+}
+
+/**
+ * Removable chips for the current selection, above the panel search.
+ * Empty selection renders nothing so the list is the whole panel.
+ */
+function ComboboxSelectedSummary() {
+  const { value, getLabel, setValue, multiple } = useComboboxContext()
+  const selected = selectedValueList(value)
+  if (selected.length === 0) return null
+
+  const remove = (itemValue: string) => {
+    if (multiple) {
+      const current = Array.isArray(value) ? value : []
+      setValue(current.filter((entry) => entry !== itemValue))
+      return
+    }
+    setValue("")
+  }
+
+  return (
+    <div
+      data-slot="combobox-selected-summary"
+      className="flex flex-wrap items-center gap-1 border-b border-border px-1.5 pt-1 pb-1.5"
+    >
+      {selected.map((itemValue) => {
+        const label = getLabel(itemValue) ?? itemValue
+        return (
+          <EnhancedBadge
+            key={itemValue}
+            variant="outline"
+            className="max-w-full !rounded-md py-0 pl-1.5 pr-0.5 !shadow-none"
+          >
+            <span className="min-w-0 max-w-[10rem] truncate">{label}</span>
+            <button
+              type="button"
+              aria-label={`Remove ${label}`}
+              className="inline-flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-70 outline-none hover:bg-interactive hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
+              onPointerDown={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+              }}
+              onClick={(e) => {
+                e.stopPropagation()
+                remove(itemValue)
+              }}
+            >
+              <IconX strokeWidth={2} className="size-3 pointer-events-none" />
+            </button>
+          </EnhancedBadge>
+        )
+      })}
+    </div>
+  )
+}
+
+function selectedValueSet(value: string | string[] | undefined): ReadonlySet<string> {
+  if (typeof value === "string") {
+    return value.length > 0 ? new Set([value]) : EMPTY_SELECTED
+  }
+  if (Array.isArray(value)) {
+    const next = value.filter((entry) => entry.length > 0)
+    return next.length > 0 ? new Set(next) : EMPTY_SELECTED
+  }
+  return EMPTY_SELECTED
+}
+
+/**
+ * cmdk reorders matches by score. A flat score of 1 keeps React order (stable sort)
+ * so a selected match stays above the other matches, and a score of 0 still hides a miss.
+ */
+function comboboxOrderPreservingFilter(value: string, search: string, keywords?: string[]): number {
+  return defaultFilter(value, search, keywords) > 0 ? 1 : 0
+}
+
+function isComboboxItemElement(
+  node: React.ReactNode
+): node is React.ReactElement<{ value: string; pinned?: "start" }> {
+  return React.isValidElement(node) && node.type === ComboboxItem
+}
+
+function isComboboxGroupElement(
+  node: React.ReactNode
+): node is React.ReactElement<{ children?: React.ReactNode }> {
+  return (
+    React.isValidElement(node) &&
+    (node.type === ComboboxGroup || node.type === ComboboxCollection)
+  )
+}
+
+/** Unwrap arrays and fragments without rewriting element identity or keys. */
+function flattenComboboxNodes(children: React.ReactNode): React.ReactNode[] {
+  const out: React.ReactNode[] = []
+  const visit = (node: React.ReactNode) => {
+    if (node == null || typeof node === "boolean") return
+    if (Array.isArray(node)) {
+      node.forEach(visit)
+      return
+    }
+    if (React.isValidElement(node) && node.type === React.Fragment) {
+      visit((node.props as { children?: React.ReactNode }).children)
+      return
+    }
+    out.push(node)
+  }
+  visit(children)
+  return out
+}
+
+/**
+ * Selected rows first, `pinned="start"` above those, everyone else after.
+ * Each bucket keeps the source relative order. No selected row in this run → leave it alone.
+ */
+function partitionComboboxItems(
+  items: React.ReactElement<{ value: string; pinned?: "start" }>[],
+  selected: ReadonlySet<string>
+): React.ReactElement[] {
+  const start: React.ReactElement[] = []
+  const picked: React.ReactElement[] = []
+  const rest: React.ReactElement[] = []
+  let hasSelected = false
+  for (const item of items) {
+    if (item.props.pinned === "start") {
+      start.push(item)
+      continue
+    }
+    if (selected.has(item.props.value)) {
+      picked.push(item)
+      hasSelected = true
+      continue
+    }
+    rest.push(item)
+  }
+  if (!hasSelected) return items
+  return [...start, ...picked, ...rest]
+}
+
+/**
+ * Pin selected ComboboxItem rows inside their own sibling run.
+ * ComboboxEmpty, ComboboxSeparator, and other non-items stay put, so a separator
+ * keeps the same neighboring runs. Groups (and collections) pin inside themselves.
+ */
+function reorderComboboxNodes(
+  nodes: readonly React.ReactNode[],
+  selected: ReadonlySet<string>
+): React.ReactNode[] {
+  if (selected.size === 0) return [...nodes]
+  const prepared = nodes.map((node, index) => reorderComboboxGroup(node, selected, index))
+  const result: React.ReactNode[] = []
+  let run: React.ReactElement<{ value: string; pinned?: "start" }>[] = []
+  const flush = () => {
+    if (run.length === 0) return
+    result.push(...partitionComboboxItems(run, selected))
+    run = []
+  }
+  for (const node of prepared) {
+    if (isComboboxItemElement(node)) run.push(node)
+    else {
+      flush()
+      result.push(node)
+    }
+  }
+  flush()
+  return result
+}
+
+function reorderComboboxGroup(
+  node: React.ReactNode,
+  selected: ReadonlySet<string>,
+  index = 0
+): React.ReactNode {
+  if (!isComboboxGroupElement(node)) return node
+  const prevChildren = flattenComboboxNodes(node.props.children)
+  const nextChildren = reorderComboboxNodes(prevChildren, selected)
+  if (
+    nextChildren.length === prevChildren.length &&
+    nextChildren.every((child, index) => child === prevChildren[index])
+  ) {
+    return node
+  }
+  // A cloned group is a new element. Give it a real key so the list div does not
+  // warn. Index is stable: groups stay in place and only their rows move.
+  const keyed = nextChildren.map((child, childIndex) => explicitChildKey(child, childIndex))
+  const groupKey = node.key ?? `combobox-group-${index}`
+  if (keyed.length === 0) return React.cloneElement(node, { key: groupKey, children: null })
+  return React.cloneElement(node, { key: groupKey }, ...keyed)
+}
+
+function explicitChildKey(node: React.ReactNode, index: number): React.ReactNode {
+  if (!React.isValidElement(node) || node.key != null) return node
+  const key = isComboboxItemElement(node) ? `item-${node.props.value}` : `node-${index}`
+  return React.cloneElement(node, { key })
+}
+
+type RenderedComboboxEntry = { item: unknown; node: React.ReactNode }
+
+function reorderRenderedComboboxEntries(
+  entries: readonly RenderedComboboxEntry[],
+  selected: ReadonlySet<string>
+): RenderedComboboxEntry[] {
+  const prepared = entries.map((entry) => ({
+    item: entry.item,
+    node: reorderComboboxGroup(entry.node, selected),
+  }))
+  if (selected.size === 0) return prepared
+
+  const result: RenderedComboboxEntry[] = []
+  let run: RenderedComboboxEntry[] = []
+  const flush = () => {
+    if (run.length === 0) return
+    const items = run.map((entry) => entry.node)
+    if (!items.every(isComboboxItemElement)) {
+      result.push(...run)
+      run = []
+      return
+    }
+    const ordered = partitionComboboxItems(items, selected)
+    const byNode = new Map(run.map((entry) => [entry.node, entry]))
+    for (const node of ordered) {
+      const entry = byNode.get(node)
+      if (entry) result.push(entry)
+    }
+    run = []
+  }
+  for (const entry of prepared) {
+    if (isComboboxItemElement(entry.node)) run.push(entry)
+    else {
+      flush()
+      result.push(entry)
+    }
+  }
+  flush()
+  return result
+}
+
 /** React.Children.toArray / forEach drop function children — we need them for the items render prop. */
 function splitComboboxListChildren(
   children: React.ReactNode | ((item: unknown) => React.ReactNode)
@@ -811,27 +1188,37 @@ function splitComboboxListChildren(
   return { staticNodes, renderFn }
 }
 
+interface ComboboxListProps
+  extends Omit<React.ComponentProps<typeof CommandList>, "children"> {
+  children?: React.ReactNode | ((item: unknown) => React.ReactNode)
+  /** Render each entry from the parent `Combobox` `items` array (typed alternative to a function child). */
+  renderItem?: (item: unknown) => React.ReactNode
+}
+
 function ComboboxList({
   className,
   children,
   renderItem,
   style,
   ...props
-}: Omit<React.ComponentProps<typeof CommandList>, "children"> & {
-  children?: React.ReactNode
-  /** Render each entry from the parent `Combobox` `items` array (typed alternative to a function child). */
-  renderItem?: (item: unknown) => React.ReactNode
-}) {
-  const { items, filterItems, search: listSearch, open, setListboxIdAria } = useComboboxContext()
+}: ComboboxListProps) {
+  const { items, filterItems, search: listSearch, open, setListboxIdAria, pinSelected, pinnedValues } =
+    useComboboxContext()
+  const showSelected = React.useContext(ComboboxPanelContext)
+  const pinRows = pinSelected && !showSelected
 
   const { staticNodes, renderFn } = splitComboboxListChildren(children)
   const itemRenderer = renderItem ?? renderFn
+  const orderedStaticNodes = pinRows
+    ? reorderComboboxNodes(staticNodes, pinnedValues)
+    : staticNodes
 
   const mappedItems = React.useMemo(() => {
     if (!itemRenderer || !items) return null
-    const filtered = items.filter(filterItems)
-    return filtered.map((item) => itemRenderer(item))
-  }, [itemRenderer, items, filterItems, listSearch])
+    const rendered = items.map((item) => ({ item, node: itemRenderer(item) }))
+    const ordered = pinRows ? reorderRenderedComboboxEntries(rendered, pinnedValues) : rendered
+    return ordered.filter((entry) => filterItems(entry.item)).map((entry) => entry.node)
+  }, [itemRenderer, items, filterItems, listSearch, pinRows, pinnedValues])
 
   const listRef = React.useRef<HTMLDivElement | null>(null)
 
@@ -866,7 +1253,7 @@ function ComboboxList({
       }
       {...props}
     >
-      {staticNodes}
+      {orderedStaticNodes}
       {mappedItems}
     </CommandList>
   )
@@ -877,6 +1264,7 @@ function ComboboxItem({
   children,
   value: itemValue,
   keywords: keywordsProp,
+  pinned: _pinned,
   onPointerDown: userPointerDown,
   onMouseDown: userMouseDown,
   onSelect: userOnSelect,
@@ -885,6 +1273,11 @@ function ComboboxItem({
   value: string
   /** Extra strings for cmdk filtering when children include icons or non-text UI. */
   keywords?: string[]
+  /**
+   * Keep this row above the selected rows. Use for a sentinel such as "All".
+   * Ignored when `pinSelected` is false, and when `ComboboxContent` `showSelected` is set.
+   */
+  pinned?: "start"
 }) {
   const ctx = useComboboxContext()
   const label = React.useMemo(() => getComboboxItemLabel(children), [children])
