@@ -243,7 +243,7 @@ Use these rules to choose the right component. **Selection** = user picks from o
 | Rating | [nqui-rating.md](./nqui-rating.md) | Star/score (1–5). |
 | InputOTP | [nqui-input-otp.md](./nqui-input-otp.md) | OTP/verification. |
 | Field | [nqui-field.md](./nqui-field.md) | Label + description + error wrapper. |
-| Combobox | [nqui-combobox.md](./nqui-combobox.md) | **Searchable** select. Single or `multiple`. Use when user types to filter. |
+| Combobox | [nqui-combobox.md](./nqui-combobox.md) | **Searchable** select. Single or `multiple`. Selected rows pin to the top when the panel opens, `showSelected` keeps chips above the search, and `onCreate` adds a missing search as an option. |
 | ColorPicker | [nqui-color-picker.md](./nqui-color-picker.md) | Color selection. OKLCH. |
 | ColorSlider | [nqui-color-slider.md](./nqui-color-slider.md) | Hue/saturation (used in ColorPicker). |
 | Label | [nqui-label.md](./nqui-label.md) | Form label. |
