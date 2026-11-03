@@ -17,7 +17,9 @@ function useSlidingTabIndicator(
     width: number
     height: number
     visible: boolean
-  }>({ left: 0, top: 0, width: 0, height: 0, visible: false })
+    /** List border width — the inner pill radius subtracts it to stay concentric. */
+    border: number
+  }>({ left: 0, top: 0, width: 0, height: 0, visible: false, border: 0 })
 
   const measure = React.useCallback(() => {
     const list = listRef.current
@@ -56,6 +58,7 @@ function useSlidingTabIndicator(
               width: LINE_THICKNESS,
               height: ar.height,
               visible: true,
+              border: 0,
             }
           : {
               left,
@@ -68,6 +71,7 @@ function useSlidingTabIndicator(
               width: ar.width,
               height: LINE_THICKNESS,
               visible: true,
+              border: 0,
             }
       )
       return
@@ -78,6 +82,7 @@ function useSlidingTabIndicator(
       width: ar.width,
       height: ar.height,
       visible: true,
+      border: borderTop,
     })
   }, [listRef, kind])
 
@@ -134,10 +139,11 @@ Tabs.displayName = "Tabs"
 const tabsListVariants = cva(
   /* h-7 matches default Button / Input / Toggle / pagination (28px strip) */
   /* --tabs-pill-radius = outer shell. Inner indicator / triggers use
-   * --tabs-pill-inner-radius = max(0, outer − inset) so the 3px pad stays
-   * concentric (R_inner = R_outer − padding). Override --tabs-pill-radius on
-   * TabsList (e.g. 9999px) and both layers follow. Default matches Button. */
-  "[--tabs-pill-radius:var(--radius-md)] [--tabs-pill-inset:3px] [--tabs-pill-inner-radius:max(0px,calc(var(--tabs-pill-radius)-var(--tabs-pill-inset)))] rounded-(--tabs-pill-radius) p-[var(--tabs-pill-inset)] group-data-horizontal/tabs:h-7 data-[variant=line]:rounded-none group/tabs-list text-muted-foreground inline-flex w-fit items-center justify-center group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col",
+   * --tabs-pill-inner-radius = max(0, outer − border − inset) so the 3px pad
+   * stays concentric (R_inner = R_outer − border − padding; --tabs-pill-border is
+   * measured, 0 without a border). Override --tabs-pill-radius on TabsList
+   * (e.g. 9999px) and both layers follow. Default matches Button. */
+  "[--tabs-pill-radius:var(--radius-md)] [--tabs-pill-inset:3px] [--tabs-pill-inner-radius:max(0px,calc(var(--tabs-pill-radius)-var(--tabs-pill-border,0px)-var(--tabs-pill-inset)))] rounded-(--tabs-pill-radius) p-[var(--tabs-pill-inset)] group-data-horizontal/tabs:h-7 data-[variant=line]:rounded-none group/tabs-list text-muted-foreground inline-flex w-fit items-center justify-center group-data-[orientation=vertical]/tabs:h-fit group-data-[orientation=vertical]/tabs:flex-col",
   {
     variants: {
       variant: {
@@ -157,7 +163,7 @@ const TabsList = React.forwardRef<
     VariantProps<typeof tabsListVariants> & {
       children?: React.ReactNode
     }
->(({ className, variant = "default", children, ...props }, ref) => {
+>(({ className, variant = "default", children, style, ...props }, ref) => {
   const listRef = React.useRef<HTMLDivElement>(null)
   const composedRef = useComposedRefs(ref, listRef)
   const kind = variant === "line" ? "line" : "pill"
@@ -169,6 +175,11 @@ const TabsList = React.forwardRef<
       data-slot="tabs-list"
       data-variant={variant}
       className={cn(tabsListVariants({ variant }), "relative isolate", className)}
+      style={
+        pill.border > 0
+          ? ({ "--tabs-pill-border": `${pill.border}px`, ...style } as React.CSSProperties)
+          : style
+      }
       {...props}
     >
       <span
@@ -211,7 +222,9 @@ const TabsTrigger = React.forwardRef<
         /* Inactive: ghost-like (matches PaginationLink ghost); active: outline (matches PaginationLink isActive) */
         /* text-sm + icon size-4 match default Button */
         /* Size to the label (no flex-1 / min-w-0 / truncate). Overflowing rows use InlineTabsList. */
-        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:bg-interactive hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-[variant=line]/tabs-list:h-full group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] w-auto shrink-0 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        /* Hover is a text-colour shift only (MOTION.md): triggers sit flush against the sliding
+         * pill, so a hover fill would butt into the active chip and read as one merged shape. */
+        "gap-1.5 rounded-(--tabs-pill-inner-radius) border border-transparent px-1.5 py-0.5 text-sm font-medium text-muted-foreground hover:text-foreground group-data-[variant=line]/tabs-list:rounded-md group-data-[variant=line]/tabs-list:h-full group-data-vertical/tabs:py-[calc(--spacing(1.25))] [&_svg:not([class*='size-'])]:size-4 ring-offset-background relative z-10 inline-flex h-[calc(100%-1px)] w-auto shrink-0 items-center justify-center whitespace-nowrap transition-colors motion-safe:duration-[var(--duration-standard)] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent",
         /* default: sliding pill — active chip is transparent; pill layer supplies fill */
         "group-data-[variant=default]/tabs-list:data-[state=active]:border-transparent group-data-[variant=default]/tabs-list:data-[state=active]:bg-transparent group-data-[variant=default]/tabs-list:data-[state=active]:shadow-none",

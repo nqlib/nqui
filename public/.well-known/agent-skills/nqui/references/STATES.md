@@ -14,7 +14,7 @@ The #1 reason AI-built UIs feel unfinished: they design the happy path and forge
 | **Idle** | Default resting state | The thing you usually think of as "the design" |
 | **Hover** | Pointer over (desktop only — degrade gracefully on touch) | Subtle background shift, never a transform |
 | **Focus** | Keyboard navigation lands here | Visible ring (`focus-visible:ring-2 ring-ring`), never `outline:none` alone |
-| **Active / Pressed** | Mouse down / tap in progress | Slight darken or inset shadow, fast (<100ms) |
+| **Active / Pressed** | Mouse down / tap in progress | Solid slight darken (fill mixed ~10% toward black), flat, fast (<100ms). No inset shadow, no translucent fill, and no `focus:` fill change (mouse clicks focus too — use `focus-visible`) |
 | **Selected** | User has chosen this | Persistent visual change (e.g., `bg-accent/70`), distinct from hover |
 | **Disabled** | Action unavailable | Reduced opacity (`opacity-50`) + `cursor-not-allowed` + `aria-disabled` — but explain why somewhere |
 | **Loading** | Async work in progress, no result yet | Shape-matched `Skeleton`, NOT a spinner unless duration is unknown and tiny |

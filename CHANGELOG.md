@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Slider, Switch, Progress — visual refresh on shared control tokens (ST-068).** This is a visible
   change with no API change. New tokens: `--track` / `--track-hover` (rail, mixed from foreground),
-  `--thumb` (knob fill), `--shadow-thumb` and `--shadow-pressed` (in `shadows.css`), with
+  `--thumb` (knob fill) and `--shadow-thumb` (in `shadows.css`), with
   `bg-track`, `bg-track-hover` and `bg-thumb` utilities.
   - `Slider`: the rail is 4px at every size on `bg-track`. The thumb drops its `border-primary`
     outline and uses the Switch thumb fill and shadow. The hover ring is gone (hover darkens the
@@ -34,7 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     has a `hit-area-2` target.
   - `Progress` and `EnhancedProgress` (`default`, `neutral`): rail is `bg-track`. Semantic variants
     keep their tinted rails.
-  - `Button` and `Toggle` pressed state use `--shadow-pressed` (same value as before).
+  - `Button` (filled variants) and `Toggle` (on) pressed state is a solid darken of the fill and
+    goes flat. It replaces the 75% fill + inset shadow, which let the surface show through and
+    drew a dark band along the top edge. Mouse clicks no longer leave the button tinted (`focus:`
+    fill removed; keyboard focus keeps its `focus-visible` ring).
   - `Sortable` focus ring is 2px. `RadioGroupItem` uses the `hit-area-*` utility (same reach).
   - `ColorSlider` and any Slider with `trackBackground` keep an 8px rail, because the gradient is
     content.

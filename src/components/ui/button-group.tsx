@@ -12,10 +12,12 @@ import { Separator } from "@/components/ui/separator"
 const buttonGroupVariants = cva(
   [
     "group/button-group inline-flex w-fit max-w-full items-stretch gap-0 overflow-hidden rounded-md border border-input bg-background",
-    "[--toggle-inner-radius:var(--radius-md)]",
+    // Flush segments sit inside the 1px border, so their corners are radius-md − 1px:
+    // with the full radius the segment curves away from the border and the shell bg shows through.
+    "[--toggle-inner-radius:calc(var(--radius-md)-1px)]",
     "has-[>[data-slot=button-group]]:gap-2",
     "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
-    "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md",
+    "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-[var(--toggle-inner-radius)]",
     // Flat segments — match toggleVariants segmented
     "[&>*]:!border-0 [&>*]:!shadow-none [&>*]:!rounded-none [&>*]:![background-image:none]",
     "[&>button]:!font-normal [&>a]:!font-normal [&>button]:!opacity-100 [&>a]:!opacity-100",

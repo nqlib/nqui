@@ -87,6 +87,8 @@ const EnhancedRadioGroup = React.forwardRef<
   const groupRef = React.useRef<HTMLDivElement | null>(null)
   const [indicatorStyle, setIndicatorStyle] = React.useState<React.CSSProperties>({})
   const [showIndicatorElement, setShowIndicatorElement] = React.useState(false)
+  // Container border width (sliding variant): the pill's inner radius must subtract it too.
+  const [pillBorder, setPillBorder] = React.useState(0)
   const [currentValue, setCurrentValue] = React.useState<string>(
     props.value || props.defaultValue || ""
   )
@@ -203,14 +205,20 @@ const EnhancedRadioGroup = React.forwardRef<
     }
 
     // Calculate position relative to the RadioGroup container
-    const containerRect = groupRef.current.getBoundingClientRect()
+    const container = groupRef.current
+    const containerRect = container.getBoundingClientRect()
     const itemRect = activeItem.getBoundingClientRect()
     // Account for scroll position when container overflows
-    const scrollLeft = groupRef.current.scrollLeft || 0
-    const scrollTop = groupRef.current.scrollTop || 0
+    const scrollLeft = container.scrollLeft || 0
+    const scrollTop = container.scrollTop || 0
+    // Absolute left/top are padding-box; getBoundingClientRect is border-box. Without this a
+    // bordered container shifts the pill by its border width (same correction as TabsList).
+    const borderLeft = container.clientLeft
+    const borderTop = container.clientTop
+    setPillBorder(borderTop)
     const indicatorStyleValue = {
-      left: `${itemRect.left - containerRect.left + scrollLeft}px`,
-      top: `${itemRect.top - containerRect.top + scrollTop}px`,
+      left: `${itemRect.left - containerRect.left - borderLeft + scrollLeft}px`,
+      top: `${itemRect.top - containerRect.top - borderTop + scrollTop}px`,
       width: `${itemRect.width}px`,
       height: `${itemRect.height}px`,
     }
@@ -272,14 +280,20 @@ const EnhancedRadioGroup = React.forwardRef<
   // from the consumer still wins, as it did when gap was a class.
   const gapIsNumber = typeof gap === "number"
   const resolvedGap = variant === "sliding" ? undefined : gapStyle(gap, className)
-  const mergedStyle = resolvedGap ? { ...resolvedGap, ...style } : style
+  const slidingVars =
+    variant === "sliding" && pillBorder > 0
+      ? ({ "--radio-pill-border": `${pillBorder}px` } as React.CSSProperties)
+      : undefined
+  const mergedStyle =
+    resolvedGap || slidingVars ? { ...resolvedGap, ...slidingVars, ...style } : style
   const containerClassName = cn(
     variant === "sliding"
       ? /* Inset padding matches TabsList. Outer --radio-pill-radius; inner
-         * indicator/labels use --radio-pill-inner-radius = outer − inset so
-         * the pad stays concentric. Override --radio-pill-radius (e.g. 9999px)
+         * indicator/labels use --radio-pill-inner-radius = outer − border − inset
+         * so the pad stays concentric (--radio-pill-border is measured, 0 when the
+         * container has no border). Override --radio-pill-radius (e.g. 9999px)
          * and both layers follow. Default matches Button / Tabs (radius-md). */
-        "sliding-indicator-container isolate flex flex-row items-center gap-0 [--radio-pill-radius:var(--radius-md)] [--radio-pill-inset:3px] [--radio-pill-inner-radius:max(0px,calc(var(--radio-pill-radius)-var(--radio-pill-inset)))] rounded-(--radio-pill-radius) bg-muted p-[var(--radio-pill-inset)] box-border overflow-x-auto min-h-7 min-w-0"
+        "sliding-indicator-container isolate flex flex-row items-center gap-0 [--radio-pill-radius:var(--radius-md)] [--radio-pill-inset:3px] [--radio-pill-inner-radius:max(0px,calc(var(--radio-pill-radius)-var(--radio-pill-border,0px)-var(--radio-pill-inset)))] rounded-(--radio-pill-radius) bg-muted p-[var(--radio-pill-inset)] box-border overflow-x-auto min-h-7 min-w-0"
       : cn("grid w-full", !gapIsNumber && gap), // animated (default)
     className
   )
@@ -477,11 +491,12 @@ const EnhancedRadioGroupItem = React.forwardRef<
             "sliding-indicator-target relative z-[var(--z-content)] inline-flex cursor-pointer items-center justify-center rounded-(--radio-pill-inner-radius) border border-transparent text-xs font-medium leading-normal transition-colors motion-safe:duration-[var(--duration-quick)]",
             /* The focusable Item is sr-only, so surface its keyboard focus on the visible label. */
             "has-focus-visible:outline-none has-focus-visible:ring-2 has-focus-visible:ring-ring has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-background",
-            /* Match TabsTrigger: inactive muted + hover; active label stays transparent — pill supplies fill */
+            /* Match TabsTrigger: inactive muted, hover is text colour only (a fill would butt into
+             * the flush pill); active label stays transparent — pill supplies fill */
             hasIcons ? "size-7 p-0" : "h-7 w-full min-w-0 px-1.5 py-0.5",
             isChecked
               ? "text-foreground shadow-none"
-              : "text-muted-foreground hover:bg-interactive hover:text-foreground",
+              : "text-muted-foreground hover:text-foreground",
             isDisabled && "cursor-not-allowed opacity-50"
           )}
         >

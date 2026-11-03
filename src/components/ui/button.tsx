@@ -75,10 +75,11 @@ Button.displayName = "Button"
  * Enhanced button variants with meccs-ui styling
  * Base classes match meccs-ui: focus:outline-0, transition-[color,background-color,border-color,box-shadow]
  *
- * Active state: we use active:bg-{semantic}/75 + active:scale-95 + inset shadow only (no active:bg-none).
- * In the showcase app one Tailwind run can emit utilities in an order where primary wins; in consumers
- * the prebuilt nqui styles load order can make active:bg-none win and clear the fill. Omitting
- * active:bg-none keeps the pressed background and shrink animation consistent everywhere.
+ * Active state: a solid darken — active:bg-[color-mix(in_oklch,var(--{semantic}),black_10%)] +
+ * active:shadow-none + active:scale-95. Never a translucent fill (/75 let the surface show
+ * through) and never an inset shadow (it read as a dark band along the top edge). No
+ * active:bg-none: load order in consumers can make it win and clear the fill. No focus:bg-*
+ * either — mouse clicks trigger :focus, which left the button tinted after release.
  *
  * Disabled filled buttons: do not use transparent bg + *-foreground text — on light surfaces
  * primary-foreground reads as white-on-white. Use bg-muted + text-muted-foreground + border-border
@@ -92,13 +93,15 @@ const enhancedButtonVariants = cva(
   {
     variants: {
       variant: {
+        /* Pressed = the same fill mixed 10% toward black: solid, so the surface never shows
+         * through, and flat (no lift, no inset band). Mouse focus does not change the fill;
+         * keyboard focus is the focus-visible ring (actionFocusClasses). */
         default: [
           "bg-primary text-primary-foreground border border-primary",
           "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-primary/90 hover:border-primary/90",
-          "focus:bg-primary/80 focus:border-primary/80",
-          "active:bg-primary/75 active:border-primary/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
+          "active:bg-[color-mix(in_oklch,var(--primary),black_10%)] active:border-[color-mix(in_oklch,var(--primary),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
           /* Disabled: avoid *-foreground on transparent (illegible on light surfaces); use muted tokens */
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
@@ -107,8 +110,7 @@ const enhancedButtonVariants = cva(
           "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-destructive/90 hover:border-destructive/90",
-          "focus:bg-destructive/80 focus:border-destructive/80",
-          "active:bg-destructive/75 active:border-destructive/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
+          "active:bg-[color-mix(in_oklch,var(--destructive),black_10%)] active:border-[color-mix(in_oklch,var(--destructive),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         secondary: [
@@ -116,8 +118,7 @@ const enhancedButtonVariants = cva(
           "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-secondary/90 hover:border-border",
-          "focus:bg-secondary/80 focus:border-border",
-          "active:bg-secondary/75 active:border-border active:shadow-[var(--shadow-pressed)] active:scale-95",
+          "active:bg-[color-mix(in_oklch,var(--secondary),black_10%)] active:border-border active:opacity-100 active:shadow-none active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         success: [
@@ -125,8 +126,7 @@ const enhancedButtonVariants = cva(
           "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-success/90 hover:border-success/90",
-          "focus:bg-success/80 focus:border-success/80",
-          "active:bg-success/75 active:border-success/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
+          "active:bg-[color-mix(in_oklch,var(--success),black_10%)] active:border-[color-mix(in_oklch,var(--success),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         warning: [
@@ -134,8 +134,7 @@ const enhancedButtonVariants = cva(
           "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-warning/90 hover:border-warning/90",
-          "focus:bg-warning/80 focus:border-warning/80",
-          "active:bg-warning/75 active:border-warning/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
+          "active:bg-[color-mix(in_oklch,var(--warning),black_10%)] active:border-[color-mix(in_oklch,var(--warning),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         info: [
@@ -143,8 +142,7 @@ const enhancedButtonVariants = cva(
           "nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-info/90 hover:border-info/90",
-          "focus:bg-info/80 focus:border-info/80",
-          "active:bg-info/75 active:border-info/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
+          "active:bg-[color-mix(in_oklch,var(--info),black_10%)] active:border-[color-mix(in_oklch,var(--info),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         outline:

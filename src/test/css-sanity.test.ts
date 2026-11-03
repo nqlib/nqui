@@ -88,7 +88,7 @@ describe("css sanity", () => {
   })
 
   it("no hardcoded rgba() shadow utilities in shipping components", () => {
-    // Shadows come from src/styles/shadows.css tokens (--shadow-thumb, --shadow-pressed, …)
+    // Shadows come from src/styles/shadows.css tokens (--shadow-thumb, --shadow-float, …)
     // so light/dark and the warm hue stay in one place. debug/ is exempt (dev-only).
     const bad: string[] = []
     for (const f of files) {
@@ -130,6 +130,5 @@ describe("css sanity", () => {
     const [lightSh, darkSh] = split("styles/shadows.css")
     expect(lightSh).toMatch(/^\s*--shadow-thumb:/m)
     expect(darkSh).toMatch(/^\s*--shadow-thumb:/m)
-    expect(lightSh).toMatch(/^\s*--shadow-pressed:/m)
   })
 })

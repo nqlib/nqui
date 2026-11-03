@@ -21,10 +21,12 @@ Plan: [`plans/007-slider-refresh.md`](../../../../../plans/007-slider-refresh.md
 
 ## Acceptance criteria
 
-- [x] `--shadow-thumb` and `--shadow-pressed` are defined in `src/styles/shadows.css`
-      (`--shadow-thumb` per theme; `--shadow-pressed` is one value for both, as before). Components
-      use them as `shadow-[var(--shadow-thumb)]` / `shadow-[var(--shadow-pressed)]`: a named
-      `shadow-thumb` utility would collide with the token in Tailwind v4's `--shadow-*` namespace.
+- [x] `--shadow-thumb` is defined in `src/styles/shadows.css` for both themes. Components use it
+      as `shadow-[var(--shadow-thumb)]`: a named `shadow-thumb` utility would collide with the
+      token in Tailwind v4's `--shadow-*` namespace.
+- [x] Pressed filled Button / Toggle darken their fill solidly (`color-mix(…, black 10%)`) and go
+      flat, with no inset shadow, translucent fill or mouse-focus tint. This replaced a short-lived
+      `--shadow-pressed` token (design review 2026-11-02: the inset read as a band along the top).
 - [x] `--track`, `--track-hover` and `--thumb` are defined in both themes and are available as
       `bg-track`, `bg-track-hover` and `bg-thumb` (mapped in `@theme inline`, safelisted with
       `@source inline()`).
@@ -34,8 +36,8 @@ Plan: [`plans/007-slider-refresh.md`](../../../../../plans/007-slider-refresh.md
       focus ring and no hover ring, and has `hit-area-2`.
 - [x] The Slider track is 4px at every size and uses `bg-track`. The root height is h-6, h-7 or h-8
       for sm, default and lg.
-- [x] Switch, ColorSlider, Button (pressed), Progress and the default variant of EnhancedProgress
-      use the shared tokens.
+- [x] Switch, ColorSlider, Progress and the default variant of EnhancedProgress use the shared
+      tokens.
 - [x] Sortable's focus ring is 2px. Radio uses the `hit-area-*` utility, and its hit area is the
       same size as before.
 - [x] `data-slot` names and the `sliderTrackVariants` / `sliderThumbVariants` exports are

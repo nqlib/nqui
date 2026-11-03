@@ -14,7 +14,7 @@
  * Control exception (the only inline shadows — ELEVATION.md):
  *   --shadow-thumb     Slider / Switch / ColorSlider thumb. A thumb is a knob that
  *                      sits ON its track, so it gets a small lift; nothing else inline does.
- *   --shadow-pressed   inset press for filled Button :active
+ *   (Pressed buttons darken their fill instead of using an inset shadow — see button.tsx.)
  *
  * Usage:
  *   .my-tooltip { box-shadow: var(--shadow-tooltip); }
@@ -56,9 +56,6 @@
     --shadow-thumb:
       0 1px 3px oklch(0.28 0.02 95 / 0.22),
       0 0 0 0.5px oklch(0.28 0.02 95 / 0.16);
-
-    /* Pressed — inset for filled Button :active. Same in both themes. */
-    --shadow-pressed: inset 0 3px 5px oklch(0 0 0 / 0.125);
   }
 
   .dark {

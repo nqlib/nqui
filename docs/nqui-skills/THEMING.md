@@ -20,7 +20,7 @@ nqui's defaults are opinionated. They are NOT the limit of what the kit can look
 | **Foreground softness** | `--foreground` (dark mode soft 0.92) | ✅ Per brand preference |
 | **Sidebar direction** | `--sidebar` | ⚠️ Pick one direction for both modes |
 | **Border weight** | `--border` lightness | ✅ Subtle adjustments |
-| **Control rails + thumbs** | `--track`, `--track-hover`, `--thumb`, `--shadow-thumb`, `--shadow-pressed` | ✅ Opacity / lightness — keep `--track` mixed from `--foreground` so it reads on every surface |
+| **Control rails + thumbs** | `--track`, `--track-hover`, `--thumb`, `--shadow-thumb` | ✅ Opacity / lightness — keep `--track` mixed from `--foreground` so it reads on every surface |
 | **Chart palette** | `--chart-1` through `--chart-5` | ✅ Categorical or sequential — your call |
 
 ## What you CANNOT change without breaking the philosophy

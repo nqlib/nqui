@@ -46,7 +46,7 @@ const CardHeader = React.forwardRef<
       className={cn(
         "flex min-w-0 flex-col space-y-1.5 p-6",
         stickyHeader &&
-          "relative sticky top-0 z-[var(--z-sticky-content)] flex-shrink-0 rounded-t-lg bg-card",
+          "relative sticky top-0 z-[var(--z-sticky-content)] flex-shrink-0 rounded-t-[inherit] bg-card",
         className
       )}
       {...props}

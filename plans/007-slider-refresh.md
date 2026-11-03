@@ -104,7 +104,7 @@ Branch: `feat/st-068-control-tokens-slider-refresh`
   - The thumb default becomes `var(--background)`, not `"white"`.
   - The fallback becomes `var(--secondary)`.
   - Log a dated line under ST-014 `## Bugs`.
-- `button.tsx` and `toggle.tsx`: replace the 7 inset rgba copies with `shadow-pressed`. Values must not change
+- `button.tsx` and `toggle.tsx`: replace the 7 inset rgba copies with `shadow-pressed`. *(Superseded 2026-11-02: pressed is now a solid darken with no shadow; see ST-068.)* Values must not change
   visually, so diff a screenshot.
 - `progress.tsx`: `bg-track` with `rounded-full`.
 - `enhanced-progress.tsx`: the `default` variant track becomes `bg-track`. Semantic variants

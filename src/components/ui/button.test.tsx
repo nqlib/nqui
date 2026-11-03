@@ -47,3 +47,19 @@ describe("Button", () => {
     expect(screen.getByRole("link", { name: "Link" })).toHaveAttribute("href", "/next")
   })
 })
+
+describe("Button pressed and focus states", () => {
+  it.each(["default", "destructive", "secondary", "success", "warning", "info"] as const)(
+    "%s presses to a solid, flat darken with no mouse-focus tint",
+    async (variant) => {
+      const { EnhancedButton } = await import("./button")
+      render(<EnhancedButton variant={variant}>Go</EnhancedButton>)
+      const cls = screen.getByRole("button", { name: "Go" }).className
+      expect(cls).toMatch(/active:bg-\[color-mix\(in_oklch,var\(--\w+\),black_10%\)\]/)
+      expect(cls).toContain("active:shadow-none")
+      expect(cls).not.toMatch(/active:bg-\w+\/\d+/) // no translucent pressed fill
+      expect(cls).not.toMatch(/(^|\s)focus:bg-/) // mouse focus must not change the fill
+      expect(cls).not.toContain("shadow-pressed")
+    }
+  )
+})
