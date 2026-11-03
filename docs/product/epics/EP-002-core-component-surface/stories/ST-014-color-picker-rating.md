@@ -52,6 +52,15 @@ so that these two specialised inputs don't come from a third-party design system
 
 ## Bugs
 
+- 2026-10-19 — `ColorSlider` defaults were `oklch(var(--primary))` / `oklch(var(--secondary))`.
+  The tokens already hold full `oklch()` values, so the declarations were invalid and dropped:
+  a `sliderType="custom"` slider had a transparent rail and range, and the thumb outline fell back
+  to `currentColor`. The fill default was a literal `"white"` that ignored dark mode. Also, a
+  caller's `style` prop was spread after the colour variables and replaced them. Defaults are now
+  `var(--track)` / `var(--primary)` / `var(--thumb)`, and `style` is merged first. Guarded by
+  `slider.test.tsx` and a `css-sanity` tripwire against colour functions wrapped around `var()`.
+  Fixed with ST-068.
+
 - 2026-08-17 — `Rating` rendered a ~4.5 KB `<style>` element per instance (both return paths),
   duplicating the stylesheet per rating and folding its CSS text into the containing element's
   `textContent`. Rules moved verbatim to `src/styles/components.css` (the three star-mask

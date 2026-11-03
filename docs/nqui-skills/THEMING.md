@@ -20,6 +20,7 @@ nqui's defaults are opinionated. They are NOT the limit of what the kit can look
 | **Foreground softness** | `--foreground` (dark mode soft 0.92) | ✅ Per brand preference |
 | **Sidebar direction** | `--sidebar` | ⚠️ Pick one direction for both modes |
 | **Border weight** | `--border` lightness | ✅ Subtle adjustments |
+| **Control rails + thumbs** | `--track`, `--track-hover`, `--thumb`, `--shadow-thumb`, `--shadow-pressed` | ✅ Opacity / lightness — keep `--track` mixed from `--foreground` so it reads on every surface |
 | **Chart palette** | `--chart-1` through `--chart-5` | ✅ Categorical or sequential — your call |
 
 ## What you CANNOT change without breaking the philosophy
@@ -29,7 +30,7 @@ nqui's defaults are opinionated. They are NOT the limit of what the kit can look
 | **Surface count** (2+1 inline + 1 elevated) | Adding a `--surface-c` defeats `ELEVATION.md`'s entire premise |
 | **Z-index scale** (`--z-*`) | Stacking conflicts cascade. Keep the semantic scale. |
 | **Motion principle** (default: no motion, restrained when present) | Adding default transitions to everything = busy UI |
-| **Shadow philosophy** (only on elevated surfaces) | Inline shadows turn flat surfaces into decorative noise |
+| **Shadow philosophy** (only on elevated surfaces; control thumbs are the one token-based exception) | Inline shadows turn flat surfaces into decorative noise |
 | **The decision rules** (ToggleGroup vs RadioGroup, Dialog vs AlertDialog) | These are semantic, not aesthetic. Locked. |
 
 If your brand "needs" a third surface or default shadows on cards, the brand expression should happen via **color + typography + radius**, not by relaxing the rules.

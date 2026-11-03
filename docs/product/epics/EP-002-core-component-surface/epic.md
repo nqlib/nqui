@@ -72,6 +72,9 @@ subpaths; `docs/components/nqui-*.md`.
 | ST-020 | DataTable on TanStack Table | in-progress | unset |
 | ST-021 | Bundled icon set | in-progress | pre-baseline |
 | ST-064 | Command search-result density, list chrome, ScrollArea | done | 0.7.4 |
+| ST-069 | Slider value label | review | unset |
+| ST-070 | Slider scale engine (log scale, marks, adaptive ticks) | review | unset |
+| ST-071 | Slider variants (field, segments, ruler), origin and track slot | review | unset |
 
 ## Implementation references
 

@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Slider value label (ST-069)**: `label`, `showValue` and `formatValue`. The value sits at the
+  end of the label row with a fixed width, a range reads `a – b`, and `formatValue` sets each
+  thumb's `aria-valuetext`.
+- **Slider scale (ST-070)**: `scale="log"` for ratio values (100% sits mid-track on 25–400%; arrow
+  keys step in value units) and `marks` (labelled reference ticks; pointer drags snap to them).
+- **Slider variants (ST-071)**: `variant="field"` (flat input-height box with label and value
+  inside; double-click or Enter to type, with `parseValue`), `variant="segments"` (5–12 discrete
+  steps) and `variant="ruler"` (ticks that adapt to width, with `tickIntervals` for units). Also
+  `origin` (bipolar fill), `trackBackground` + `showRange` (supported gradient tracks), and
+  `readOnly`. Arrow keys no longer bubble out of a slider, so it works inside menus.
+
+### Changed
+
+- **Slider, Switch, Progress — visual refresh on shared control tokens (ST-068).** This is a visible
+  change with no API change. New tokens: `--track` / `--track-hover` (rail, mixed from foreground),
+  `--thumb` (knob fill), `--shadow-thumb` and `--shadow-pressed` (in `shadows.css`), with
+  `bg-track`, `bg-track-hover` and `bg-thumb` utilities.
+  - `Slider`: the rail is 4px at every size on `bg-track`. The thumb drops its `border-primary`
+    outline and uses the Switch thumb fill and shadow. The hover ring is gone (hover darkens the
+    rail), focus is a 2px ring like every other form control, and the thumb darkens while pressed
+    and has a `hit-area-2` target. Row height now follows `size` (`h-6` / `h-7` / `h-8`).
+  - `Switch`: thumb uses `bg-thumb` (now light in dark mode too) and `--shadow-thumb`, and the root
+    has a `hit-area-2` target.
+  - `Progress` and `EnhancedProgress` (`default`, `neutral`): rail is `bg-track`. Semantic variants
+    keep their tinted rails.
+  - `Button` and `Toggle` pressed state use `--shadow-pressed` (same value as before).
+  - `Sortable` focus ring is 2px. `RadioGroupItem` uses the `hit-area-*` utility (same reach).
+  - `ColorSlider` and any Slider with `trackBackground` keep an 8px rail, because the gradient is
+    content.
+- **Slider** is a `forwardRef` component, so `ref` works on React 18 as well as 19.
+
+### Fixed
+
+- **ColorSlider (ST-014)** default colours were written as `oklch(var(--primary))`, which is invalid
+  because the tokens already hold `oklch()` values, so a `custom` slider rendered a transparent rail
+  and range. Defaults are now `var(--track)`, `var(--primary)` and `var(--thumb)`. A caller-supplied
+  `style` no longer wipes ColorSlider's colour variables.
+
 ## [0.8.2] - 2026-10-03
 
 ### Added

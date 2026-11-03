@@ -220,6 +220,9 @@ Use these rules to choose the right component. **Selection** = user picks from o
 | One boolean (agree, subscribe) | **Checkbox** |
 | On/off setting (dark mode, notifications) | **Switch** |
 | Numeric range (volume, opacity) | **Slider** |
+| Number in a form or inspector, exact entry | **Slider** `variant="field"` |
+| 5–12 discrete steps (text size, depth) | **Slider** `variant="segments"` |
+| Value with units on a scale (EV, degrees, hours) | **Slider** `variant="ruler"` |
 | OTP, verification code | **InputOTP** |
 | Color from swatches | **ColorPicker** |
 | Hue/saturation in color picker | **ColorSlider** |
@@ -239,7 +242,7 @@ Use these rules to choose the right component. **Selection** = user picks from o
 | Checkbox | [nqui-checkbox.md](./nqui-checkbox.md) | **1 boolean** (agree, subscribe). Or multiple checkboxes for multi-select list. |
 | RadioGroup | [nqui-radio-group.md](./nqui-radio-group.md) | **1 selection** from options in form context. Stacked or inline. |
 | Switch | [nqui-switch.md](./nqui-switch.md) | On/off setting (not formatting). |
-| Slider | [nqui-slider.md](./nqui-slider.md) | Numeric range. |
+| Slider | [nqui-slider.md](./nqui-slider.md) | Numeric value or range. Variants `field` / `segments` / `ruler`; `label`, `showValue`, `scale="log"`, `marks`, `origin`. |
 | Rating | [nqui-rating.md](./nqui-rating.md) | Star/score (1–5). |
 | InputOTP | [nqui-input-otp.md](./nqui-input-otp.md) | OTP/verification. |
 | Field | [nqui-field.md](./nqui-field.md) | Label + description + error wrapper. |

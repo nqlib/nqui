@@ -825,3 +825,39 @@ When you face a situation not listed here, ask:
 4. **What's the smallest set of components that achieves it without decoration?**
 
 Then check `COMPONENTS_INDEX.md` decision trees, pick the components, and verify against this file's anti-recipes before writing JSX.
+
+---
+
+## Slider recipes
+
+### 16. Choose the slider by the data
+
+```tsx
+// Settings: label row + value, default variant
+<Slider label="Alert volume" showValue formatValue={(v) => `${v}%`} defaultValue={[64]} />
+
+// Inspector: stacked fields, typed entry, bipolar letter spacing
+<div className="flex flex-col gap-1.5">
+  <Slider size="sm" variant="field" label="Opacity" formatValue={(v) => `${v}%`} defaultValue={[85]} />
+  <Slider size="sm" variant="field" label="Letter spacing" min={-10} max={10} origin={0} defaultValue={[0]} />
+</div>
+
+// Stepped choice with 5–12 steps
+<Slider variant="segments" label="Map depth" showValue min={0} max={6} defaultValue={[2]}
+  formatValue={(v) => (v === 0 ? "Collapsed" : `Level ${v}`)} />
+
+// Units on a scale
+<Slider variant="ruler" label="Rotation" min={-180} max={180} origin={0}
+  tickIntervals={[5, 15, 30, 45, 90]} formatValue={(v) => `${v}°`} defaultValue={[35]} />
+
+// Ratio values
+<Slider label="Zoom" showValue scale="log" min={25} max={400} step={5} defaultValue={[100]}
+  marks={[{ value: 100, label: "100%" }]} />
+```
+
+**Rules:**
+- Don't build a label row by hand. Use `label` + `showValue` + `formatValue`, which also gives screen readers the formatted value.
+- A range filter that needs exact bounds ("at least $500k") is one `field` range with `parseValue`, not a slider plus two inputs.
+- 2–4 options are a `ToggleGroup`. Segments start at 5 steps; above 12, use a continuous slider.
+- Gradient or colour tracks use `trackBackground` + `showRange={false}`, never a `[data-slot]` override.
+

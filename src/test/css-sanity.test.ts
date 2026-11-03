@@ -86,4 +86,50 @@ describe("css sanity", () => {
     }
     expect(bad, `component CSS belongs in src/styles/*.css (shipped via @nqlib/nqui/styles); a per-instance <style> duplicates the sheet per instance and pollutes textContent:\n${bad.join("\n")}`).toEqual([])
   })
+
+  it("no hardcoded rgba() shadow utilities in shipping components", () => {
+    // Shadows come from src/styles/shadows.css tokens (--shadow-thumb, --shadow-pressed, …)
+    // so light/dark and the warm hue stay in one place. debug/ is exempt (dev-only).
+    const bad: string[] = []
+    for (const f of files) {
+      if (f.endsWith(".css") || /\/debug\//.test(f)) continue
+      const src = fs.readFileSync(f, "utf8")
+      src.split("\n").forEach((ln, i) => {
+        if (/shadow-\[[^\]]*rgba\(/.test(ln)) bad.push(`${path.relative(SRC, f)}:${i + 1}  ${ln.trim()}`)
+      })
+    }
+    expect(bad, `use a shadow token, e.g. shadow-[var(--shadow-thumb)]:\n${bad.join("\n")}`).toEqual([])
+  })
+
+  it("no colour function wrapped around a token var()", () => {
+    // nqui colour tokens hold complete oklch() values, so oklch(var(--primary)) is invalid and
+    // the declaration silently drops (ColorSlider shipped a transparent range this way).
+    const bad: string[] = []
+    for (const f of files) {
+      const src = fs.readFileSync(f, "utf8")
+      src.split("\n").forEach((ln, i) => {
+        if (/^\s*(\/\/|\*|\/\*)/.test(ln)) return
+        if (/\b(oklch|hsl|rgb)a?\(\s*var\(--/.test(ln)) bad.push(`${path.relative(SRC, f)}:${i + 1}  ${ln.trim()}`)
+      })
+    }
+    expect(bad, `use var(--token) directly:\n${bad.join("\n")}`).toEqual([])
+  })
+
+  it("control tokens are defined in both themes", () => {
+    const split = (file: string) => {
+      const src = fs.readFileSync(path.join(SRC, file), "utf8")
+      const at = src.search(/^\s*\.dark\s*\{/m)
+      expect(at, `${file} has a .dark block`).toBeGreaterThan(0)
+      return [src.slice(0, at), src.slice(at)] as const
+    }
+    const [lightIdx, darkIdx] = split("index.css")
+    for (const t of ["--track", "--track-hover", "--thumb"]) {
+      expect(lightIdx, `${t} in :root`).toMatch(new RegExp(`^\\s*${t}:`, "m"))
+      expect(darkIdx, `${t} in .dark`).toMatch(new RegExp(`^\\s*${t}:`, "m"))
+    }
+    const [lightSh, darkSh] = split("styles/shadows.css")
+    expect(lightSh).toMatch(/^\s*--shadow-thumb:/m)
+    expect(darkSh).toMatch(/^\s*--shadow-thumb:/m)
+    expect(lightSh).toMatch(/^\s*--shadow-pressed:/m)
+  })
 })

@@ -58,6 +58,7 @@ Install nqui → init-css → init-skills → pick component doc → implement �
 
 - **Toolbar selection** → `ToggleGroup`, never `RadioGroup`
 - **Form context** → `RadioGroup`, `Checkbox`
+- **Numbers** → `Slider`; choose `variant` by the data: `field` (forms, inspectors, typed entry), `segments` (5–12 steps), `ruler` (units on a scale). 2–4 options → `ToggleGroup`. Use `label` + `showValue` instead of a hand-built label row.
 - **Don't restyle a component's own layout** — reach for its props, not `className`. Components already own their row/gap/overflow; overriding fights them (see anti-patterns)
 - **Read before code** — open the component doc; don't infer props
 - **One doc at a time** — don't bulk-read the skills folder

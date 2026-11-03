@@ -9,6 +9,30 @@ When upgrading nqui, scan the latest version section for breaking changes BEFORE
 
 ---
 
+## Unreleased (next minor) — Control tokens and Slider refresh (ST-068 – ST-071)
+
+No API was removed, but sliders, switches and progress bars look different:
+
+- **Slider rail** is 4px at every size (was 8 / 10 / 12px) on `bg-track`, not `bg-muted`.
+- **Slider thumb** lost its `border-primary` outline and hover ring; it now matches the Switch thumb (`bg-thumb`, `--shadow-thumb`). The focus ring is 2px.
+- **Slider row height** follows `size` (`h-6` / `h-7` / `h-8`), so a slider in a tight container may grow a few pixels.
+- **Switch thumb** is light in dark mode too (`--thumb`).
+- **Progress** and the `default` / `neutral` **EnhancedProgress** rails use `bg-track`.
+- **`<Slider />` with no `value` or `defaultValue`** renders one thumb at `min` (it used to render a second, broken thumb).
+
+**If you override `[data-slot='slider-track']` for a gradient** (shade or colour pickers), move to the supported props:
+
+```tsx
+// Before
+<Slider className="[&_[data-slot='slider-track']]:[background:var(--shade-track)] [&_[data-slot='slider-range']]:bg-transparent" />
+// After
+<Slider trackBackground="var(--shade-track)" showRange={false} />
+```
+
+**If you built a label row by hand**, use `label` + `showValue` + `formatValue`.
+
+---
+
 ## v0.8.0 — Lean package (ST-067)
 
 `TableOfContents` and debug tools left the main barrel so a `Button`-only import no longer pulls the debug-panel chunk (~270 KB) or TOC variants.

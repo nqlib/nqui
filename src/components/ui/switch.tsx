@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils"
  * `sm` is extra-compact for dense rows. Thumb + translate are paired per size.
  */
 const switchVariants = cva(
-  "peer inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
+  "peer hit-area-2 inline-flex shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
   {
     variants: {
       size: {
@@ -30,7 +30,7 @@ const switchVariants = cva(
 )
 
 const switchThumbVariants = cva(
-  "pointer-events-none block shrink-0 rounded-full bg-background shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] ring-0 transition-transform duration-[var(--duration-standard)] ease-out dark:bg-card",
+  "pointer-events-none block shrink-0 rounded-full bg-thumb shadow-[var(--shadow-thumb)] ring-0 transition-transform duration-[var(--duration-standard)] ease-out",
   {
     variants: {
       size: {

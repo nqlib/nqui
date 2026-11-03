@@ -11,6 +11,11 @@
  *   --surface-elevated color alias (= --popover), not a shadow token
  *   .nqui-elevated     legacy class alias of .nqui-float — do not use in new code
  *
+ * Control exception (the only inline shadows — ELEVATION.md):
+ *   --shadow-thumb     Slider / Switch / ColorSlider thumb. A thumb is a knob that
+ *                      sits ON its track, so it gets a small lift; nothing else inline does.
+ *   --shadow-pressed   inset press for filled Button :active
+ *
  * Usage:
  *   .my-tooltip { box-shadow: var(--shadow-tooltip); }
  *   .my-select  { box-shadow: var(--shadow-float); }
@@ -46,6 +51,14 @@
     /* Focus ring shadow — for inputs and interactive elements that
      * need a soft ring on focus (used alongside the ring-* utilities). */
     --shadow-focus: 0 0 0 3px color-mix(in oklch, var(--ring) 18%, transparent);
+
+    /* Control thumb — small contact shadow plus a hairline edge, warm like the rest. */
+    --shadow-thumb:
+      0 1px 3px oklch(0.28 0.02 95 / 0.22),
+      0 0 0 0.5px oklch(0.28 0.02 95 / 0.16);
+
+    /* Pressed — inset for filled Button :active. Same in both themes. */
+    --shadow-pressed: inset 0 3px 5px oklch(0 0 0 / 0.125);
   }
 
   .dark {
@@ -67,5 +80,11 @@
       0 16px 48px -8px oklch(0 0 0 / 0.6);
 
     --shadow-focus: 0 0 0 3px color-mix(in oklch, var(--ring) 30%, transparent);
+
+    /* Dark thumbs are light (--thumb), so the edge is a dark hairline: it separates the
+     * knob from a light primary range as well as from the dark track. */
+    --shadow-thumb:
+      0 0 0 1px oklch(0 0 0 / 0.35),
+      0 1px 3px oklch(0 0 0 / 0.6);
   }
 }

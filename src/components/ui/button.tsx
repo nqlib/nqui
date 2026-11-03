@@ -98,7 +98,7 @@ const enhancedButtonVariants = cva(
           "opacity-90 hover:opacity-100",
           "hover:bg-primary/90 hover:border-primary/90",
           "focus:bg-primary/80 focus:border-primary/80",
-          "active:bg-primary/75 active:border-primary/75 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
+          "active:bg-primary/75 active:border-primary/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
           /* Disabled: avoid *-foreground on transparent (illegible on light surfaces); use muted tokens */
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
@@ -108,7 +108,7 @@ const enhancedButtonVariants = cva(
           "opacity-90 hover:opacity-100",
           "hover:bg-destructive/90 hover:border-destructive/90",
           "focus:bg-destructive/80 focus:border-destructive/80",
-          "active:bg-destructive/75 active:border-destructive/75 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
+          "active:bg-destructive/75 active:border-destructive/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         secondary: [
@@ -117,7 +117,7 @@ const enhancedButtonVariants = cva(
           "opacity-90 hover:opacity-100",
           "hover:bg-secondary/90 hover:border-border",
           "focus:bg-secondary/80 focus:border-border",
-          "active:bg-secondary/75 active:border-border active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
+          "active:bg-secondary/75 active:border-border active:shadow-[var(--shadow-pressed)] active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         success: [
@@ -126,7 +126,7 @@ const enhancedButtonVariants = cva(
           "opacity-90 hover:opacity-100",
           "hover:bg-success/90 hover:border-success/90",
           "focus:bg-success/80 focus:border-success/80",
-          "active:bg-success/75 active:border-success/75 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
+          "active:bg-success/75 active:border-success/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         warning: [
@@ -135,7 +135,7 @@ const enhancedButtonVariants = cva(
           "opacity-90 hover:opacity-100",
           "hover:bg-warning/90 hover:border-warning/90",
           "focus:bg-warning/80 focus:border-warning/80",
-          "active:bg-warning/75 active:border-warning/75 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
+          "active:bg-warning/75 active:border-warning/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         info: [
@@ -144,7 +144,7 @@ const enhancedButtonVariants = cva(
           "opacity-90 hover:opacity-100",
           "hover:bg-info/90 hover:border-info/90",
           "focus:bg-info/80 focus:border-info/80",
-          "active:bg-info/75 active:border-info/75 active:shadow-[inset_0_3px_5px_rgba(0,0,0,0.125)] active:scale-95",
+          "active:bg-info/75 active:border-info/75 active:shadow-[var(--shadow-pressed)] active:scale-95",
           "disabled:bg-muted/60 disabled:text-muted-foreground disabled:border-border disabled:shadow-none",
         ],
         outline:

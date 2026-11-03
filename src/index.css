@@ -78,13 +78,13 @@
 @source inline("group/badge has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 light:aria-invalid:ring-destructive/40 aria-invalid:border-destructive");
 
 /* Hit-area utilities (referenced from TSX / docs; @utility defines behavior) */
-@source inline("hit-area-2 hit-area-4 hit-area-6 hit-area-debug");
+@source inline("hit-area-2 hit-area-4 hit-area-6 hit-area-x-3 hit-area-y-2 hit-area-debug");
 
 /* Radix Switch — track + thumb (not picked up by generic bg-* safelist) */
 @source inline("data-[state=checked]:bg-primary data-[state=unchecked]:bg-input data-[state=checked]:text-primary-foreground");
 @source inline("h-6 w-11 h-7 w-[52px] h-3 min-w-4 h-4 min-w-5 h-5 min-w-6");
 @source inline("data-[state=unchecked]:translate-x-0.5 data-[state=checked]:translate-x-[14px] data-[state=checked]:translate-x-[18px] data-[state=checked]:translate-x-[22px]");
-@source inline("transition-colors transition-transform duration-200 ease-out shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] dark:bg-white bg-white");
+@source inline("transition-colors transition-transform duration-200 duration-[var(--duration-standard)] ease-out bg-thumb shadow-[var(--shadow-thumb)] dark:bg-white bg-white");
 
 /* Radix Accordion (settings panels, filters) */
 @source inline("data-open:bg-muted/50 data-open:bg-interactive data-open:animate-accordion-down data-closed:animate-accordion-up");
@@ -92,11 +92,14 @@
 /* Radix Checkbox (row selection in tables / gantt sidebar) */
 @source inline("data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary");
 
-/* Slider — track, range, thumb (data-orientation utilities) */
-@source inline("relative flex w-full touch-none select-none items-center grow overflow-hidden rounded-full bg-muted bg-primary");
-@source inline("data-[orientation=horizontal]:h-2 data-[orientation=horizontal]:h-[10px] data-[orientation=horizontal]:h-3 data-[orientation=horizontal]:h-4 data-[orientation=horizontal]:h-5 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:h-full");
-@source inline("data-[orientation=horizontal]:w-4 data-[orientation=horizontal]:w-5 data-[orientation=horizontal]:w-6 data-[orientation=vertical]:h-4 data-[orientation=vertical]:w-3");
-@source inline("border-primary ring-ring/30 rounded-full border bg-white shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)] hover:ring-4 focus-visible:ring-4");
+/* Slider — rail, range, thumb (data-orientation utilities) on the shared control tokens */
+@source inline("group/slider relative flex w-full touch-none select-none items-center grow overflow-hidden rounded-full bg-track group-hover/slider:bg-track-hover bg-primary bg-thumb");
+@source inline("data-[orientation=horizontal]:h-1 data-[orientation=vertical]:w-1 data-[orientation=horizontal]:h-6 data-[orientation=horizontal]:h-7 data-[orientation=horizontal]:h-8 data-[orientation=horizontal]:h-3 data-[orientation=horizontal]:h-4 data-[orientation=horizontal]:h-5 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:h-full");
+@source inline("data-[orientation=horizontal]:w-4 data-[orientation=horizontal]:w-5 data-[orientation=horizontal]:w-6 data-[orientation=vertical]:h-4 data-[orientation=vertical]:h-5 data-[orientation=vertical]:h-6 data-[orientation=vertical]:w-3 data-[orientation=vertical]:w-4 data-[orientation=vertical]:w-5 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-40");
+@source inline("ring-ring/30 rounded-full shadow-[var(--shadow-thumb)] focus-visible:ring-[2px] transition-[background-color,box-shadow] duration-[var(--duration-micro)] active:bg-[color-mix(in_oklch,var(--thumb),var(--foreground)_7%)]");
+@source inline("group/thumb inset-y-0 inset-x-0 hidden flex-col gap-1.5 items-baseline justify-between gap-3 text-xs leading-none text-muted-foreground font-medium text-foreground ml-auto text-right tabular-nums");
+/* Pressed (Button / Toggle) */
+@source inline("active:shadow-[var(--shadow-pressed)] active:data-[state=on]:shadow-[var(--shadow-pressed)]");
 
 @theme inline {
     --font-sans: "Satoshi", system-ui, sans-serif;
@@ -136,6 +139,9 @@
     --color-accent: var(--accent);
     --color-interactive: var(--interactive);
     --color-surface-soft: var(--surface-soft);
+    --color-track: var(--track);
+    --color-track-hover: var(--track-hover);
+    --color-thumb: var(--thumb);
     --color-muted-foreground: var(--muted-foreground);
     --color-muted: var(--muted);
     --color-secondary-foreground: var(--secondary-foreground);
@@ -770,6 +776,13 @@
     --surface-soft: color-mix(in oklch, var(--muted) 50%, transparent);
     --surface-elevated: var(--popover);
 
+    /* ─── Control rails + thumbs (Slider, Progress, Switch) ─────────────────
+       Rails mix from foreground, not muted: muted sits below card in light but above it in
+       dark, so a bg-muted rail flips contrast between themes and vanishes on surface-b. */
+    --track: color-mix(in oklch, var(--foreground) 12%, transparent);
+    --track-hover: color-mix(in oklch, var(--foreground) 17%, transparent);
+    --thumb: var(--background);
+
     /* Interactive wash — light: soft accent tint (readable on popover);
        dark: solid accent (see .dark). Prefer bg-interactive over raw accent hover. */
     --interactive: color-mix(in oklch, var(--accent) 55%, transparent);
@@ -839,6 +852,11 @@
     --surface-b: var(--muted);
     --surface-soft: color-mix(in oklch, var(--muted) 50%, transparent);
     --surface-elevated: var(--popover);
+
+    --track: color-mix(in oklch, var(--foreground) 16%, transparent);
+    --track-hover: color-mix(in oklch, var(--foreground) 22%, transparent);
+    /* Light knob in dark too (iOS/macOS): a dark knob on a 16% rail is hard to find. */
+    --thumb: oklch(0.96 0 0);
 
     /* Interactive wash — solid accent so hover reads on dark popovers/page. */
     --interactive: var(--accent);

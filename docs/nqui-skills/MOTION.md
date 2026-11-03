@@ -69,6 +69,7 @@ Easing curves communicate **physicality** — they tell the eye whether somethin
 - **Selection (item in a list):** background color shift, 150ms
 - **Button press:** scale 0.97 for 100ms, then back — micro-affordance
 - **Hover:** background or color shift, 100ms — never transform
+- **Slider:** rail colour on hover and thumb darken on press, 100ms (`--duration-micro`); the thumb itself follows the pointer with no transition
 - **Focus ring:** instant appear, fade out at 150ms
 
 ### Attention direction (use sparingly)

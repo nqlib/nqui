@@ -228,6 +228,9 @@ Prefer **sections** (`border-b`, `gap-6`, `h2`) for page structure. One Card per
 |-----|-----------|
 | Toolbar mode (list/grid, linear/log) | **ToggleGroup** `single` |
 | Multi format (bold/italic) | **ToggleGroup** `multiple` |
+| Number in a form / inspector | **Slider** `variant="field"` (typeable) |
+| 5–12 discrete steps | **Slider** `variant="segments"` (2–4 → ToggleGroup) |
+| Value with units on a scale | **Slider** `variant="ruler"` |
 | Commands (save, export) | **Button** / **ButtonGroup** |
 | Form choice (plan, role) | **RadioGroup** or **Select** |
 | Searchable list | **Combobox** |

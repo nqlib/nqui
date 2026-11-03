@@ -335,3 +335,270 @@
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent);
   border-radius: 2px;
 }
+
+/* ── Slider (ST-069 / ST-071) ─────────────────────────────────────────────
+ * Variant chrome keyed on [data-variant] so it needs no consumer Tailwind safelist, and
+ * stays unlayered so it wins over the base utility classes on the same parts.
+ * Tick and segment growth animate transform (MOTION.md), never height.
+ */
+
+/* Marks + origin detent (default variant) */
+.nqui-slider-mark {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 8px;
+  margin: -4px 0 0 -0.5px;
+  border-radius: 1px;
+  background: color-mix(in oklch, var(--foreground) 30%, transparent);
+  pointer-events: none;
+}
+.nqui-slider-mark-label {
+  position: absolute;
+  top: calc(50% + 8px);
+  transform: translateX(-50%);
+  font-size: 10px;
+  line-height: 1;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+[data-slot="slider"][data-marks="labelled"] {
+  margin-bottom: 14px;
+}
+
+/* A trackBackground (gradient, colour scale) is content, not chrome: 8px so it reads,
+ * same as ColorSlider. */
+[data-slot="slider-track"][data-custom-track][data-orientation="horizontal"] {
+  height: 8px;
+}
+[data-slot="slider-track"][data-custom-track][data-orientation="vertical"] {
+  width: 8px;
+}
+
+/* Read-only: value stays visible, the knob goes flat so it doesn't look draggable */
+[data-slot="slider"][data-readonly] {
+  cursor: default;
+}
+[data-slot="slider"][data-readonly] [data-slot="slider-thumb"] {
+  background: var(--track-hover);
+  box-shadow: none;
+}
+
+/* Field — flat input-height box (ELEVATION.md field dialect) */
+[data-slot="slider"][data-variant="field"] {
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  background: transparent;
+  overflow: hidden;
+  cursor: ew-resize;
+  transition:
+    background-color var(--duration-micro) var(--ease-in-out),
+    border-color var(--duration-micro) var(--ease-in-out),
+    box-shadow var(--duration-micro) var(--ease-in-out);
+}
+[data-slot="slider"][data-variant="field"]:hover {
+  background: var(--interactive);
+}
+[data-slot="slider"][data-variant="field"]:has(:focus-visible) {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent);
+}
+[data-slot="slider"][data-variant="field"][aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+[data-slot="slider"][data-variant="field"] [data-slot="slider-track"] {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+}
+[data-slot="slider"][data-variant="field"] [data-slot="slider-range"],
+[data-slot="slider"][data-variant="field"] [data-slot="slider-fill"] {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+}
+[data-slot="slider"][data-variant="field"][data-active] [data-slot="slider-range"],
+[data-slot="slider"][data-variant="field"][data-active] [data-slot="slider-fill"] {
+  background: color-mix(in oklch, var(--foreground) 12%, transparent);
+}
+[data-slot="slider"][data-variant="field"] > span:has(> [data-slot="slider-thumb"]) {
+  top: 0;
+  bottom: 0;
+}
+[data-slot="slider"][data-variant="field"] [data-slot="slider-thumb"] {
+  width: 2px;
+  height: 100%;
+  border-radius: 0;
+  background: var(--primary);
+  box-shadow: none;
+}
+.nqui-slider-field-text {
+  position: absolute;
+  inset: 0 10px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1;
+  pointer-events: none;
+}
+.nqui-slider-field-label {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nqui-slider-field-value {
+  margin-left: auto;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.nqui-slider-field-input {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 0 10px;
+  border: 0;
+  outline: none;
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  cursor: text;
+}
+
+/* Segments — 5–12 discrete steps */
+[data-slot="slider"][data-variant="segments"] [data-slot="slider-track"] {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+  overflow: visible;
+  border-radius: 6px;
+  background: transparent;
+}
+[data-slot="slider"][data-variant="segments"]:has(:focus-visible) [data-slot="slider-track"] {
+  outline: 2px solid color-mix(in oklch, var(--ring) 50%, transparent);
+  outline-offset: 4px;
+}
+[data-slot="slider"][data-variant="segments"] [data-slot="slider-thumb"] {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  box-shadow: none;
+}
+.nqui-slider-segment {
+  flex: 1;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--track);
+  transition:
+    transform var(--duration-standard) var(--ease-out),
+    background-color var(--duration-micro) var(--ease-in-out);
+}
+.nqui-slider-segment[data-on] {
+  background: var(--primary);
+}
+.nqui-slider-segment[data-current] {
+  transform: scaleY(1.8);
+}
+
+/* Ruler — calibrated ticks, needle, value bubble */
+[data-slot="slider"][data-variant="ruler"] {
+  height: 64px;
+}
+[data-slot="slider"][data-variant="ruler"] [data-slot="slider-track"] {
+  height: 28px;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+}
+[data-slot="slider"][data-variant="ruler"] [data-slot="slider-thumb"] {
+  width: 2px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--primary);
+  box-shadow: none;
+}
+.nqui-slider-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1.5px;
+  height: 6px;
+  margin-left: -0.75px;
+  border-radius: 1px;
+  background: color-mix(in oklch, var(--foreground) 24%, transparent);
+  transform-origin: bottom;
+  --k: 0.35;
+  --g: 1.8;
+  transform: scaleY(calc(1 + var(--lift, 0) * var(--k) * var(--g)));
+  transition:
+    transform var(--duration-standard) var(--ease-out),
+    background-color var(--duration-micro) var(--ease-in-out);
+}
+.nqui-slider-tick[data-major] {
+  height: 12px;
+  --g: 0.9;
+}
+.nqui-slider-tick[data-on] {
+  background: var(--foreground);
+}
+[data-slot="slider"][data-variant="ruler"][data-active] .nqui-slider-tick {
+  --k: 1;
+}
+.nqui-slider-tick-label {
+  position: absolute;
+  top: calc(100% + 5px);
+  transform: translateX(-50%);
+  font-size: 10px;
+  line-height: 1;
+  color: var(--muted-foreground);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.nqui-slider-tick-label[data-origin] {
+  color: var(--foreground);
+  font-weight: 500;
+}
+.nqui-slider-bubble {
+  position: absolute;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--foreground);
+  pointer-events: none;
+  transition:
+    background-color var(--duration-micro) var(--ease-in-out),
+    color var(--duration-micro) var(--ease-in-out);
+}
+[data-slot="slider-thumb"]:focus-visible .nqui-slider-bubble {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nqui-slider-tick,
+  .nqui-slider-segment {
+    transition: none;
+  }
+  .nqui-slider-tick {
+    transform: none;
+  }
+}

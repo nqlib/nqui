@@ -36,6 +36,7 @@ Not every surface needs all 12. Use this matrix to know what's mandatory per sur
 | **Inputs** | idle, focus, filled, invalid, disabled, read-only | Read-only vs disabled distinction |
 | **Cards / items in a list** | idle, hover, focus, selected | Focus (keyboard navigation) |
 | **Toggles / switches** | off, on, focus, disabled, indeterminate | Indeterminate for "mixed" bulk states |
+| **Sliders** | idle, hover (rail darkens), focus (2px ring on the thumb), dragging (thumb darkens slightly), disabled | Never a hover ring or halo on the thumb — hover is a colour shift on the rail |
 | **Async data views** | loading, empty, populated, error, refreshing | Refreshing (vs full reload) |
 | **File upload** | idle, dragging-over, uploading, success-each, error-each, complete | Dragging-over, per-file error |
 | **Search** | idle, typing, debouncing, loading, results, no-results, error | Debouncing vs loading distinction |

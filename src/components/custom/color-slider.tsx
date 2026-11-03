@@ -31,6 +31,7 @@ const ColorSlider = React.forwardRef<React.ElementRef<typeof Slider>, ColorSlide
       sliderType = "custom",
       currentHue,
       currentChroma,
+      style,
       ...props
     },
     ref
@@ -51,17 +52,19 @@ const ColorSlider = React.forwardRef<React.ElementRef<typeof Slider>, ColorSlide
           return `linear-gradient(to right, hsl(${hue}, 100%, 0%), hsl(${hue}, 100%, 100%))`
         }
         default:
-          return rangeColor || "oklch(var(--primary))"
+          return rangeColor || "var(--primary)"
       }
     }
 
     const trackBackground = sliderType !== "custom" ? getGradientBackground() : undefined
+    // Token fallbacks must be bare var(): --primary etc. hold full oklch() values, so the old
+    // `oklch(var(--primary))` was invalid and silently dropped (transparent range/track).
     const sliderStyle = {
-      ...(props.style || {}),
-      "--color-slider-track": trackBackground ?? trackColor ?? "oklch(var(--secondary))",
-      "--color-slider-range": sliderType === "custom" ? rangeColor || "oklch(var(--primary))" : "transparent",
-      "--color-slider-thumb-outline": thumbOutlineColor || thumbColor || "oklch(var(--primary))",
-      "--color-slider-thumb-fill": thumbFillColor || "white",
+      ...(style || {}),
+      "--color-slider-track": trackBackground ?? trackColor ?? "var(--track)",
+      "--color-slider-range": sliderType === "custom" ? rangeColor || "var(--primary)" : "transparent",
+      "--color-slider-thumb-outline": thumbOutlineColor || thumbColor || "var(--primary)",
+      "--color-slider-thumb-fill": thumbFillColor || "var(--thumb)",
     } as React.CSSProperties
 
     return (
@@ -69,12 +72,15 @@ const ColorSlider = React.forwardRef<React.ElementRef<typeof Slider>, ColorSlide
         ref={ref}
         className={cn(
           "[&_[data-slot='slider-track']]:[background:var(--color-slider-track)]",
+          // The gradient is content, not chrome: keep it 8px so the colours read (base rail is 4px).
+          "[&_[data-slot='slider-track'][data-orientation=horizontal]]:h-2",
+          "[&_[data-slot='slider-track'][data-orientation=vertical]]:w-2",
           "[&_[data-slot='slider-range']]:bg-[var(--color-slider-range)]",
           "[&_[data-slot='slider-thumb']]:bg-[var(--color-slider-thumb-fill)]",
+          // The base thumb is borderless; ColorSlider keeps its outline so the knob reads on
+          // any gradient. Shadow comes from the base thumb's --shadow-thumb.
+          "[&_[data-slot='slider-thumb']]:border",
           "[&_[data-slot='slider-thumb']]:border-[var(--color-slider-thumb-outline)]",
-          "[&_[data-slot='slider-thumb']]:shadow-[0_2px_6px_rgba(0,0,0,0.22),0_0_1px_rgba(0,0,0,0.12)]",
-          "[&_[data-slot='slider-thumb']]:ring-offset-background",
-          "[&_[data-slot='slider-thumb']]:hover:ring-[var(--color-slider-thumb-outline)]",
           "[&_[data-slot='slider-thumb']]:focus-visible:ring-[var(--color-slider-thumb-outline)]",
           className
         )}

@@ -61,6 +61,8 @@ This file is the rule. Apply it to every layered UI.
 
 **Chrome dialects:** Field triggers (Select / Combobox / Dropdown / outline Button) are flat (`shadow-none` + `bg-interactive` wash). Filled Button / Badge keep sculpted `nqui-button-shadow` on purpose — CTAs, not fields.
 
+**Control thumbs** are the only other inline shadow: Slider / Switch / ColorSlider thumbs use `--shadow-thumb` (a knob sitting *on* its rail), and pressed filled Button / Toggle use `--shadow-pressed`. Both are tokens in `shadows.css` — never hand-write an `rgba()` shadow. Rails (Slider, Progress) are flat `bg-track`, which mixes from foreground so it reads on surface-a, surface-b and popovers in both themes.
+
 ## The depth rule
 
 **Maximum 2 inline surfaces. Period.**
