@@ -4,7 +4,7 @@ epic: EP-001
 title: Control tokens and Slider base refresh
 status: review
 priority: should
-release: unset
+release: 0.8.3
 breaking: false
 scope: [src/styles, src/index.css, src/components/ui, src/components/custom, docs]
 api: docs/components/nqui-slider.md

@@ -195,8 +195,18 @@ describe("Slider variants (ST-071)", () => {
     expect(onValueCommit).toHaveBeenLastCalledWith([1000])
     fireEvent.keyDown(thumb, { key: "Enter" })
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "123" } })
+    // Returning focus to the thumb blurs the input in the same turn as Escape.
+    // That blur must not commit the cancelled draft.
+    const raf = vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+      const input = screen.queryByRole("textbox")
+      if (input) fireEvent.blur(input)
+      cb(0)
+      return 0
+    })
     fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" })
+    raf.mockRestore()
     expect(onValueCommit).toHaveBeenCalledTimes(1)
+    expect(thumb).toHaveAttribute("aria-valuenow", "1000")
   })
 
   it("segments render one block per step and raise the current one", () => {

@@ -115,6 +115,12 @@ describe("css sanity", () => {
     expect(bad, `use var(--token) directly:\n${bad.join("\n")}`).toEqual([])
   })
 
+  it("pressed Toggle does not clear its fill with bg-none", () => {
+    // active:bg-none can win on load order and wipe the solid pressed fill (see button.tsx).
+    const src = fs.readFileSync(path.join(SRC, "components/ui/toggle.tsx"), "utf8")
+    expect(src).not.toMatch(/bg-none/)
+  })
+
   it("control tokens are defined in both themes", () => {
     const split = (file: string) => {
       const src = fs.readFileSync(path.join(SRC, file), "utf8")
