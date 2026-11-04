@@ -119,6 +119,16 @@ describe("computeTicks", () => {
     expect(computeTicks({ min: 0, max: 10, step: 1, widthPx: 0 })).toEqual([])
     expect(computeTicks({ min: 5, max: 5, step: 1, widthPx: 300 })).toEqual([])
   })
+
+  it("log ticks stay evenly spaced along the track", () => {
+    const ticks = computeTicks({ min: 25, max: 400, step: 5, widthPx: 400, scale: "log" })
+    expect(ticks.length).toBeGreaterThan(2)
+    const gaps = ticks.slice(1).map((t, i) => ((t.pct - ticks[i]!.pct) / 100) * 400)
+    expect(Math.min(...gaps)).toBeGreaterThanOrEqual(6 - 1e-6)
+    expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThan(1)
+    expect(ticks[0]!.pct).toBeCloseTo(0, 6)
+    expect(ticks[ticks.length - 1]!.pct).toBeLessThan(100)
+  })
 })
 
 describe("segments", () => {

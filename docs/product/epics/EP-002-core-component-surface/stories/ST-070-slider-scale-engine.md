@@ -52,3 +52,5 @@ Plan: [`plans/007-slider-refresh.md`](../../../../../plans/007-slider-refresh.md
   `0..1000` position space.
 
 ## Bugs
+
+- 2026-11-04 — log arrow keys ignored `inverted` and RTL, and a log ruler bunched its ticks — fixed in 0.9.0

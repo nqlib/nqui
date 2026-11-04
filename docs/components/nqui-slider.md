@@ -75,8 +75,9 @@ range it renders `default` and warns once in the console.
 Ticks fill as the value grows and rise around the needle while you drag or focus it (not on
 hover). Tick spacing adapts to the track width: minor ticks keep at least 6px apart and labels at
 least 48px. Pass `tickIntervals` for unit-aware spacing (hours, degrees). The major labels are
-taken from the same list, so they land on 90° or 3h rather than 75° or 2.5h. The value shows above
-the needle.
+taken from the same list, so they land on 90° or 3h rather than 75° or 2.5h. On `scale="log"` the
+ruler spaces ticks by ratio (×2, ×10, …), so the gaps stay even on the track. `tickIntervals` then
+must be ratios greater than 1; value-unit steps are ignored. The value shows above the needle.
 
 ## Scale, marks and origin
 
@@ -89,8 +90,8 @@ the needle.
 <Slider label="Balance" showValue min={-50} max={50} origin={0} defaultValue={[-18]} />
 ```
 
-- **`scale="log"`** spaces values by ratio. It needs `min > 0`. Arrow keys still step by `step`
-  in value units.
+- **`scale="log"`** spaces values by ratio. It needs `min > 0`. Arrow and Page keys still step by
+  `step` in value units, and they follow `inverted` and `dir` the same way a linear slider does.
 - **`marks`** draws reference ticks with optional labels. Pointer drags snap to a mark when within
   2% of the track.
 - **`origin`** anchors the fill. It works in every variant and adds a detent mark in `default`.
@@ -109,9 +110,9 @@ hides the fill. Use these instead of overriding `[data-slot='slider-track']`.
 ## States
 
 - **`disabled`**: dimmed, no input.
-- **`readOnly`**: the value stays visible and focusable, the knob goes flat, and input is ignored
-  (`aria-readonly`).
-- **Invalid** (`field`): `aria-invalid`.
+- **`readOnly`**: the value stays visible, a click focuses the thumb, the knob goes flat, and
+  input is ignored (`aria-readonly`).
+- **Invalid** (`field`): `aria-invalid` sets the destructive border and the same 2px ring as Input.
 - **Menus**: arrow keys, Home and End stay inside the slider, so it works in a DropdownMenu without
   moving menu focus.
 

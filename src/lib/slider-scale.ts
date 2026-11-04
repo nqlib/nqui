@@ -110,10 +110,79 @@ function onGrid(value: number, origin: number, interval: number) {
   return Math.abs(q - Math.round(q)) < 1e-6
 }
 
+/** Ratios that read as even steps on a log ruler (×1.25, ×2, decades). */
+const NICE_LOG_RATIOS = [1.25, 1.5, 2, 2.5, 5, 10, 20, 50, 100]
+
+function onRatioGrid(value: number, anchor: number, ratio: number) {
+  if (value <= 0 || anchor <= 0 || ratio <= 1) return false
+  const q = Math.log(value / anchor) / Math.log(ratio)
+  return Math.abs(q - Math.round(q)) < 1e-4
+}
+
 /**
- * Ticks for a linear ruler. Minor ticks keep ≥ `minTickPx` apart; majors (labelled) keep
- * ≥ `minLabelPx` apart and are a ×2 / ×5 / ×10 multiple of the minor interval. Ticks align to
- * `origin` when given (so 0 is always a tick on a bipolar scale), otherwise to `min`.
+ * Log ruler ticks, spaced by ratio so equal steps take equal pixels. A linear value step
+ * mapped onto a log track bunches at the top of the range.
+ * `candidates` are ratios greater than 1 (×2, ×10), not value-unit steps.
+ */
+function computeLogTicks({
+  min,
+  max,
+  widthPx,
+  origin,
+  minTickPx,
+  minLabelPx,
+  candidates,
+  format,
+}: {
+  min: number
+  max: number
+  widthPx: number
+  origin?: number
+  minTickPx: number
+  minLabelPx: number
+  candidates?: number[]
+  format: (value: number) => string
+}): Tick[] {
+  if (min <= 0 || max <= min || widthPx <= 0) return []
+  const lnSpan = Math.log(max / min)
+  const fits = (ratio: number, minPx: number) =>
+    ratio > 1 && (Math.log(ratio) / lnSpan) * widthPx >= minPx - 1e-6
+  const ratioCandidates = candidates?.filter((c) => c > 1) ?? []
+  const pool = (ratioCandidates.length ? ratioCandidates : NICE_LOG_RATIOS).slice().sort((a, b) => a - b)
+  const minor = pool.find((r) => fits(r, minTickPx)) ?? pool[pool.length - 1] ?? 10
+  let major = minor
+  for (const k of [2, 5, 10, 20]) {
+    const ratio = minor ** k
+    if (fits(ratio, minLabelPx)) {
+      major = ratio
+      break
+    }
+  }
+  const anchor = origin !== undefined && origin > 0 ? origin : min
+  const logMinor = Math.log(minor)
+  const start = Math.ceil(Math.log(min / anchor) / logMinor - 1e-9)
+  const end = Math.floor(Math.log(max / anchor) / logMinor + 1e-9)
+  const ticks: Tick[] = []
+  for (let i = start; i <= end && ticks.length < 2000; i++) {
+    const raw = anchor * Math.exp(i * logMinor)
+    const value = Number(raw.toPrecision(12))
+    if (value < min * (1 - 1e-9) || value > max * (1 + 1e-9)) continue
+    const isMajor = onRatioGrid(value, anchor, major) || (origin !== undefined && value === origin)
+    ticks.push({
+      value,
+      pct: (Math.log(value / min) / lnSpan) * 100,
+      major: isMajor,
+      label: isMajor ? format(value) : undefined,
+    })
+  }
+  return ticks
+}
+
+/**
+ * Ticks for a ruler. Minor ticks keep ≥ `minTickPx` apart; majors (labelled) keep
+ * ≥ `minLabelPx` apart. Linear ticks are a ×2 / ×5 / ×10 multiple of the minor interval and
+ * align to `origin` when given (so 0 is always a tick on a bipolar scale), otherwise to `min`.
+ * `scale="log"` spaces by ratio instead, so the gaps stay even on the track.
  */
 export function computeTicks({
   min,
@@ -121,6 +190,7 @@ export function computeTicks({
   step,
   widthPx,
   origin,
+  scale = "linear",
   minTickPx = 6,
   minLabelPx = 48,
   candidates,
@@ -131,11 +201,15 @@ export function computeTicks({
   step: number
   widthPx: number
   origin?: number
+  scale?: SliderScale
   minTickPx?: number
   minLabelPx?: number
   candidates?: number[]
   format?: (value: number) => string
 }): Tick[] {
+  if (scale === "log") {
+    return computeLogTicks({ min, max, widthPx, origin, minTickPx, minLabelPx, candidates, format })
+  }
   const span = max - min
   if (span <= 0 || widthPx <= 0) return []
   const minor = niceInterval({ span, widthPx, minPx: minTickPx, base: step, candidates })

@@ -117,6 +117,39 @@ describe("Slider scale (ST-070)", () => {
     expect(onValueChange).toHaveBeenLastCalledWith([400])
   })
 
+  it("log scale arrow keys follow inverted and rtl", () => {
+    const onValueChange = vi.fn()
+    const { rerender } = render(
+      <Slider scale="log" min={25} max={400} step={5} value={[100]} inverted onValueChange={onValueChange} aria-label="Zoom" />
+    )
+    fireEvent.keyDown(screen.getByRole("slider", { name: "Zoom" }), { key: "ArrowRight" })
+    expect(onValueChange).toHaveBeenLastCalledWith([95])
+
+    onValueChange.mockClear()
+    rerender(
+      <Slider scale="log" min={25} max={400} step={5} value={[100]} dir="rtl" onValueChange={onValueChange} aria-label="Zoom" />
+    )
+    fireEvent.keyDown(screen.getByRole("slider", { name: "Zoom" }), { key: "ArrowRight" })
+    expect(onValueChange).toHaveBeenLastCalledWith([95])
+
+    onValueChange.mockClear()
+    rerender(
+      <Slider
+        scale="log"
+        min={25}
+        max={400}
+        step={5}
+        value={[100]}
+        orientation="vertical"
+        inverted
+        onValueChange={onValueChange}
+        aria-label="Zoom"
+      />
+    )
+    fireEvent.keyDown(screen.getByRole("slider", { name: "Zoom" }), { key: "ArrowUp" })
+    expect(onValueChange).toHaveBeenLastCalledWith([95])
+  })
+
   it("draws marks with labels", () => {
     const { container } = render(<Slider defaultValue={[60]} marks={[{ value: 100, label: "100%" }, 50]} min={0} max={200} />)
     expect(container.querySelectorAll(".nqui-slider-mark")).toHaveLength(2)
@@ -151,6 +184,10 @@ describe("Slider origin, track slot, read-only, menus (ST-071)", () => {
     const thumb = screen.getByRole("slider", { name: "Score" })
     expect(thumb).toHaveAttribute("aria-readonly", "true")
     fireEvent.keyDown(thumb, { key: "ArrowRight" })
+    expect(onValueChange).not.toHaveBeenCalled()
+    expect(thumb).toHaveAttribute("aria-valuenow", "40")
+    fireEvent.pointerDown(thumb)
+    expect(thumb).toHaveFocus()
     expect(onValueChange).not.toHaveBeenCalled()
     expect(thumb).toHaveAttribute("aria-valuenow", "40")
   })
@@ -238,6 +275,11 @@ describe("Slider variants (ST-071)", () => {
     expect(wideCount).toBeGreaterThan(narrowCount)
     expect(narrowCount).toBeGreaterThan(0)
     expect(narrow.container.querySelector(".nqui-slider-bubble")).toHaveTextContent("9")
+  })
+
+  it("field forwards aria-invalid onto the root", () => {
+    const { container } = render(<Slider variant="field" label="Radius" defaultValue={[12]} aria-invalid />)
+    expect(container.querySelector("[data-slot='slider']")).toHaveAttribute("aria-invalid", "true")
   })
 
   it("non-default variants fall back when vertical", () => {

@@ -405,8 +405,16 @@
   border-color: var(--ring);
   box-shadow: 0 0 0 2px color-mix(in oklch, var(--ring) 30%, transparent);
 }
-[data-slot="slider"][data-variant="field"][aria-invalid="true"] {
+[data-slot="slider"][data-variant="field"][aria-invalid="true"],
+[data-slot="slider"][data-variant="field"][aria-invalid="true"]:has(:focus-visible) {
   border-color: var(--destructive);
+  /* Same 2px destructive ring as Input / Textarea / Select, including while focused. */
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--destructive) 20%, transparent);
+}
+.dark [data-slot="slider"][data-variant="field"][aria-invalid="true"],
+.dark [data-slot="slider"][data-variant="field"][aria-invalid="true"]:has(:focus-visible) {
+  border-color: color-mix(in oklch, var(--destructive) 50%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--destructive) 40%, transparent);
 }
 [data-slot="slider"][data-variant="field"] [data-slot="slider-track"] {
   position: absolute;

@@ -106,6 +106,26 @@ export type SliderProps = RootProps &
 
 const NAV_KEYS = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"])
 
+/**
+ * Sign of a log-scale key step. Matches Radix: the key that points at the visual minimum
+ * decreases the value. LTR + inverted, and RTL without inverted, both slide from the right.
+ * Vertical default slides from the bottom; `inverted` slides from the top.
+ */
+function logKeySign(
+  key: string,
+  { horizontal, inverted, dir }: { horizontal: boolean; inverted: boolean; dir?: string }
+) {
+  const fromLeft = dir === "rtl" ? inverted : !inverted
+  const back = !horizontal
+    ? inverted
+      ? ["PageDown", "ArrowUp", "ArrowLeft"]
+      : ["PageDown", "ArrowDown", "ArrowLeft"]
+    : fromLeft
+      ? ["PageDown", "ArrowDown", "ArrowLeft"]
+      : ["PageDown", "ArrowDown", "ArrowRight"]
+  return back.includes(key) ? -1 : 1
+}
+
 const warned = new Set<string>()
 /** Misuse warning, once per message. Only fires when a prop combination can't render as asked. */
 function devWarn(message: string) {
@@ -284,18 +304,13 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
       }
       if (!log) return // Radix handles linear stepping
       event.preventDefault()
-      const big = step * 10
       const current = latest.current[index] ?? min
-      const delta: Record<string, number> = {
-        ArrowRight: step,
-        ArrowUp: step,
-        ArrowLeft: -step,
-        ArrowDown: -step,
-        PageUp: big,
-        PageDown: -big,
-      }
+      // Page keys, and Shift+arrow, take a ×10 step. Shift does not stack on Page.
+      const page = event.key === "PageUp" || event.key === "PageDown"
+      const multiplier = page || (event.shiftKey && event.key.startsWith("Arrow")) ? 10 : 1
+      const sign = logKeySign(event.key, { horizontal, inverted, dir })
       let target =
-        event.key === "Home" ? min : event.key === "End" ? max : current + (delta[event.key] ?? 0) * (event.shiftKey ? 10 : 1)
+        event.key === "Home" ? min : event.key === "End" ? max : current + sign * step * multiplier
       target = snap(target, { min, max, step })
       const lo = latest.current[index - 1] ?? min
       const hi = latest.current[index + 1] ?? max
@@ -354,15 +369,27 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
 
     // ── Ruler ticks ───────────────────────────────────────────────────────
     const [measureRef, trackWidth] = useElementWidth<HTMLSpanElement>(variant === "ruler")
+    const ratioIntervals = tickIntervals?.every((n) => n > 1) ? tickIntervals : undefined
+    if (variant === "ruler" && log && tickIntervals?.length && !ratioIntervals) {
+      devWarn(
+        `tickIntervals on scale="log" must be ratios greater than 1 (got ${tickIntervals.join(", ")}). Spacing ticks by ratio instead.`
+      )
+    }
     const ticks = React.useMemo(
       () =>
         variant === "ruler"
-          ? computeTicks({ min, max, step, widthPx: trackWidth, origin, candidates: tickIntervals, format: fmt }).map(
-              (t) => ({ ...t, pct: log ? pctOf(t.value) : t.pct })
-            )
+          ? computeTicks({
+              min,
+              max,
+              step,
+              widthPx: trackWidth,
+              origin,
+              scale,
+              candidates: log ? ratioIntervals : tickIntervals,
+              format: fmt,
+            })
           : [],
-      // pctOf depends only on domain
-      [variant, min, max, step, trackWidth, origin, tickIntervals, fmt, log, domain]
+      [variant, min, max, step, trackWidth, origin, tickIntervals, ratioIntervals, fmt, log, scale]
     )
 
     // ── Segments ──────────────────────────────────────────────────────────
@@ -413,7 +440,24 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
         onPointerDown={(event) => {
           onPointerDown?.(event)
           if (readOnly) {
+            // preventDefault skips Radix's slide, which would also skip its thumb focus.
+            // Focus here so a click still lands on the control.
             event.preventDefault()
+            const direct = (event.target as HTMLElement).closest?.("[data-slot='slider-thumb']") as HTMLElement | null
+            if (direct) {
+              direct.focus()
+              return
+            }
+            const rect = event.currentTarget.getBoundingClientRect()
+            const visual = horizontal
+              ? (rect.width ? (event.clientX - rect.left) / rect.width : 0) * 100
+              : (rect.height ? (event.clientY - rect.top) / rect.height : 0) * 100
+            const at = horizontal ? edge(visual) : inverted ? visual : 100 - visual
+            let nearest = 0
+            pcts.forEach((p, i) => {
+              if (Math.abs(p - at) < Math.abs((pcts[nearest] ?? 0) - at)) nearest = i
+            })
+            thumbRefs.current[nearest]?.focus()
             return
           }
           pointerActive.current = true

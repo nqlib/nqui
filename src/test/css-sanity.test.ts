@@ -115,6 +115,15 @@ describe("css sanity", () => {
     expect(bad, `use var(--token) directly:\n${bad.join("\n")}`).toEqual([])
   })
 
+  it("field slider invalid state uses the destructive ring", () => {
+    const css = fs.readFileSync(path.join(SRC, "styles/components.css"), "utf8")
+    const block = css.slice(css.indexOf('[data-variant="field"][aria-invalid="true"]'))
+    expect(block.startsWith('[data-variant="field"][aria-invalid="true"]')).toBe(true)
+    expect(block.slice(0, 400)).toMatch(/border-color:\s*var\(--destructive\)/)
+    expect(block.slice(0, 400)).toMatch(/box-shadow:[^;]*2px/)
+    expect(block.slice(0, 500)).toMatch(/color-mix\(in oklch, var\(--destructive\) 20%/)
+  })
+
   it("pressed Toggle does not clear its fill with bg-none", () => {
     // active:bg-none can win on load order and wipe the solid pressed fill (see button.tsx).
     const src = fs.readFileSync(path.join(SRC, "components/ui/toggle.tsx"), "utf8")

@@ -79,3 +79,5 @@ Depends on ST-069 and ST-070.
   before the editor opens. Relative scrub is still a v2 decision.
 
 ## Bugs
+
+- 2026-11-04 — read-only click did not focus the thumb, and field `aria-invalid` had no destructive ring — fixed in 0.9.0

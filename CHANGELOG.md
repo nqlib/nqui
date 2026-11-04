@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-04
+
+### Fixed
+
+- **Slider log keys**: Arrow and Page keys follow `inverted` and `dir`, the same way a linear
+  slider does. The step is still in value units.
+- **Slider read-only**: a click focuses the thumb and does not change the value.
+- **Slider ruler on a log scale**: ticks are spaced by ratio so the gaps stay even along the track.
+  `tickIntervals` on a log ruler are ratios greater than 1.
+- **Slider field**: `aria-invalid` uses the destructive border and a 2px ring, including while focused.
+
 ## [0.8.3] - 2026-11-04
 
 ### Added
