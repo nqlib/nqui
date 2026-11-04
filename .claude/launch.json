@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "showcase",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "../nqui-showcase", "dev", "--port", "5174", "--strictPort"],
+      "port": 5174
+    }
+  ]
+}
