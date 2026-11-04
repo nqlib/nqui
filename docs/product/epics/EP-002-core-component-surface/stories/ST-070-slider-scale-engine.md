@@ -4,7 +4,7 @@ epic: EP-002
 title: Slider scale engine (log scale, marks, adaptive ticks)
 status: review
 priority: should
-release: unset
+release: 0.8.3
 breaking: false
 scope: [src/lib/slider-scale.ts, src/components/ui/slider.tsx, docs]
 api: docs/components/nqui-slider.md

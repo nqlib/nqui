@@ -34,9 +34,9 @@ Easing curves communicate **physicality** — they tell the eye whether somethin
 
 | Curve | Tailwind / CSS | When |
 |-------|---------------|------|
-| **ease-out** (`cubic-bezier(0.16, 1, 0.3, 1)`) | `ease-out` | **Default for entrances.** Things decelerate as they arrive — feels natural |
-| **ease-in** (`cubic-bezier(0.4, 0, 1, 1)`) | `ease-in` | **Default for exits.** Things accelerate as they leave — out of the way |
-| **ease-in-out** | `ease-in-out` | Reserved for symmetric back-and-forth (toggle that animates same way both directions) |
+| **ease-in-out** (`cubic-bezier(0.4, 0, 0.2, 1)`) | `ease-in-out` | **Neutral baseline / default.** Wired to Tailwind's built-in `transition` + `transition-colors`, so bare state-change transitions (hover, color shifts, toggles) use it automatically |
+| **ease-out** (`cubic-bezier(0.16, 1, 0.3, 1)`) | `ease-out` | **Opt-in for entrances.** Crisper deceleration as things arrive — reach for it on mount/unmount when you want a more designed feel |
+| **ease-in** (`cubic-bezier(0.4, 0, 1, 1)`) | `ease-in` | **For exits.** Things accelerate as they leave — out of the way |
 | **linear** | `linear` | Only for continuous motion (loading bar, spinner, marquee) — never for state changes |
 | **spring** (react-spring / framer) | — | Only when modeling physical objects (drag, drawer pull). Subtle, not bouncy |
 

@@ -255,9 +255,13 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
     const thumbRefs = React.useRef<Array<HTMLSpanElement | null>>([])
     const [editing, setEditing] = React.useState<number | null>(null)
     const [draft, setDraft] = React.useState("")
+    // Cleared synchronously so the blur that follows Escape (focus returns to the thumb,
+    // which unmounts the input) cannot commit the draft the keydown just cancelled.
+    const editingIndex = React.useRef<number | null>(null)
 
     const openEditor = (index: number) => {
       if (readOnly || disabled) return
+      editingIndex.current = index
       setDraft(String(latest.current[index] ?? ""))
       setEditing(index)
     }
@@ -303,8 +307,9 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
     }
 
     const commitEditor = (keep: boolean) => {
-      if (editing === null) return
-      const index = editing
+      const index = editingIndex.current
+      if (index === null) return
+      editingIndex.current = null
       setEditing(null)
       if (keep) {
         const parsed = (parseValue ?? defaultParse)(draft)

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.3] - 2026-11-04
+
 ### Added
 
 - **Slider value label (ST-069)**: `label`, `showValue` and `formatValue`. The value sits at the
@@ -15,8 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Slider scale (ST-070)**: `scale="log"` for ratio values (100% sits mid-track on 25–400%; arrow
   keys step in value units) and `marks` (labelled reference ticks; pointer drags snap to them).
 - **Slider variants (ST-071)**: `variant="field"` (flat input-height box with label and value
-  inside; double-click or Enter to type, with `parseValue`), `variant="segments"` (5–12 discrete
-  steps) and `variant="ruler"` (ticks that adapt to width, with `tickIntervals` for units). Also
+  inside; double-click or Enter to type, Escape cancels, blur or Enter commits, with `parseValue`),
+  `variant="segments"` (5–12 discrete steps) and `variant="ruler"` (ticks that adapt to width, with
+  `tickIntervals` for units). Also
   `origin` (bipolar fill), `trackBackground` + `showRange` (supported gradient tracks), and
   `readOnly`. Arrow keys no longer bubble out of a slider, so it works inside menus.
 

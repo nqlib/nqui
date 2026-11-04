@@ -4,7 +4,7 @@ epic: EP-002
 title: Slider variants (field, segments, ruler), origin and track slot
 status: review
 priority: could
-release: unset
+release: 0.8.3
 breaking: false
 scope: [src/components/ui/slider.tsx, docs]
 api: docs/components/nqui-slider.md

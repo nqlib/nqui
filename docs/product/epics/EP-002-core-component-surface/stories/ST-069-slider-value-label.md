@@ -4,7 +4,7 @@ epic: EP-002
 title: Slider value label
 status: review
 priority: should
-release: unset
+release: 0.8.3
 breaking: false
 scope: [src/components/ui/slider.tsx, src/components/custom/color-slider.tsx, docs]
 api: docs/components/nqui-slider.md
