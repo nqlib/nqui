@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-11-07
+
+### Changed
+
+- **Filled Button and Badge get their top sheen back (visual).** The `default`, `destructive`,
+  `secondary`, `success`, `warning` and `info` variants apply `nqui-button-gradient` again on top of
+  `nqui-button-shadow`, and `--button-gradient` is a white top sheen
+  (`linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)`) instead of `none`. This
+  reverses the 0.7.x removal. Outline, ghost and link variants stay flat; pressed buttons still go
+  flat (`active:shadow-none`). To keep the old flat look, set `--button-gradient: none` in your theme.
+
+### Fixed
+
+- **Rating half-stars**: a dark seam no longer runs down the middle of each star with
+  `allowHalf`, most visibly under opacity or when disabled. Both halves now clip one full-star mask
+  instead of painting two half-star SVGs. Disabled ratings dim once through the fieldset instead
+  of per half (ST-014).
+
+**Why this is a patch.** No export, prop, type, token name or peer dependency changed. 0.9.0 was a
+minor because it reworked the geometry and tokens of three controls; this release restores a subtle
+sheen that consumers can turn off with one token, and fixes a rendering bug (precedent: 0.8.1,
+ST-011).
+
 ## [0.9.0] - 2026-11-04
 
 ### Fixed

@@ -1,6 +1,8 @@
 # nqui Badge
 
-> Status labels. 9 variants; ghost/link use CoreBadge.
+> Status labels. 9 variants; ghost/link use CoreBadge. Filled variants carry the same top sheen
+> and shadow as filled Button (`nqui-button-gradient` + `nqui-button-shadow`; set
+> `--button-gradient: none` for a flat fill).
 
 ## Import
 

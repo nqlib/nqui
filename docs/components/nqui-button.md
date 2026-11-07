@@ -1,6 +1,6 @@
 # nqui Button
 
-> Default **Button** is the enhanced variant (gradients, depth, active scale). Implemented in **`ui/button.tsx`** with **`CoreButton`** for the plain primitive.
+> Default **Button** is the enhanced variant (top sheen via `--button-gradient`, shadow, active scale; pressed goes flat). Set `--button-gradient: none` for flat filled buttons. Implemented in **`ui/button.tsx`** with **`CoreButton`** for the plain primitive.
 
 ## Import
 

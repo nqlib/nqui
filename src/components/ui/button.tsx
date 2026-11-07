@@ -98,7 +98,7 @@ const enhancedButtonVariants = cva(
          * keyboard focus is the focus-visible ring (actionFocusClasses). */
         default: [
           "bg-primary text-primary-foreground border border-primary",
-          "nqui-button-shadow",
+          "nqui-button-gradient nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-primary/90 hover:border-primary/90",
           "active:bg-[color-mix(in_oklch,var(--primary),black_10%)] active:border-[color-mix(in_oklch,var(--primary),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
@@ -107,7 +107,7 @@ const enhancedButtonVariants = cva(
         ],
         destructive: [
           "bg-destructive text-destructive-foreground border border-destructive",
-          "nqui-button-shadow",
+          "nqui-button-gradient nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-destructive/90 hover:border-destructive/90",
           "active:bg-[color-mix(in_oklch,var(--destructive),black_10%)] active:border-[color-mix(in_oklch,var(--destructive),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
@@ -115,7 +115,7 @@ const enhancedButtonVariants = cva(
         ],
         secondary: [
           "bg-secondary text-secondary-foreground border border-border",
-          "nqui-button-shadow",
+          "nqui-button-gradient nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-secondary/90 hover:border-border",
           "active:bg-[color-mix(in_oklch,var(--secondary),black_10%)] active:border-border active:opacity-100 active:shadow-none active:scale-95",
@@ -123,7 +123,7 @@ const enhancedButtonVariants = cva(
         ],
         success: [
           "bg-success text-success-foreground border border-success",
-          "nqui-button-shadow",
+          "nqui-button-gradient nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-success/90 hover:border-success/90",
           "active:bg-[color-mix(in_oklch,var(--success),black_10%)] active:border-[color-mix(in_oklch,var(--success),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
@@ -131,7 +131,7 @@ const enhancedButtonVariants = cva(
         ],
         warning: [
           "bg-warning text-warning-foreground border border-warning",
-          "nqui-button-shadow",
+          "nqui-button-gradient nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-warning/90 hover:border-warning/90",
           "active:bg-[color-mix(in_oklch,var(--warning),black_10%)] active:border-[color-mix(in_oklch,var(--warning),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
@@ -139,7 +139,7 @@ const enhancedButtonVariants = cva(
         ],
         info: [
           "bg-info text-info-foreground border border-info",
-          "nqui-button-shadow",
+          "nqui-button-gradient nqui-button-shadow",
           "opacity-90 hover:opacity-100",
           "hover:bg-info/90 hover:border-info/90",
           "active:bg-[color-mix(in_oklch,var(--info),black_10%)] active:border-[color-mix(in_oklch,var(--info),black_10%)] active:opacity-100 active:shadow-none active:scale-95",
@@ -169,7 +169,7 @@ export interface EnhancedButtonProps
  * Enhanced Button component with meccs-ui styling
  *
  * Wraps the base shadcn Button component with enhanced styling:
- * - Borders and shadows for filled CTAs (no gradient overlay)
+ * - Borders, shadow, and top sheen for filled CTAs
  * - Enhanced focus and active states with scale animation
  * - Smooth opacity and transform transitions
  *

@@ -52,6 +52,9 @@ so that these two specialised inputs don't come from a third-party design system
 
 ## Bugs
 
+- 2026-11-07 — `Rating` with `allowHalf` drew a dark anti-alias seam down the centre of each star
+  (two half-star masks meeting), worse under opacity or disabled. Both halves now clip one full-star
+  mask via `overflow: hidden`, and disabled dims once through the fieldset. Fixed in 0.9.1.
 - 2026-10-19 — `ColorSlider` defaults were `oklch(var(--primary))` / `oklch(var(--secondary))`.
   The tokens already hold full `oklch()` values, so the declarations were invalid and dropped:
   a `sliderType="custom"` slider had a transparent rail and range, and the thumb outline fell back
