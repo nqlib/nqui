@@ -53,6 +53,15 @@ so that search results hug their highlight and match other nqui scrolling surfac
 - `no-scrollbar` on the old native list goes away once the styled thumb is the
   intentional affordance.
 
+## Bugs
+
+- 2026-11-07 — An inline `Command` below the fold dragged the whole page to itself on mount.
+  cmdk keeps the selected row visible with `scrollIntoView({ block: "nearest" })`, and native
+  scrollIntoView scrolls every ancestor, the window included. `CommandItem` and `CommandGroup`
+  headings now carry an own-instance `scrollIntoView` that moves only
+  `[data-slot=command-list-viewport]` (native fallback outside a `CommandList`). Arrow-key
+  navigation still keeps the row in view. Found on nqui-showcase `/catalog`.
+
 ## Out of scope
 
 - Search backends, ranking, or default command sets.

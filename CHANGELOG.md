@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.9.2] - 2026-11-14
+
+### Fixed
+
+- **Command no longer scrolls the page.** An inline `Command` (not in a dialog or popover) placed
+  below the fold scrolled the whole page down to itself when it mounted, because cmdk keeps the
+  selected row visible with native `scrollIntoView`, which scrolls every ancestor. `CommandItem`
+  rows and `CommandGroup` headings now scroll only the `CommandList` viewport, on mount and on
+  arrow keys. Rows rendered outside a `CommandList` keep the native behaviour. (ST-064)
 
 ## [0.9.1] - 2026-11-07
 
