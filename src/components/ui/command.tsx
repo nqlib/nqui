@@ -7,6 +7,7 @@ import { Command as CommandPrimitive } from "cmdk"
 import { ScrollArea as ScrollAreaPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
+import { useComposedRefs } from "@/lib/compose-refs"
 import { floatingListItemInteractive, floatingSurface } from "@/lib/floating-surface"
 import { getMaskStyle } from "@/components/custom/enhanced-scroll-area"
 import {
@@ -21,6 +22,34 @@ import {
   InputGroupAddon,
 } from "@/components/ui/input-group"
 import { ScrollBar } from "@/components/ui/scroll-area"
+
+/**
+ * cmdk keeps the selected row visible with `el.scrollIntoView({ block: "nearest" })`
+ * — on mount and on every arrow key. Native scrollIntoView scrolls *every*
+ * scrollable ancestor, so an inline Command below the fold dragged the whole
+ * page to itself on load. Rows and group headings get an own-instance
+ * scrollIntoView that moves only the list viewport. Outside a CommandList
+ * (no viewport) it falls back to the native behaviour.
+ */
+function scrollRowIntoList(this: HTMLElement) {
+  const viewport = this.closest<HTMLElement>('[data-slot="command-list-viewport"]')
+  if (!viewport) {
+    Element.prototype.scrollIntoView.call(this, { block: "nearest" })
+    return
+  }
+  const row = this.getBoundingClientRect()
+  const port = viewport.getBoundingClientRect()
+  if (row.top < port.top) viewport.scrollTop -= port.top - row.top
+  else if (row.bottom > port.bottom) viewport.scrollTop += row.bottom - port.bottom
+}
+
+function containRowScroll(el: HTMLElement | null) {
+  if (el) el.scrollIntoView = scrollRowIntoList
+}
+
+function containGroupHeadingScroll(el: HTMLElement | null) {
+  el?.querySelectorAll<HTMLElement>("[cmdk-group-heading]").forEach(containRowScroll)
+}
 
 /** Right gutter so row highlights clear the w-2 ScrollBar thumb. */
 const COMMAND_LIST_SCROLL_GUTTER = "pr-3.5"
@@ -227,10 +256,14 @@ function CommandEmpty({
 
 function CommandGroup({
   className,
+  ref,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Group>) {
+  // cmdk also scrolls the group heading when the first row is selected.
+  const groupRef = useComposedRefs(ref, containGroupHeadingScroll)
   return (
     <CommandPrimitive.Group
+      ref={groupRef}
       data-slot="command-group"
       className={cn(
         "text-foreground overflow-hidden [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium",
@@ -257,10 +290,13 @@ function CommandSeparator({
 function CommandItem({
   className,
   children,
+  ref,
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Item>) {
+  const itemRef = useComposedRefs(ref, containRowScroll)
   return (
     <CommandPrimitive.Item
+      ref={itemRef}
       data-slot="command-item"
       className={cn(
         floatingListItemInteractive,

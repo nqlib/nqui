@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Command no longer scrolls the page.** An inline `Command` (not in a dialog or popover) placed
+  below the fold scrolled the whole page down to itself when it mounted, because cmdk keeps the
+  selected row visible with native `scrollIntoView`, which scrolls every ancestor. `CommandItem`
+  rows and `CommandGroup` headings now scroll only the `CommandList` viewport, on mount and on
+  arrow keys. Rows rendered outside a `CommandList` keep the native behaviour. (ST-064)
+
 ## [0.9.1] - 2026-11-07
 
 ### Changed
