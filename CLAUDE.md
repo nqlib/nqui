@@ -53,3 +53,13 @@ Read this first when working in **nqui** (`@nqlib/nqui`).
   Never track work status there — that's a story. The bar is high; most turns write nothing.
 
 See [AGENTS.md](./AGENTS.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Releases and models (same in every nqlib repo)
+
+- **Versions, `dev`, tags and the changelog:** `docs/development/nqlib-release-rules.md`. Check
+  `npm view` before any version work. Keep `dev` equal to `origin/dev`. `package.json` on `dev`
+  carries the next version, under a `## [X.Y.Z] - Unreleased` changelog section. Ask the
+  version questionnaire (`AskUserQuestion`) before you set or change a version, tag or publish.
+- **Subagents and models:** `docs/development/agent-models.md`. Use `haiku` for search, test runs
+  and mechanical changes; `sonnet` for scoped fixes and docs; `opus` for features, bugs with an
+  unknown cause, public API and review. Ask before you use `fable`.
