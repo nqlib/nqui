@@ -59,7 +59,7 @@ Do **not** override the item with `flex-col` — that fights `min-h-7` and stret
 ## CommandList chrome
 
 - **Padding:** `CommandList` includes `p-1`. A bare list (no `CommandGroup`) no longer sits flush under `CommandInput`. Groups do not add a second outer `p-1`.
-- **Scroll:** List composes nqui `ScrollArea` + `ScrollBar`. The **viewport** is the scroll container (cmdk `scrollIntoView` and the thumb stay aligned). Do not wrap `CommandList` in another `ScrollArea` or add `overflow-y-auto` on the list.
+- **Scroll:** List composes nqui `ScrollArea` + `ScrollBar`. The **viewport** is the scroll container (cmdk `scrollIntoView` and the thumb stay aligned). `CommandItem` and `CommandGroup` headings scroll only that viewport, never the page, so an inline Command below the fold does not pull the page down on mount. Do not wrap `CommandList` in another `ScrollArea` or add `overflow-y-auto` on the list.
 - **Max height:** defaults to `18rem` via `--command-list-max-height`. Raise it without `!`:
 
 ```tsx
