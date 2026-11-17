@@ -9,176 +9,104 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/index"
 import { Button } from "@/index"
 import { ColorSlider } from "./color-slider"
 import { cn } from "@/lib/utils"
+import {
+  type Oklch,
+  formatOklch,
+  hexToOklch,
+  normalizeHex,
+  oklchToHex,
+  parseHex,
+  parseOklch,
+  rgbToHsl,
+} from "@/lib/oklch"
+
+/** Value format of `ColorPicker`: `"oklch"` (`oklch(L C H)`, the default) or `"hex"` (`#rrggbb`). */
+export type ColorPickerFormat = "hex" | "oklch"
 
 export interface ColorPickerProps {
-  value?: string // OKLCH string (e.g., "oklch(0.75 0.15 240)")
+  /**
+   * The colour. In `"oklch"` format (default): `oklch(L C H)`. In `"hex"` format: `#rrggbb`
+   * (`#rgb` and uppercase are accepted). Either format is read; `onChange` emits the active one.
+   */
+  value?: string
+  /** Called with `oklch(L C H)` in `"oklch"` format, or lowercase `#rrggbb` in `"hex"` format. */
   onChange?: (_color: string) => void
+  /** Value format of `value` and `onChange`. Default `"oklch"`. */
+  format?: ColorPickerFormat
   className?: string
   disabled?: boolean
   variant?: 'popover' | 'inline' // Display mode
 }
 
-// OKLCH to RGB conversion for hex display
-function oklchToHex(L: number, C: number, H: number): string {
-  // Handle edge cases
-  if (!isFinite(L) || L < 0 || L > 1) {
-    return "#000000"
-  }
+const DEFAULT_OKLCH: Oklch = { L: 0.5, C: 0.15, H: 240 }
+const DEFAULT_OKLCH_VALUE = "oklch(0.5 0.15 240)"
+const DEFAULT_HEX_VALUE = oklchToHex(DEFAULT_OKLCH)
 
-  // If chroma is 0 or very low, treat as grayscale
-  if (C < 0.001) {
-    const grayValue = Math.max(0, Math.min(1, L))
-    const toHex = (n: number) => {
-      const hex = Math.round(n * 255).toString(16)
-      return hex.length === 1 ? "0" + hex : hex
-    }
-    return `#${toHex(grayValue)}${toHex(grayValue)}${toHex(grayValue)}`
-  }
+const QUICK_COLORS: ReadonlyArray<{ name: string; oklch: string }> = [
+  { name: "Red", oklch: "oklch(0.55 0.22 25)" },
+  { name: "Orange", oklch: "oklch(0.65 0.2 60)" },
+  { name: "Yellow", oklch: "oklch(0.75 0.15 100)" },
+  { name: "Lime", oklch: "oklch(0.7 0.18 140)" },
+  { name: "Green", oklch: "oklch(0.6 0.2 160)" },
+  { name: "Cyan", oklch: "oklch(0.65 0.15 200)" },
+  { name: "Blue", oklch: "oklch(0.6 0.25 240)" },
+  { name: "Purple", oklch: "oklch(0.55 0.22 280)" },
+]
 
-  // Convert OKLCH to RGB
-  const h = (H / 360) * 2 * Math.PI
-  const a = C * Math.cos(h)
-  const b = C * Math.sin(h)
-
-  // OKLab to linear RGB
-  const l = L + 0.3963377774 * a + 0.2158037573 * b
-  const m = L - 0.1055613458 * a - 0.0638541728 * b
-  const s = L - 0.0894841775 * a - 1.2914855480 * b
-
-  // Linear RGB to sRGB
-  const r = Math.max(0, Math.min(1, Math.sign(l) * Math.pow(Math.abs(l) * 0.999999998 * 2 - 1, 1 / 3)))
-  const g = Math.max(0, Math.min(1, Math.sign(m) * Math.pow(Math.abs(m) * 0.999999998 * 2 - 1, 1 / 3)))
-  const bl = Math.max(0, Math.min(1, Math.sign(s) * Math.pow(Math.abs(s) * 0.999999998 * 2 - 1, 1 / 3)))
-
-  // Convert to hex
-  const toHex = (n: number) => {
-    const hex = Math.round(n * 255).toString(16)
-    return hex.length === 1 ? "0" + hex : hex
-  }
-
-  const hexR = toHex(r)
-  const hexG = toHex(g)
-  const hexB = toHex(bl)
-
-  // Check for NaN values
-  if (hexR === "NaN" || hexG === "NaN" || hexB === "NaN") {
-    return "#000000"
-  }
-
-  return `#${hexR}${hexG}${hexB}`
+interface PickerColor {
+  oklch: Oklch
+  /** The source hex: kept as given so a passed hex is not regenerated through the float maths. */
+  hex: string
 }
 
-// Parse OKLCH string
-function parseOklch(colorStr: string): { L: number; C: number; H: number } {
-  const match = colorStr.match(/oklch\(([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\)/)
-  if (match) {
-    return {
-      L: parseFloat(match[1]),
-      C: parseFloat(match[2]),
-      H: parseFloat(match[3]),
-    }
-  }
-  return { L: 0.5, C: 0.15, H: 240 }
+/** Read a hex or `oklch()` value. Returns null when the value is neither. */
+function readColor(value: string): PickerColor | null {
+  const hex = normalizeHex(value)
+  if (hex) return { hex, oklch: hexToOklch(hex) ?? DEFAULT_OKLCH }
+  const oklch = parseOklch(value)
+  if (oklch) return { oklch, hex: oklchToHex(oklch) }
+  return null
 }
 
-// RGB to OKLCH conversion
-function rgbToOklch(r: number, g: number, b: number): { L: number; C: number; H: number } {
-  // Normalize RGB
-  r = r / 255
-  g = g / 255
-  b = b / 255
-
-  // Linearize RGB
-  r = r <= 0.04045 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)
-  g = g <= 0.04045 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4)
-  b = b <= 0.04045 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4)
-
-  // Convert to OKLab
-  const l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b
-  const m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b
-  const s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b
-
-  // Convert to OKLCH
-  const L = Math.pow(Math.abs(l) * 0.999999998, 1 / 3) * Math.sign(l) * 0.5 + 0.5
-
-  const a = l - m
-  const bVal = (l + m - 2 * s) / 2
-
-  const C = Math.sqrt(a * a + bVal * bVal)
-  let H = Math.atan2(bVal, a) * (180 / Math.PI)
-  if (H < 0) H += 360
-
-  return { L, C, H }
+/** An achromatic colour has no hue: keep the previous hue so the hue slider does not jump. */
+function keepHue(next: PickerColor, prevHue: number): PickerColor {
+  return next.oklch.C === 0 ? { ...next, oklch: { ...next.oklch, H: prevHue } } : next
 }
 
-export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className, disabled, variant = 'popover' }: ColorPickerProps) {
+export function ColorPicker({ value, onChange, format = "oklch", className, disabled, variant = 'popover' }: ColorPickerProps) {
+  const resolvedValue = value ?? (format === "oklch" ? DEFAULT_OKLCH_VALUE : DEFAULT_HEX_VALUE)
   const [open, setOpen] = React.useState(false)
-  const [oklch, setOklch] = React.useState(() => parseOklch(value))
+  const [color, setColor] = React.useState<PickerColor>(
+    () => readColor(resolvedValue) ?? { oklch: DEFAULT_OKLCH, hex: DEFAULT_HEX_VALUE }
+  )
+  const [hexDraft, setHexDraft] = React.useState(color.hex)
+  const [hexEditing, setHexEditing] = React.useState(false)
   const [copiedFormat, setCopiedFormat] = React.useState<string | null>(null)
+  // The last value this picker emitted. When the caller echoes it back as `value`, the local
+  // state is kept, so the sliders do not snap to the quantized (8-bit / gamut-clamped) colour.
+  const lastEmitted = React.useRef<string | null>(null)
 
   React.useEffect(() => {
-    setOklch(parseOklch(value))
-  }, [value])
+    if (resolvedValue === lastEmitted.current) return
+    const next = readColor(resolvedValue)
+    if (next) setColor((prev) => keepHue(next, prev.oklch.H))
+  }, [resolvedValue])
 
-  // Convert OKLCH to RGB then to HSL
-  const oklchToHsl = (L: number, C: number, H: number): { h: number; s: number; l: number } => {
-    // Handle grayscale (low chroma)
-    if (C < 0.001 || !isFinite(C)) {
-      const lPercent = Math.max(0, Math.min(100, L * 100))
-      return { h: 0, s: 0, l: lPercent }
-    }
+  React.useEffect(() => {
+    if (!hexEditing) setHexDraft(color.hex)
+  }, [color.hex, hexEditing])
 
-    // Reuse the OKLCH to RGB conversion logic
-    // Convert OKLCH to RGB first
-    const hRad = (H / 360) * 2 * Math.PI
-    const a = C * Math.cos(hRad)
-    const b = C * Math.sin(hRad)
+  const oklch = color.oklch
 
-    const lOk = L + 0.3963377774 * a + 0.2158037573 * b
-    const mOk = L - 0.1055613458 * a - 0.0638541728 * b
-    const sOk = L - 0.0894841775 * a - 1.2914855480 * b
+  const emit = (next: PickerColor) => {
+    const out = format === "oklch" ? formatOklch(next.oklch) : next.hex
+    lastEmitted.current = out
+    onChange?.(out)
+  }
 
-    // OKLab to linear RGB
-    const rLin = Math.max(0, Math.min(1, Math.sign(lOk) * Math.pow(Math.abs(lOk) * 0.999999998 * 2 - 1, 1 / 3)))
-    const gLin = Math.max(0, Math.min(1, Math.sign(mOk) * Math.pow(Math.abs(mOk) * 0.999999998 * 2 - 1, 1 / 3)))
-    const bLin = Math.max(0, Math.min(1, Math.sign(sOk) * Math.pow(Math.abs(sOk) * 0.999999998 * 2 - 1, 1 / 3)))
-
-    // Linear RGB to sRGB (gamma correction)
-    const toSRGB = (c: number) => {
-      if (!isFinite(c)) return 0
-      return c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1/2.4) - 0.055
-    }
-
-    const rNorm = Math.max(0, Math.min(1, toSRGB(rLin)))
-    const gNorm = Math.max(0, Math.min(1, toSRGB(gLin)))
-    const bNorm = Math.max(0, Math.min(1, toSRGB(bLin)))
-
-    // Convert RGB to HSL
-    const max = Math.max(rNorm, gNorm, bNorm)
-    const min = Math.min(rNorm, gNorm, bNorm)
-    const diff = max - min
-
-    let hue = 0
-    if (diff !== 0) {
-      if (max === rNorm) {
-        hue = ((gNorm - bNorm) / diff) % 6
-      } else if (max === gNorm) {
-        hue = (bNorm - rNorm) / diff + 2
-      } else {
-        hue = (rNorm - gNorm) / diff + 4
-      }
-      hue = Math.round(hue * 60)
-      if (hue < 0) hue += 360
-    }
-
-    const lightness = (max + min) / 2
-    const saturation = max === 0 || min === 1 ? 0 : (max - min) / (1 - Math.abs(2 * lightness - 1))
-
-    return {
-      h: hue,
-      s: Math.max(0, Math.min(100, saturation * 100)),
-      l: Math.max(0, Math.min(100, lightness * 100))
-    }
+  const commit = (next: PickerColor) => {
+    setColor(next)
+    emit(next)
   }
 
   const copyToClipboard = async (text: string, format: string) => {
@@ -192,27 +120,50 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
   }
 
   const handleChange = (field: "L" | "C" | "H", val: number) => {
-    const newOklch = { ...oklch, [field]: val }
-    setOklch(newOklch)
-    onChange?.(`oklch(${newOklch.L} ${newOklch.C} ${newOklch.H})`)
+    const nextOklch = { ...oklch, [field]: val }
+    commit({ oklch: nextOklch, hex: oklchToHex(nextOklch) })
   }
 
-  const handleHexChange = (hex: string) => {
-    const rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-    if (rgb) {
-      const r = parseInt(rgb[1], 16)
-      const g = parseInt(rgb[2], 16)
-      const b = parseInt(rgb[3], 16)
-      const newOklch = rgbToOklch(r, g, b)
-      setOklch(newOklch)
-      onChange?.(`oklch(${newOklch.L} ${newOklch.C} ${newOklch.H})`)
+  /** Commit a hex from the HEX field. `allowShort` also accepts `#rgb` (on blur / Enter only). */
+  const commitHexDraft = (draft: string, allowShort: boolean): boolean => {
+    const trimmed = draft.trim()
+    if (!allowShort && !/^#?[0-9a-f]{6}$/i.test(trimmed)) return false
+    const hex = normalizeHex(trimmed)
+    if (!hex) return false
+    if (hex !== color.hex) {
+      const next = keepHue({ hex, oklch: hexToOklch(hex) ?? DEFAULT_OKLCH }, oklch.H)
+      commit(next)
+    }
+    return true
+  }
+
+  const handleHexInput = (draft: string) => {
+    setHexDraft(draft)
+    commitHexDraft(draft, false)
+  }
+
+  const handleHexBlur = () => {
+    setHexEditing(false)
+    commitHexDraft(hexDraft, true)
+    // Valid: show the canonical value. Invalid: revert to the current colour.
+    setHexDraft(normalizeHex(hexDraft) ?? color.hex)
+  }
+
+  const handleHexKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      commitHexDraft(hexDraft, true)
+      setHexDraft(normalizeHex(hexDraft) ?? color.hex)
+    } else if (event.key === "Escape") {
+      setHexDraft(color.hex)
     }
   }
 
-  const hexColor = oklchToHex(oklch.L, oklch.C, oklch.H)
-  const oklchColor = `oklch(${oklch.L.toFixed(2)} ${oklch.C.toFixed(2)} ${oklch.H})`
-  const hslColor = oklchToHsl(oklch.L, oklch.C, oklch.H)
-  const hslString = `hsl(${Math.round(hslColor.h)} ${Math.round(hslColor.s)}% ${Math.round(hslColor.l)}%)`
+  const hexColor = color.hex
+  const oklchCss = `oklch(${oklch.L} ${oklch.C} ${oklch.H})`
+  const swatchColor = format === "hex" ? hexColor : oklchCss
+  const oklchColor = `oklch(${oklch.L.toFixed(3)} ${oklch.C.toFixed(3)} ${Number(oklch.H.toFixed(1))})`
+  const hslColor = rgbToHsl(parseHex(hexColor) ?? { r: 0, g: 0, b: 0 })
+  const hslString = `hsl(${Math.round(hslColor.h) % 360} ${Math.round(hslColor.s)}% ${Math.round(hslColor.l)}%)`
 
   const colorPickerContent = (
     <div className="space-y-4">
@@ -220,7 +171,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
       <div className="flex items-center gap-3">
         <div
           className="h-16 w-16 rounded border border-border flex-shrink-0"
-          style={{ backgroundColor: `oklch(${oklch.L} ${oklch.C} ${oklch.H})` }}
+          style={{ backgroundColor: swatchColor }}
         />
         <div className="flex-1 space-y-2">
           {/* OKLCH */}
@@ -253,8 +204,12 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
               <input
                 type="text"
                 aria-label="HEX color value"
-                value={hexColor}
-                onChange={(e) => handleHexChange(e.target.value)}
+                value={hexDraft}
+                spellCheck={false}
+                onFocus={() => setHexEditing(true)}
+                onChange={(e) => handleHexInput(e.target.value)}
+                onBlur={handleHexBlur}
+                onKeyDown={handleHexKeyDown}
                 className="text-[10px] font-mono w-full px-2 py-1 border border-border rounded bg-background"
               />
               <Button
@@ -309,7 +264,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             max={360}
             step={1}
             sliderType="hue"
-            thumbColor={`oklch(${oklch.L} ${oklch.C} ${oklch.H})`}
+            thumbColor={oklchCss}
           />
         </div>
 
@@ -327,7 +282,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             step={1}
             sliderType="saturation"
             currentHue={oklch.H}
-            thumbColor={`oklch(${oklch.L} ${oklch.C} ${oklch.H})`}
+            thumbColor={oklchCss}
           />
         </div>
 
@@ -345,7 +300,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
             step={1}
             sliderType="lightness"
             currentHue={oklch.H}
-            thumbColor={`oklch(${oklch.L} ${oklch.C} ${oklch.H})`}
+            thumbColor={oklchCss}
           />
         </div>
       </div>
@@ -354,28 +309,17 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
       <div>
         <div className="text-xs font-medium mb-2">Quick Colors</div>
         <div className="grid grid-cols-8 gap-1">
-          {[
-            { name: "Red", oklch: "oklch(0.55 0.22 25)" },
-            { name: "Orange", oklch: "oklch(0.65 0.20 60)" },
-            { name: "Yellow", oklch: "oklch(0.75 0.15 100)" },
-            { name: "Lime", oklch: "oklch(0.70 0.18 140)" },
-            { name: "Green", oklch: "oklch(0.60 0.20 160)" },
-            { name: "Cyan", oklch: "oklch(0.65 0.15 200)" },
-            { name: "Blue", oklch: "oklch(0.60 0.25 240)" },
-            { name: "Purple", oklch: "oklch(0.55 0.22 280)" },
-          ].map((color) => {
-            const parsed = parseOklch(color.oklch)
+          {QUICK_COLORS.map((preset) => {
+            const presetOklch = parseOklch(preset.oklch) ?? DEFAULT_OKLCH
             return (
               <button
-                key={color.name}
-                aria-label={color.name}
-                onClick={() => {
-                  setOklch(parsed)
-                  onChange?.(color.oklch)
-                }}
+                key={preset.name}
+                type="button"
+                aria-label={preset.name}
+                onClick={() => commit({ oklch: presetOklch, hex: oklchToHex(presetOklch) })}
                 className="h-8 w-full rounded border border-border transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                style={{ backgroundColor: color.oklch }}
-                title={color.name}
+                style={{ backgroundColor: format === "hex" ? oklchToHex(presetOklch) : preset.oklch }}
+                title={preset.name}
               />
             )
           })}
@@ -399,7 +343,7 @@ export function ColorPicker({ value = "oklch(0.5 0.15 240)", onChange, className
           variant="outline"
           disabled={disabled}
           className={cn("h-8 w-8 p-0 border-2", className)}
-          style={{ backgroundColor: `oklch(${oklch.L} ${oklch.C} ${oklch.H})` }}
+          style={{ backgroundColor: swatchColor }}
         >
           <span className="sr-only">Pick a color</span>
         </Button>

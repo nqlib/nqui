@@ -75,6 +75,7 @@ subpaths; `docs/components/nqui-*.md`.
 | ST-069 | Slider value label | review | 0.8.3 |
 | ST-070 | Slider scale engine (log scale, marks, adaptive ticks) | review | 0.8.3 |
 | ST-071 | Slider variants (field, segments, ruler), origin and track slot | review | 0.8.3 |
+| ST-072 | ColorPicker hex format option and correct colour maths | review | 0.10.0 |
 
 ## Implementation references
 
