@@ -97,7 +97,7 @@ export { RadioGroup as CoreRadioGroup, RadioGroupItem as CoreRadioGroupItem } fr
 
 // Color Picker - Enhanced component
 export { ColorPicker } from "./custom/color-picker"
-export type { ColorPickerProps } from "./custom/color-picker"
+export type { ColorPickerProps, ColorPickerFormat } from "./custom/color-picker"
 
 // Color Slider - Supporting component
 export { ColorSlider } from "./custom/color-slider"

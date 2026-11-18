@@ -52,6 +52,12 @@ so that these two specialised inputs don't come from a third-party design system
 
 ## Bugs
 
+- 2026-11-17 — `ColorPicker` converted colours with wrong maths. `oklchToHex`, `rgbToOklch` and
+  the inner `oklchToHsl` skipped steps of the OKLab formula (no cube or cube root, no second
+  matrix, no sRGB gamma in `oklchToHex`). `#27272a` came back as `#a5a6a6`, and sRGB red
+  (`oklch(0.628 0.258 29)`) showed as `#000000`. The HEX field also could not be typed into one
+  character at a time. Fixed in 0.10.0 (ST-072). The OKLCH value contract of this story does not
+  change. ST-072 adds `format="hex"` as an opt-in format.
 - 2026-11-07 — `Rating` with `allowHalf` drew a dark anti-alias seam down the centre of each star
   (two half-star masks meeting), worse under opacity or disabled. Both halves now clip one full-star
   mask via `overflow: hidden`, and disabled dims once through the fieldset. Fixed in 0.9.1.

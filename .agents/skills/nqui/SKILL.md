@@ -60,6 +60,7 @@ Install nqui → init-css → init-skills → pick component doc → implement �
 - **Form context** → `RadioGroup`, `Checkbox`
 - **Numbers** → `Slider`; choose `variant` by the data: `field` (forms, inspectors, typed entry), `segments` (5–12 steps), `ruler` (units on a scale). 2–4 options → `ToggleGroup`. Use `label` + `showValue` instead of a hand-built label row.
 - **Don't restyle a component's own layout** — reach for its props, not `className`. Components already own their row/gap/overflow; overriding fights them (see anti-patterns)
+- **Colours** → `ColorPicker` takes and emits `oklch(L C H)` by default, like the tokens. Pass `format="hex"` only when your store needs `#rrggbb`. Convert at your boundary with `colorToHex` / `colorToOklch`
 - **Read before code** — open the component doc; don't infer props
 - **One doc at a time** — don't bulk-read the skills folder
 - **CSS required** — styles won't load without `@import "@nqlib/nqui/styles"`

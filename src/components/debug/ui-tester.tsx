@@ -16,6 +16,7 @@ import { getColorVariables, type ColorVariable, resolveCssVar } from "./utils/cs
 import { removePreviewStyles, updatePreviewStyles, type PreviewStyles } from "./utils/style-injector"
 import { isDebugUIElement } from "./utils/element-selector"
 import { extractElementStyles } from "./utils/style-parser"
+import { hexToOklch, oklchToRgb, parseOklch, rgbToOklch } from "@/lib/oklch"
 
 // Number Input Component with stepper buttons
 interface NumberInputProps {
@@ -175,66 +176,19 @@ function rgbaToOklch(rgba: string): string {
   // Parse rgba string: rgba(r, g, b, a) or rgb(r, g, b)
   const rgbaMatch = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
   if (rgbaMatch) {
-    const r = parseInt(rgbaMatch[1], 10)
-    const g = parseInt(rgbaMatch[2], 10)
-    const b = parseInt(rgbaMatch[3], 10)
-
-    // Use the rgbToOklch conversion from color-picker
-    const rNorm = r / 255
-    const gNorm = g / 255
-    const bNorm = b / 255
-
-    // Linearize RGB
-    const rLin = rNorm <= 0.04045 ? rNorm / 12.92 : Math.pow((rNorm + 0.055) / 1.055, 2.4)
-    const gLin = gNorm <= 0.04045 ? gNorm / 12.92 : Math.pow((gNorm + 0.055) / 1.055, 2.4)
-    const bLin = bNorm <= 0.04045 ? bNorm / 12.92 : Math.pow((bNorm + 0.055) / 1.055, 2.4)
-
-    // Convert to OKLab
-    const l = 0.4122214708 * rLin + 0.5363325363 * gLin + 0.0514459929 * bLin
-    const m = 0.2119034982 * rLin + 0.6806995451 * gLin + 0.1073969566 * bLin
-    const s = 0.0883024619 * rLin + 0.2817188376 * gLin + 0.6299787005 * bLin
-
-    // Convert to OKLCH
-    const L = Math.pow(Math.abs(l) * 0.999999998, 1 / 3) * Math.sign(l) * 0.5 + 0.5
-
-    const aVal = l - m
-    const bVal = (l + m - 2 * s) / 2
-
-    const C = Math.sqrt(aVal * aVal + bVal * bVal)
-    let H = Math.atan2(bVal, aVal) * (180 / Math.PI)
-    if (H < 0) H += 360
-
+    const { L, C, H } = rgbToOklch({
+      r: parseInt(rgbaMatch[1], 10),
+      g: parseInt(rgbaMatch[2], 10),
+      b: parseInt(rgbaMatch[3], 10),
+    })
     return `oklch(${L.toFixed(2)} ${C.toFixed(2)} ${H.toFixed(0)})`
   }
 
   // Try hex format
-  const hexMatch = rgba.match(/#([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})?/i)
-  if (hexMatch) {
-    const r = parseInt(hexMatch[1], 16)
-    const g = parseInt(hexMatch[2], 16)
-    const b = parseInt(hexMatch[3], 16)
-
-    const rNorm = r / 255
-    const gNorm = g / 255
-    const bNorm = b / 255
-
-    const rLin = rNorm <= 0.04045 ? rNorm / 12.92 : Math.pow((rNorm + 0.055) / 1.055, 2.4)
-    const gLin = gNorm <= 0.04045 ? gNorm / 12.92 : Math.pow((gNorm + 0.055) / 1.055, 2.4)
-    const bLin = bNorm <= 0.04045 ? bNorm / 12.92 : Math.pow((bNorm + 0.055) / 1.055, 2.4)
-
-    const l = 0.4122214708 * rLin + 0.5363325363 * gLin + 0.0514459929 * bLin
-    const m = 0.2119034982 * rLin + 0.6806995451 * gLin + 0.1073969566 * bLin
-    const s = 0.0883024619 * rLin + 0.2817188376 * gLin + 0.6299787005 * bLin
-
-    const L = Math.pow(Math.abs(l) * 0.999999998, 1 / 3) * Math.sign(l) * 0.5 + 0.5
-
-    const aVal = l - m
-    const bVal = (l + m - 2 * s) / 2
-
-    const C = Math.sqrt(aVal * aVal + bVal * bVal)
-    let H = Math.atan2(bVal, aVal) * (180 / Math.PI)
-    if (H < 0) H += 360
-
+  const hexMatch = rgba.match(/#([a-f\d]{6})(?:[a-f\d]{2})?/i)
+  const hexOklch = hexMatch ? hexToOklch(hexMatch[1]) : null
+  if (hexOklch) {
+    const { L, C, H } = hexOklch
     return `oklch(${L.toFixed(2)} ${C.toFixed(2)} ${H.toFixed(0)})`
   }
 
@@ -253,28 +207,11 @@ function oklchToRgba(oklch: string): string {
     return oklch
   }
 
-  // Parse OKLCH
-  const match = oklch.match(/oklch\(([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\)/)
-  if (!match) return oklch
+  const parsed = parseOklch(oklch)
+  if (!parsed) return oklch
 
-  const L = parseFloat(match[1])
-  const C = parseFloat(match[2])
-  const H = parseFloat(match[3])
-
-  // Convert OKLCH to RGB (reuse logic from color-picker)
-  const h = (H / 360) * 2 * Math.PI
-  const aVal = C * Math.cos(h)
-  const bVal = C * Math.sin(h)
-
-  const l = L + 0.3963377774 * aVal + 0.2158037573 * bVal
-  const m = L - 0.1055613458 * aVal - 0.0638541728 * bVal
-  const s = L - 0.0894841775 * aVal - 1.2914855480 * bVal
-
-  const r = Math.max(0, Math.min(1, Math.sign(l) * Math.pow(Math.abs(l) * 0.999999998 * 2 - 1, 1 / 3)))
-  const g = Math.max(0, Math.min(1, Math.sign(m) * Math.pow(Math.abs(m) * 0.999999998 * 2 - 1, 1 / 3)))
-  const bl = Math.max(0, Math.min(1, Math.sign(s) * Math.pow(Math.abs(s) * 0.999999998 * 2 - 1, 1 / 3)))
-
-  return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(bl * 255)}, 1)`
+  const { r, g, b } = oklchToRgb(parsed)
+  return `rgba(${r}, ${g}, ${b}, 1)`
 }
 
 export interface UITesterProps {

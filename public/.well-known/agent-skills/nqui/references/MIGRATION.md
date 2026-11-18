@@ -9,6 +9,14 @@ When upgrading nqui, scan the latest version section for breaking changes BEFORE
 
 ---
 
+## v0.10.0 — ColorPicker hex format (ST-072)
+
+No migration is needed. `ColorPicker` still takes and emits `oklch(L C H)` by default.
+`format="hex"` is a new, opt-in format. Check stored values that came from the old HEX field: the
+old hex conversion was wrong, so such a value can differ from the colour you typed.
+
+---
+
 ## Unreleased (next minor) — Control tokens and Slider refresh (ST-068 – ST-071)
 
 No API was removed, but sliders, switches and progress bars look different:
