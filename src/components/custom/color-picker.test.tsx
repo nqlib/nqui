@@ -92,4 +92,17 @@ describe("ColorPicker HEX field", () => {
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(onChange.mock.calls[0][0]).toMatch(/^oklch\(0\.6\d+ 0\.25\d+ 29\.\d+\)$/)
   })
+
+  it("syncs to a previously emitted value after the caller set another value", () => {
+    const { rerender } = render(<ColorPicker variant="inline" format="hex" value="#27272a" />)
+    const input = hexInput()
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: "#ff0000" } })
+    fireEvent.blur(input)
+    rerender(<ColorPicker variant="inline" format="hex" value="#ff0000" />)
+    rerender(<ColorPicker variant="inline" format="hex" value="#00ff00" />)
+    expect(hexInput().value).toBe("#00ff00")
+    rerender(<ColorPicker variant="inline" format="hex" value="#ff0000" />)
+    expect(hexInput().value).toBe("#ff0000")
+  })
 })

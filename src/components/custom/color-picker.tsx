@@ -88,6 +88,8 @@ export function ColorPicker({ value, onChange, format = "oklch", className, disa
 
   React.useEffect(() => {
     if (resolvedValue === lastEmitted.current) return
+    // The caller set its own value: forget the emitted one, so a later return to it still syncs.
+    lastEmitted.current = null
     const next = readColor(resolvedValue)
     if (next) setColor((prev) => keepHue(next, prev.oklch.H))
   }, [resolvedValue])

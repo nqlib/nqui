@@ -86,6 +86,10 @@ store hex. They get an opt-in `format="hex"`.
 
 ## Bugs
 
+- 2026-11-18 — The picker ignored a caller `value` equal to its last emitted value after the
+  caller had set a different value (e.g. undo back to a picked colour). Fixed: an external value
+  clears the remembered emitted value. Regression test in `color-picker.test.tsx`.
+
 ## Out of scope
 
 - Alpha / opacity editing.
