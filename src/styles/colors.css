@@ -104,38 +104,42 @@
        Semantic Color Scales - Dark Mode
        ============================================ */
 
-    /* Success Color Scale (Dark Mode) - Green (Hue 135 — matches light) */
+    /* Success Color Scale (Dark Mode) - Green (Hue 135 — matches light).
+       500 is darkened so filled Button/Badge with light foreground clears WCAG AA
+       (~5.8:1). The old L0.65 fill with light ink sat around 2.4:1. */
     --success-100: oklch(0.40 0.15 135);
     --success-200: oklch(0.45 0.18 135);
     --success-300: oklch(0.50 0.20 135);
     --success-400: oklch(0.55 0.22 135);
-    --success-500: oklch(0.65 0.20 135);
-    --success-600: oklch(0.70 0.22 135);
+    --success-500: oklch(0.48 0.16 135);
+    --success-600: oklch(0.55 0.18 135);
 
     /* Warning Color Scale (Dark Mode) - Amber (Hue 80)
-       Was hue 65 which is olive/khaki in OKLCH, not orange — fixed to true amber. */
+       Was hue 65 which is olive/khaki in OKLCH, not orange — fixed to true amber.
+       Bright amber cannot carry white text at AA; keep a vivid 500 and use dark ink
+       (same pattern as light mode). */
     --warning-100: oklch(0.50 0.15 80);
     --warning-200: oklch(0.55 0.18 80);
     --warning-300: oklch(0.60 0.20 80);
     --warning-400: oklch(0.65 0.22 80);
-    --warning-500: oklch(0.75 0.15 80);
-    --warning-600: oklch(0.80 0.18 80);
+    --warning-500: oklch(0.72 0.14 80);
+    --warning-600: oklch(0.78 0.16 80);
 
-    /* Destructive Color Scale (Dark Mode) - Red (Hue 25) */
+    /* Destructive Color Scale (Dark Mode) - Red (Hue 25). L0.48 for AA with light ink. */
     --danger-100: oklch(0.40 0.15 25);
     --danger-200: oklch(0.45 0.18 25);
     --danger-300: oklch(0.50 0.20 25);
     --danger-400: oklch(0.55 0.22 25);
-    --danger-500: oklch(0.65 0.15 25);
-    --danger-600: oklch(0.70 0.18 25);
+    --danger-500: oklch(0.48 0.16 25);
+    --danger-600: oklch(0.55 0.18 25);
 
-    /* Info Color Scale (Dark Mode) - Cyan/Teal (Hue 200) */
+    /* Info Color Scale (Dark Mode) - Cyan/Teal (Hue 200). L0.48 for AA with light ink. */
     --info-100: oklch(0.40 0.15 200);
     --info-200: oklch(0.45 0.18 200);
     --info-300: oklch(0.50 0.20 200);
     --info-400: oklch(0.55 0.22 200);
-    --info-500: oklch(0.65 0.15 200);
-    --info-600: oklch(0.70 0.18 200);
+    --info-500: oklch(0.48 0.14 200);
+    --info-600: oklch(0.55 0.16 200);
 
     /* ============================================
        System Color Mappings - Dark Mode
@@ -153,18 +157,20 @@
     /* Focus ring — neutral gray, visible on dark surfaces without neon primary halo. */
     --ring: oklch(0.708 0 0);
 
-    /* Semantic Colors - Mapped to color scales */
+    /* Semantic Colors - Mapped to color scales.
+       Foregrounds are near-white except warning, which uses dark ink on a bright
+       amber fill so filled controls clear WCAG AA (~7.7:1). */
     --success: var(--success-500);
-    --success-foreground: oklch(0.92 0 0);
+    --success-foreground: oklch(0.98 0 0);
 
     --warning: var(--warning-500);
-    --warning-foreground: oklch(0.92 0 0);
+    --warning-foreground: oklch(0.16 0 0);
 
     --destructive: var(--danger-500);
-    --destructive-foreground: oklch(0.92 0 0);
+    --destructive-foreground: oklch(0.98 0 0);
 
     --info: var(--info-500);
-    --info-foreground: oklch(0.92 0 0);
+    --info-foreground: oklch(0.98 0 0);
   }
 
   /* .light primary/surfaces match :root — no duplicate rules (see index.css). */

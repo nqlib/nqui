@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Dark semantic Button / Badge contrast (WCAG AA).** Dark-mode `--success-500`,
+  `--danger-500` and `--info-500` sat at L≈0.65 with light foreground (~2.2–2.7:1 on
+  filled controls). Those 500 steps are darkened to L≈0.48 with near-white ink
+  (~5.3–6.7:1). Amber `--warning-500` stays vivid and uses dark ink (~7.7:1), matching
+  light mode. Proven in nqui-showcase before this port. Release version TBD.
+
 ## [0.10.0] - 2026-11-18
 
 ### Added
