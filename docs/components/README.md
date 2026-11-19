@@ -43,7 +43,7 @@ Implementation guides for each component. **AI Skill:** Optimized for AI/LLM con
 - **Grouped controls:** ButtonGroup, ToggleGroup share border; outer container uses **`rounded-md`**. ToggleGroup uses item dividers (`border-foreground/20`) or `ToggleGroupSeparator`.
 - **Toolbar context:** Always show Toggle/ToggleGroup in realistic context (document toolbar, chart settings, etc.). Reference: nqui-showcase `/catalog` → Toggle & ToggleGroup.
 - **Style injection:** Component CSS ships in `dist/styles.css` (`@import "@nqlib/nqui/styles"`). Two components still inject a single shared `<style>` once at mount — **Toaster** (`ui/sonner.tsx`) and **Calendar** (`custom/enhanced-calendar.styles.ts`) — both client-only (`"use client"`), so they are safe for SSR.
-- **OKLCH:** ColorPicker expects OKLCH strings (`oklch(0.5 0.15 240)`), not hex.
+- **ColorPicker value:** `oklch(L C H)` strings by default (`oklch(0.5 0.15 240)`), like the tokens. Pass `format="hex"` when your store needs `#rrggbb`.
 - **SidebarProvider:** Must wrap entire layout (sidebar + content).
 - **Z-index:** Use CSS vars from `styles/elevation.css` (e.g. `z-[var(--z-modal)]`). Never hardcode `z-10`, `z-50`, etc.
 - **Keyboard:** Use `Keys`, `isMod`, `shouldIgnoreKeyboardShortcut` from `@/lib/keyboard` for custom shortcuts.
@@ -247,7 +247,7 @@ Use these rules to choose the right component. **Selection** = user picks from o
 | InputOTP | [nqui-input-otp.md](./nqui-input-otp.md) | OTP/verification. |
 | Field | [nqui-field.md](./nqui-field.md) | Label + description + error wrapper. |
 | Combobox | [nqui-combobox.md](./nqui-combobox.md) | **Searchable** select. Single or `multiple`. Selected rows pin to the top when the panel opens, `showSelected` keeps chips above the search, and `onCreate` adds a missing search as an option. |
-| ColorPicker | [nqui-color-picker.md](./nqui-color-picker.md) | Color selection. OKLCH. |
+| ColorPicker | [nqui-color-picker.md](./nqui-color-picker.md) | Color selection. OKLCH by default, `#rrggbb` with `format="hex"`. |
 | ColorSlider | [nqui-color-slider.md](./nqui-color-slider.md) | Hue/saturation (used in ColorPicker). |
 | Label | [nqui-label.md](./nqui-label.md) | Form label. |
 

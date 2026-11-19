@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-11-18
+
+### Added
+
+- **`ColorPicker` `format="hex"`.** With `format="hex"`, `value` is `#rrggbb` (`#rgb` and
+  uppercase are accepted), and every `onChange` emits lowercase `#rrggbb`. A hex value that you
+  pass in shows and comes back unchanged. The default format stays `"oklch"`, so current code
+  does not change. A new type, `ColorPickerFormat` (`"oklch" | "hex"`), is exported. (ST-072)
+- **`colorToHex` and `colorToOklch`.** Two helpers convert a colour string at your own boundary.
+  Each reads `#rgb`, `#rrggbb` or `oklch(L C H)`. `colorToHex` returns lowercase `#rrggbb`.
+  `colorToOklch` returns `oklch(L C H)`. Both return `null` on invalid input. (ST-072)
+
+### Fixed
+
+- **`ColorPicker` colour maths.** The OKLCH, hex and HSL conversions skipped steps of the OKLab
+  formula. `#27272a` came back as `#a5a6a6`, and sRGB red (`oklch(0.628 0.258 29)`) showed as
+  `#000000`. The picker now uses Björn Ottosson's OKLab maths, and hex → OKLCH → hex is exact.
+  The debug UI tester uses the same maths. A value that you entered in the old HEX field can
+  differ from the colour you typed. Values from the sliders and the presets were correct. (ST-072)
+- **`ColorPicker` HEX field typing.** You can type a hex one character at a time. The field
+  commits a valid 6-digit value as you type, accepts `#rgb` on blur or Enter, and reverts an
+  invalid value on blur. (ST-072)
+
 ## [0.9.2] - 2026-11-14
 
 ### Fixed
