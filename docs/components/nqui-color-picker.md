@@ -79,4 +79,6 @@ Each helper reads `#rgb`, `#rrggbb` or `oklch(L C H)`. Hex → OKLCH → hex is 
 
 - The sliders work in OKLCH. A colour outside sRGB is clamped per channel when it becomes hex.
 - The panel shows OKLCH, HEX and HSL, each with a copy button.
+- The popover panel is about 480px high. When the window has less space on the side of the
+  trigger, the panel takes the available height and scrolls. It keeps 8px from the window edge.
 - Alpha is not supported.

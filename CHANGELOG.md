@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   filled controls). Those 500 steps are darkened to L≈0.48 with near-white ink
   (~5.3–6.7:1). Amber `--warning-500` stays vivid and uses dark ink (~7.7:1), matching
   light mode. Proven in nqui-showcase before this port. Release version TBD.
+- **`ColorPicker` panel in a short window.** The popover panel is about 480px high. When
+  neither side of the trigger had that space, the panel went outside the window and its top
+  rows were cut off. The panel now takes the height that is available on its side, keeps 8px
+  from the window edge, and scrolls. A window with enough space shows the panel as before.
+  (ST-014)
 
 ## [0.10.0] - 2026-11-18
 

@@ -52,6 +52,11 @@ so that these two specialised inputs don't come from a third-party design system
 
 ## Bugs
 
+- 2026-11-21 — The `ColorPicker` popover panel went outside a short window. The panel is about
+  480px high. In a 1200 × 800 window with the trigger at mid height, the panel opened upward and
+  its top rows (the OKLCH row) were cut off. The panel now has `collisionPadding={8}`,
+  `max-h-(--radix-popover-content-available-height)` and `overflow-y-auto`, so it stays in the
+  window and scrolls. Found in the secolab report designer (SECO-2237).
 - 2026-11-17 — `ColorPicker` converted colours with wrong maths. `oklchToHex`, `rgbToOklch` and
   the inner `oklchToHsl` skipped steps of the OKLab formula (no cube or cube root, no second
   matrix, no sRGB gamma in `oklchToHex`). `#27272a` came back as `#a5a6a6`, and sRGB red

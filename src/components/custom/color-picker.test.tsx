@@ -106,3 +106,14 @@ describe("ColorPicker HEX field", () => {
     expect(hexInput().value).toBe("#ff0000")
   })
 })
+
+describe("ColorPicker popover panel", () => {
+  it("limits the panel to the available height and scrolls", () => {
+    render(<ColorPicker format="hex" value="#27272a" />)
+    fireEvent.click(screen.getByRole("button", { name: "Pick a color" }))
+    const panel = document.querySelector("[data-slot='popover-content']")
+    expect(panel).not.toBeNull()
+    expect(panel?.className).toContain("max-h-(--radix-popover-content-available-height)")
+    expect(panel?.className).toContain("overflow-y-auto")
+  })
+})
