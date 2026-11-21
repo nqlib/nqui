@@ -350,7 +350,12 @@ export function ColorPicker({ value, onChange, format = "oklch", className, disa
           <span className="sr-only">Pick a color</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-4 border-border shadow-lg z-[var(--z-popover)]">
+      {/* The panel is taller than the space of a short window. It takes the height that Radix
+          measures on the chosen side and scrolls, so no part goes outside the window. */}
+      <PopoverContent
+        collisionPadding={8}
+        className="w-80 p-4 border-border shadow-lg z-[var(--z-popover)] max-h-(--radix-popover-content-available-height) overflow-y-auto"
+      >
         {colorPickerContent}
       </PopoverContent>
     </Popover>
